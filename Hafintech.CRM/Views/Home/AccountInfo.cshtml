@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewBag.Title = "AccountInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+        <div id="divContent_update">
+            <div class="widget-box">
+                <div class="widget-title" style="padding-top:2px;">
+                    @*<span class="icon"><i class="icon-align-justify"></i></span>*@
+                    <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-warning">Thông tin tài khoản</a>
+                    <a href="@Url.Action("Declaration_List", "Declaration", new { uid = ViewBag.uid })" class="btn btn-success">Danh sách tờ khai</a>
+                    <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Lịch sử nộp tiền thuế</a>
+                    <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Lịch sử giao dịch</a>
+                    <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Lịch sử nạp tiền</a>
+                    <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Lịch sử chuyển tiền</a>
+                </div>
+                <div class="widget-content form-horizontal">
+                    <div class="control-group">
+                        <div class="controls" style="margin:0">
+                            <div class="item">
+                                <label>Số tài khoản:</label><span id="spID"></span>
+                            </div>
+                            <div class="item">
+                                <label>Ngày đăng ký:</label><span id="spCreatedDate"></span>
+                            </div>
+                            <div class="item">
+                                <label>Số dư tài khoản:</label><span class="sp">0</span>
+                            </div>
+                            <div class="item">
+                                <label>Số dư khả dụng:</label><span class="sp">0</span>
+                            </div>
+                            <div class="item">
+                                <label>Email:</label><span id="spEmail"></span>
+                            </div>
+                            <div class="item">
+                                <label>Số điện thoại:</label><span id="spPhone"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Thông tin cá nhân</h5>
+                </div>
+                <div class="widget-content form-horizontal">
+                    <div class="control-group">
+                        <div class="controls" style="margin:0">
+                            <div class="item">
+                                <label>Họ và tên:</label>
+                               <span id="fullname"></span>
+                            </div>
+                            <div class="item">
+                                <label>Ngày sinh:</label>
+                                <span id="Birthday"></span>
+                            </div>
+                            <div class="item">
+                                <label>Giới tính:</label>
+                                <span id="Gender"></span>
+                            </div>
+                            <div class="item">
+                                <label>Ảnh hộ chiếu:</label>
+                                <span id="imgPasspostImgPath"></span>
+                            </div>
+                            <div class="item">
+                                <label>Số CMTND:</label>
+                                <span id="Identity"></span>
+                            </div>
+                            <div class="item">
+                                <label>Nơi cấp:</label>
+                                <span id="PlaceReleased"></span>
+                            </div>
+                            <div class="item">
+                                <label>Ảnh CMND:</label>
+                                <span id="imgIdentityImgPath1"></span>
+                                <span id="imgIdentityImgPath2"></span>
+                            </div>
+                            <div class="item">
+                                <label>Địa chỉ:</label>
+                                <span id="Address"></span>
+                            </div>
+
+                            <input type="hidden" id="hdfUID" value="@ViewBag.uid" />
+                            <input type="hidden" id="hdfProvinceCode" value="@ViewBag.ProvinceCode" />
+                            <input type="hidden" id="hdfDistrictCode" value="@ViewBag.DistrictCode" />
+                            <input type="hidden" id="hdfCommuneCode" value="@ViewBag.CommuneCode" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<style type="text/css">
+    .form-horizontal .controls .item{
+        width:100%; margin-bottom:10px; float:left;
+    } 
+    .form-horizontal .controls .item label {
+        width: 150px;
+        display: inline-block;
+    }
+</style>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        accounts.GetAccountInfo();
+    })
+    lightbox.option({
+        'maxHeight': 650
+    })
+</script>
+
+

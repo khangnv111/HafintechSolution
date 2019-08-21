@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "Commodity_List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="box-body" id="dvContent">
+            <h4><a href="@Url.Action("Declaration_List", "Declaration")">Danh sách Tờ khai</a> >> Tờ Khai: @ViewBag.declarationID</h4>
+            <a onclick=" hq.ShowCommodity_Add()" class="btn btn-success" style="float:right; margin: 2px 5px;"><i class="icon icon-book"></i> Thêm hàng hóa</a>
+            <a href="@Url.Action("Declaration_List", "Declaration")" class="btn btn-warning" style="float:right; margin: 2px 5px;"><i class="icon icon-book"></i> << Danh sách tờ khai </a>
+            <div class="widget-box">
+                <div style="clear:both"></div>
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Chi tiết danh sách hàng</h5>
+                   
+                </div>
+                <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                    <thead>
+                        <tr>
+                            <th style="min-width:100px">STT</th>
+                            <th>Tên hàng</th>
+                            <th>Xuất xứ</th>
+                            <th>Số lượng</th>
+                            <th>Đơn vị tính</th>
+                            <th>Thuế suất</th>
+                            <th>Giá trị hàng</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdfdeclarationID" value="@ViewBag.declarationID" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        hq.getListProduct();
+    })
+</script>

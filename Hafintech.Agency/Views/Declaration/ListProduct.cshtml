@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewBag.Title = "ListProduct";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid" id="ida-list-product">
+    <div class="span12">
+        <div class="row-fluid">
+            <div class="span12" id="divBtn">
+                <h4><a href="#">Danh sách Tờ khai</a> >> Đăng ký mới Tờ Khai</h4>
+                <a href="@Url.Action("HightValueDeInsert", "Declaration")?IdDec=@ViewBag.IdDec&ishight=2&tab=1" class="btn btn-success">Chi tiết tờ khai</a>
+                <a class="btn btn-warning">Danh sách hàng</a>
+                <a class="btn btn-success">Chỉ thị của hải quan</a>
+                <a onclick="hq2.linkToCustomsMessage(2)" class="btn btn-success">Kết quả xử lý tờ khai</a>
+                <a onclick="hq2.linkToCustomsMessage(2)" class="btn btn-success">Quản lý tờ khai</a>
+
+            </div>
+        </div>
+        <input type="hidden" class="span5" id="dclId" name="dclId" value="@ViewBag.IdDec" />
+        <a onclick="Decla.ShowPopAddProduct(@ViewBag.IdDec)" class="btn btn-success" style="float:right; margin: 2px 5px;"><i class="icon icon-book"></i> Thêm hàng</a>
+
+        <div class="widget-box">
+            <div style="clear:both"></div>
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Chi tiết danh sách hàng</h5>
+            </div>
+            <div style="overflow-x:auto; overflow-y: scroll;">
+                <table id="listContainerProduct" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                    <thead>
+                        <tr>
+                            <th style="min-width:50px">STT</th>
+                            <th>Mã số hàng hóa</th>
+                            <th style="min-width:100px">Tên hàng(Mô tả chi tiết)</th>
+                            <th>Xuất xứ</th>
+                            <th>Số lượng</th>
+                            <th>Đợn vị tính(SL)</th>
+                            <th style="min-width:100px">Số lương thực tế</th>
+                            <th style="min-width:100px">Đơn giá hóa đơn</th>
+                            <th style="min-width:100px">Trị giá hóa đơn</th>
+                            <th style="min-width:100px">Trị giá tính thuế</th>
+                            <th style="min-width:100px">Mã biểu thuế NK</th>
+
+                            <th style="min-width:150px">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in lstProduct">
+                            <td>{{index+1}}</td>
+                            <td>
+                                <a href="javascript:;" v-on:click="viewDetailProduct(item.productId)">{{item.hSCd}}</a>
+                            </td>
+                            <td>{{item.itemName}}</td>
+                            <td>{{item.placeOriginCd}}</td>
+                            <td>{{item.qtt1}}</td>
+                            <td>{{item.qttUnitCd1}}</td>
+                            <td>{{item.qtt2}}</td>
+                            <td>{{item.invUnitPrice}}</td>
+                            <td>{{item.invValue}}</td>
+                            <td>{{item.cstValue}}</td>
+                            <td>{{item.cstValueCurCd}}</td>
+                            <td>
+                                <a href="javascript:;" v-on:click="viewEditProduct(item.productId)" class="btn btn-warning">Sửa</a>
+                                <a href="javascript:;" v-on:click="delProduct(item.productId)" class="btn btn-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#ida-list-product',
+        data: {
+            data: {},
+            lstProduct: []
+
+        },
+        methods: {
+            getList: async function () {
+                try {
+
+                    var token = $('#hdfToken').val();
+                    var id = $("#dclId").val();
+                    const response = await axios.get(Config.API_Login + "tax/SearchHighProduct?declarationID=" + @ViewBag.IdDec,
+                        {
+                            headers: { "Authorization": "Bearer " + token }
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0)
+                        this.lstProduct = response.data.Data;
+                    else return null;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            viewDetailProduct: function (idPro) {
+                utils.Loading();
+                $.ajax({
+                    type: 'GET',
+                    url: Config.Url_Root + "Declaration/PopInsertHangHoa",
+                    data: {
+                        IdDec: $("#dclId").val(),
+                        proId: idPro
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                    processData: true,
+                    crossDomain: true,
+                    xhrFields: { withCredentials: true },
+                    cache: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        utils.ShowOverLay();
+                        $("BODY").append('<div id="popupwrap" style="z-index: 111;left: 50%;margin-left: -508.5px;"></div>');
+                        $("#popupwrap").html(data);
+
+                    },
+                    error: function (data) {
+                        utils.unLoading();
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.getList();
+        },
+    });
+</script>

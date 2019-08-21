@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Hệ Thống Kho Vận Hateco</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="~/Content/css/maruti-style.css" />
+    <link rel="stylesheet" href="~/Content/css/maruti-media.css" />
+    <link href="~/Content/css/maruti-login.css" rel="stylesheet" />
+
+    <link href="~/Content/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+
+    <link href="~/Content/css/jquery.gritter.css" rel="stylesheet" />
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <link href="~/Content/css/uniform.css" rel="stylesheet" />
+    <link href="~/Content/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/js/lightbox/css/lightbox.min.css" rel="stylesheet" />
+     
+    
+    <link href="~/Content/fontawesome/css/font-awesome.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/js/jquery.ui.custom.js"></script>
+    <script src="~/Scripts/js/jquery.flot.min.js"></script>
+    <script src="~/Scripts/js/jquery.flot.resize.min.js"></script>
+    <script src="~/Scripts/js/jquery.peity.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="~/Content/js/lightbox/js/lightbox.min.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+    <script src="~/Scripts/js/jquery.signalR-2.2.3.min.js"></script>
+    <script src="~/Scripts/js/jquery.gritter.min.js"></script>
+
+    <script src="~/Scripts/js/jquery.validate.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/js/bootstrap-datetimepicker.js"></script>
+
+    <script src="/Scripts/js/jquery.ui.custom.js"></script>
+    <script src="~/Scripts/js/jquery-migrate-1.2.1.js"></script>
+    <script src="~/Scripts/js/jquery.uniform.js"></script>
+    <script src="~/Scripts/js/select2.min.js"></script>
+
+    <script src="~/Content/js/config.js"></script>
+    <script src="~/Content/js/accounts.js"></script> 
+    <script src="~/Content/js/common.js"></script>
+    <script src="~/Content/js/index.js"></script>
+    <script src="~/Content/js/angecy.js"></script> 
+    <script src="~/Content/js/registry.js"></script>
+
+    <script src="~/Content/js/user.agency.js"></script>
+
+</head>
+<body>
+
+    @Html.Action("Header", "Home")
+
+    @Html.Action("MenuHeader", "Home")
+
+    <div id="content">
+
+        @RenderBody()
+
+    </div>
+
+
+    
+    
+    <script type="text/javascript">
+        var h_web = $(document).height();
+        var h1 = $("#header").height();
+        var h2 = $("#sidebar").height();
+        var min_h = h_web - h1 - h2;
+        $("#content").css("min-height", min_h + "px");
+
+        //$(document).ready(function () {
+        //    Account.InfoAccLogin();
+        //})
+    </script>
+     
+
+</body>
+</html>
+
+<script src="~/Scripts/js/bootbox.min.js"></script>
+<script src="~/Scripts/js/select2.min.js"></script>
+<script src="~/Scripts/js/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/js/maruti.tables.js"></script>
+<script src="~/Content/js/md5.js"></script>

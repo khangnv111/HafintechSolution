@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "Declaration_List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid">
+    <div id="divContent_update">
+        <div class="widget-box">
+            <div class="widget-title" style="padding-top:2px;">
+                @*<span class="icon"><i class="icon-align-justify"></i></span>*@
+                <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Thông tin tài khoản</a>
+                <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-warning">Danh sách tờ khai</a>
+                <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Lịch sử nộp tiền thuế</a>
+                <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Lịch sử giao dịch</a>
+                <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Lịch sử nạp tiền</a>
+                <a href="@Url.Action("AccountInfo", "Home", new { uid = ViewBag.uid })" class="btn btn-success">Lịch sử chuyển tiền</a>
+            </div>
+            <div class="widget-content form-horizontal">
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:100px">STT</th>
+                                <th class="text-center" style="min-width:100px">Số tờ khai</th>
+                                <th class="text-center">Ngày đăng ký</th>
+                                <th class="text-center">Loại hình</th>
+                                <th class="text-center">Hải quan</th>
+                                <th class="text-center">Website</th>
+                                <th class="text-center">Địa chỉ</th>
+                                <th class="text-center">Nước</th>
+                                <th class="text-center">Vận đơn</th>
+                                <th class="text-center">Ngày thông quan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="11" style="text-align:center">
+                                    <img width="50" src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/loading.gif" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<input type="hidden" id="hdfUID" value="@ViewBag.uid" />
+
+<script type="text/javascript">
+    //hq.getCustoms();
+    //hq.getMethod();
+    //hq.getcountry();
+    $(document).ready(function () {
+        setTimeout(function () { hq.getListDeclaration(); }, 2000);
+    })
+</script>
+

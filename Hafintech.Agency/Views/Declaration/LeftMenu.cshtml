@@ -1,0 +1,61 @@
+﻿@{ 
+    var url = Request.Url.ToString();
+    Uri MyUrl = new Uri(url);
+    var ishight = HttpUtility.ParseQueryString(MyUrl.Query).Get("ishight");
+    var tab = HttpUtility.ParseQueryString(MyUrl.Query).Get("tab");
+    var IdDec = HttpUtility.ParseQueryString(MyUrl.Query).Get("IdDec"); 
+}
+
+
+<ul>
+    
+    @if (ishight == "1") //MIC
+    {
+        <li class="@(tab == "1" ? "act" : "")"><a href="@Url.Action("LowValueDeInsert","Declaration")?IdDec=@IdDec&ishight=1&tab=1">1.Khai báo thông tin tờ khai (MIC)</a></li>
+
+        <li class="@(tab == "2" ? "act" : "")"><a href="@Url.Action("MIDForm","Declaration")?IdDec=@IdDec&ishight=1&tab=2">2.Lấy thông tin tờ khai sau khai báo (MID)</a></li>
+        <li class="@(tab == "3" ? "act" : "")"><a>3.Khai báo sửa thông tin tờ khai (MIE)</a></li>
+
+        <li class="@(tab == "4" ? "act" : "")"><a href="@Url.Action("IIDForm","Declaration")?IdDec=@IdDec&ishight=1&tab=4">4. Xem thông tin tờ khai đã khai báo (IID)</a></li>
+    }
+    else if (ishight == "2") //IDA
+    {
+        <li class="@(tab == "1" ? "act" : "")"><a href="@Url.Action("MIDForm","Declaration")?IdDec=@IdDec&ishight=2&tab=1">1.Lấy thông tin tờ khai từ hải quan (IDB)</a></li>
+        <li class="@(tab == "2" ? "act" : "")"><a href="@Url.Action("LowValueDeInsert","Declaration")?IdDec=@IdDec&ishight=2&tab=2">2.Khai trước thông tin tờ khai (IDA)</a></li>
+        <li class="@(tab == "3" ? "act" : "")"><a>3.Khai chính thức tờ khai (IDC)</a></li>
+        <li class="@(tab == "4" ? "act" : "")"><a href="@Url.Action("IDDForm","Declaration")?IdDec=@IdDec&ishight=2&tab=4">4.1 Lấy thông tin tờ khai để sửa (IDD)</a></li>
+        <li class="@(tab == "5" ? "act" : "")"><a>4.2 .Khai trước thông tin tờ khai sửa(IDA01)</a></li>
+        <li class="@(tab == "6" ? "act" : "")"><a>4.3.Khai chính thức tờ khai sửa (IDE)</a></li>
+        <li class="@(tab == "7" ? "act" : "")"><a href="@Url.Action("IIDForm","Declaration")?IdDec=@IdDec&ishight=2&tab=7">6.Xem thông tin tờ khai hải quan (IID)</a></li>
+    }
+
+</ul>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="widget-box">
+            <div class="widget-title span12" style="height:auto;display:inline-block">
+                <h5>Hướng dẫn nhập liệu</h5>
+            </div>
+            <div id="mess_error" class="widget-content" style="padding:5px; display:inline-block;background: #e6e6e6;max-height: 185px;overflow-y: auto">
+                <p>Bạn đang ở bước nhập mời tờ khai,để nhập mới tờ khai  có 2 cách bạn có thể nhập mới tờ khai theo các chỉ tiêu yêu cầu của Hải quan sau đó ghi lại, 
+                các nghiệp vụ khai báo tờ khai tới Hải quan. Trường hợp bạn đã khai báo tờ khai theo nghiệp vụ IDA hoặc hóa đơn (IVA) tới Hải quan 
+                rồi bạn có thể thực hiện gọi lại tờ khai từ Hải quan về (Call up) bằng cách chọn nghiệp vụ " Lấy thông tin tờ khai từ Hải quan (IDB)".</p>
+            </div>
+        </div>
+    </div> 
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="widget-box">
+            <div class="widget-title span12">
+                <h5>Thông điệp nghiệp vụ</h5>
+            </div>
+            <div class="">
+                @Html.Action("DeclarationMess", "Declaration")
+            </div>
+
+        </div>
+    </div>
+</div>

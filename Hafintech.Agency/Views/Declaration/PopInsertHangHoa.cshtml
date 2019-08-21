@@ -1,0 +1,331 @@
+﻿<div id="loginbox" style="width:1000px;">
+    <div class="control-group normal_text">
+        <b id="titleHH" style="font-size:18px;text-transform: uppercase">thông tin hàng hóa</b>
+        <b onclick="utils.closeAll()" class="icClose">X</b>
+    </div>
+    <form enctype="multipart/form-data" id="form-inputx" name="form-inputx">
+        <input type="hidden" id="hdf_declarationID" name="hdf_declarationID" value="@ViewBag.IdDec" />
+        <input type="hidden" id="hdf_productID" name="hdf_productID"  value="@ViewBag.proId"/>
+        <div class="form-horizontal" style="padding:10px 10px 0 10px; ">
+            <div class="row-fluid">
+                <div class="span12">
+                    <label class="control-label">Mã số hàng hóa  (HS): <span class="error">(*)</span></label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txthSCd" name="txthSCd" required maxlength="12" v-model="data.hSCd" />
+                        </div>
+                        <div class="span4">
+                            <label class="span6">
+                                Mã quản lý riêng:
+                            </label>
+                            <span class="span6">
+                                <input type="text" class="span12" id="txtmaterialCd" v-model="data.materialCd"
+                                       name="txtmaterialCd" onkeyup="$('#txtmaterialCd').val($('#txtmaterialCd').val().toUpperCase())" maxlength="7" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Thuế suất: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtdutyRate" name="txtdutyRate" v-model="data.dutyRate" />
+                        </div>&nbsp; %
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mức thuế tuyệt đối: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtabsTariffRate" name="txtabsTariffRate" v-model="data.absTariffRate">
+                        </div>
+                        <div class="span4">
+                            <span class="span6">
+                                <select id="slabsDutyUnitCd" name="slabsDutyUnitCd" class="span12" v-model="data.absDutyUnitCd">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in lstAbsDutyUnit" :value="item.absDutyUnitCd">{{item.absDutyUnitCd}}</option>
+                                </select>
+                            </span>
+                            <span class="span6">
+                                <select id="slcurCdAbsDuty" name="slcurCdAbsDuty" class="span12" v-model="data.curCdAbsDuty">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in currency" :value="item.currencyCode">{{item.currencyCode}}</option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mô tả hàng hóa:<span class="error">(*)</span> </label>
+                    <div class="controls">
+                        @*<textarea class="span12" name="txtDescription" id="txtDescription" required></textarea>*@
+                        <input type="text" class="span12" id="txtitemName" name="txtitemName" required maxlength="200" v-model="data.itemName" />
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mã nước xuất xứ:<span class="error">(*)</span> </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <!--<select style="display:none" id="slplaceOriginCd" name="slplaceOriginCd" class="span12" required>
+                                <option value="">--Chọn--</option>
+                            </select>-->
+                            @*<input id="slplaceOriginCd" name="slplaceOriginCd" class="span12" required>*@
+
+                            <input type="text" id="txtplaceOriginCd" name="txtplaceOriginCd" class="span3" disabled="disabled" v-model="data.placeOriginCd" />
+                            <input type="text" id="txtcountryNmOrigin" name="txtcountryNmOrigin" class="span7" v-model="data.countryNmOrigin"
+                                   onclick="DePop.PopCountry(1)" autocomplete="off" />
+                            <button type="button" style="padding: 0 10px" onclick="DePop.PopCountry(1)">...</button>
+                        </div>
+                        <div class="span4">
+                            <label class="span6">
+                                Mã biểu thuế nhập khẩu:
+                            </label>
+                            <span class="span6">
+                                <select id="slimportTaxClfCd" name="slimportTaxClfCd" class="span12" v-model="data.importTaxClfCd">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in lstImportTaxClf" :value="item.importTaxClfCd">{{item.importTaxClfCd}} || {{item.importTaxClfNm}}</option>
+                                </select>
+                            </span>
+                        </div>
+                        <div class="span4">
+                            <label class="span6">
+                                Mã ngoài hạn nghạch:
+                            </label>
+                            <span class="span6">
+                                <input type="text" class="span12" id="txttariffQuotaClf" name="txttariffQuotaClf" v-model="data.tariffQuotaClf" maxlength="1"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mã áp dụng mức thuế tuyệt đối: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <select id="slperUnitTaxCd" name="slperUnitTaxCd" class="span12" v-model="data.perUnitTaxCd">
+                                <option value="">--Chọn--</option>
+                                <option v-for="item in lstAbsDutyUnit" :value="item.absDutyUnitCd">{{item.absDutyUnitCd}}</option>
+                            </select>
+                        </div>
+                        <div class="span4">
+                            <a>
+                                (Tham khảo mã biểu thuế)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">(1) Số lượng:<span class="error">(*)</span> </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="number" min="0" maxlength="12" id="txtqtt1" name="txtqtt1" class="span6" required v-model="data.qtt1">
+                            @*<select id="slqttUnitCd1" name="slqttUnitCd1" class="span6" required>
+                                    <option value="">--Chọn--</option>
+                                </select>*@
+                            <input id="slqttUnitCd1" name="slqttUnitCd1" class="span6" required v-model="data.qttUnitCd1" />
+                        </div>
+                        <div class="span3">
+                            (2) Số lượng thực tế:
+                        </div>
+                        <div class="span4">
+                            <input type="text" id="txtqtt2" name="txtqtt2" class="span6" v-model="data.qtt2" />
+                            <input id="slqttUnitCd2" name="slqttUnitCd2" class="span6" v-model="data.qttUnitCd2" />
+                        </div>
+                        <div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Trị giá hóa đơn: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtinvValue" name="txtinvValue" v-model="data.invValue" />
+                        </div>
+                        <div class="span3">
+                            Đơn giá hóa đơn:
+                        </div>
+                        <div class="span4">
+                            <input type="text" class="span6" id="txtinvUnitPrice" name="txtinvUnitPrice" v-model="data.invUnitPrice" />
+
+                            <select id="slunitPriceCurCd" name="slunitPriceCurCd" class="span6" v-model="data.unitPriceCurCd">
+                                <option value="">--Chọn--</option>
+                                <option v-for="item in currency" :value="item.currencyCode">{{item.currencyCode}}</option>
+                            </select>
+                            <input id="slpriceQttUnit" name="slpriceQttUnit" class="span6" v-model="data.priceQttUnit">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Trị giá tính thuế: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span6" id="txtcstValue" name="txtcstValue" v-model="data.cstValue" />
+                            <select id="slcstValueCurCd" name="slcstValueCurCd" class="span6" v-model="data.cstValueCurCd">
+                                <option value="">--Chọn--</option>
+                                <option v-for="item in currency" :value="item.currencyCode">{{item.currencyCode}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Số của mục khai khoản điều chỉnh:</label>
+                    <div class="controls">
+                        <div class="span2" v-for="(value,index) in data.lsValuationNo">
+                            ({{index+1}})
+                            <input type="text" class="span8" id="txtvaluationNo1" name="txtvaluationNo1" v-model="value.valuationNo" />
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Số thứ tự của dòng hàng trên tờ khai tạm nhập tái xuất tương ứng:</label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="number" class="span12" id="txttenDclLineNo" name="txttenDclLineNo" v-model="data.tenDclLineNo"
+                                   onkeypress="CheckOnlyNumber(this, event)" maxlength="2" />
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Danh mục miễn thuê nhập khẩu: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txttaxExpLsNo" name="txttaxExpLsNo" v-model="data.taxExpLsNo"
+                                   maxlength="12" onkeyup="$('#txttaxExpLsNo').val($('#txttaxExpLsNo').val().toUpperCase())" />
+
+                        </div>
+                        <div class="span4">
+                            <input type="text" class="span12" id="txttaxExpLsLineNo" name="txttaxExpLsLineNo" maxlength="3" v-model="data.taxExpLsLineNo" />
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mã miễn/ giảm/ không chịu thuế nhập khẩu: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="hidden" id="slrdcImpTaxCd" name="slrdcImpTaxCd" v-model="data.rdcImpTaxCd" />
+                            <input id="txtrdcImpTaxCd" name="txtrdcImpTaxCd" class="span8"
+                                   onkeyup="$('#txtrdcImpTaxCd').val($('#txtrdcImpTaxCd').val().toUpperCase()); $('#slrdcImpTaxCd').val($('#txtrdcImpTaxCd').val().toUpperCase())" />
+                            <button type="button" style="padding: 0 10px" onclick="Product.PopReductionTax()">...</button>
+                        </div>
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtrdcAmtImpTax" name="txtrdcAmtImpTax" v-model="data.rdcAmtImpTax" />
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered" id="tbl_container_add">
+                    <tr>
+                        <th class="span3"><b>Thuế và thu khác:</b></th>
+                        <th class="span3">Mã áp dụng thuế suất/Mức thuế</th>
+                        <th class="span2">Mã miễn/ giảm/ không chịu thuế</th>
+                        <th class="span2">Số tiền giảm thuế</th>
+                    </tr>
+                    <tr v-for="(value,index) in data.lsOtherTax">
+                        <td>{{value.itemNmOTax}}: </td>
+                        <td>
+                            <input id="txtoTaxTypeCd" name="txtoTaxTypeCd" class="span8" v-model="data.lsOtherTax[index].oTaxTypeCd"
+                                   onkeyup="$('#txtoTaxTypeCd1').val($('#txtoTaxTypeCd1').val().toUpperCase()); $('#txtoTaxTypeCd1').val($('#sloTaxTypeCd1').val().toUpperCase())" />
+                           @* <button type="button" style="padding: 0 10px" onclick="Product.PopTaxAntiDumpingDuty(1)">...</button>*@
+                        </td>
+                        <td>
+                            <input id="txtoTaxRdcCd" name="txtoTaxRdcCd" class="span8" v-model="data.lsOtherTax[index].oTaxRdcCd"
+                                   onkeyup="$('#txtoTaxRdcCd1').val($('#txtoTaxRdcCd1').val().toUpperCase()); $('#txtoTaxRdcCd1').val($('#sloTaxRdcCd1').val().toUpperCase())" />
+                            @*<button type="button" style="padding: 0 10px" onclick="Product.PopTaxAntiDumpingDuty(2)">...</button>*@
+                        </td>
+                        <td>
+                            <input type="text" class="span12" id="txtoTaxRdcAmt1" name="txtoTaxRdcAmt1" v-model="data.lsOtherTax[index].oTaxRdcAmt"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="social-auth-links text-center">
+                <p id="LogError" style="color:red;display:none;">{{data.productId}}</p>
+            </div>
+        </div>
+        <div class="form-actions" style="text-align: center;">
+         
+                <a class="btn btn-success" v-on:click="update()" v-show="data.productId">CẬP NHẬT HÀNG HÓA</a>
+          
+                <a href="javascript:;" v-on:click="save(1)" class="btn btn-warning"  v-show="!data.productId">Lưu và Tiếp Tục</a>
+                <a href="javascript:;" v-on:click="save(0)" class="btn btn-success"  v-show="!data.productId">Lưu</a>
+            
+        </div>
+    </form>
+</div>s
+<style type="text/css">
+#popupwrap {
+        position: absolute !important;
+        top: 73% !important;
+        max-height: calc(100% - 120px);
+                    overflow-y: scroll;
+        margin-top: -650px;
+    }
+
+    .form-horizontal .control-label {
+        padding-top: 0;
+    }
+</style>
+<script src="~/Content/js/idaproduct.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#form-inputx").validate({
+                    rules: {
+                        txthSCd: "required",
+                txtDescription: "required",
+                slplaceOriginCd: "required",
+                txtQuantity: "required",
+                slTypeSeal: "required",
+                txtWeight: "required",
+                slweightUnitCode: "required"
+                    },
+            messages: {
+                        txthSCd: "",
+                txtDescription: "",
+                slplaceOriginCd: "",
+                txtQuantity: "",
+                slTypeSeal: "",
+                txtWeight: "",
+                slweightUnitCode: ""
+            },
+         
+        });
+
+        $("div[id='popupwrap']").css("margin-top", "-650px");
+
+                var a = $("li[class='treeview act']");
+                if (a.length > 1) {
+                    a[1].removeAttribute("class", "act");
+                }
+
+            })
+
+
+    function CheckOnlyNumber(obj, e) {
+                var whichCode = (window.Event && e.which) ? e.which : e.keyCode; /*if (whichCode == 13) { this.onPlaceOrder(); return false; }*/
+                if (whichCode == 9) return true;
+                if ((whichCode >= 48 && whichCode <= 57) || whichCode == 8) {
+                    var n = obj.value.replace(/,/g, ""); if (whichCode == 8) {
+                        if (n.length != 0)
+                            n = n.substr(0, n.length - 1);
+                    }
+                    if (parseFloat(n) == 0) {
+                        n = '';
+                    }
+                    return true;
+                }
+                e.returnValue = false; return false;
+            }
+
+
+</script>
+<style type="text/css">
+    label.error {
+        height: 0;
+        z-index: -1;
+        font-size: 0;
+        position: absolute;
+        top: 0;
+    }
+</style>
+

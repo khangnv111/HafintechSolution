@@ -1,0 +1,83 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid" id="cot11">
+    <div class="span12">
+        @*<h4>Tờ khai nhập khẩu giá trị thấp >> Lấy thông tin tờ khai</h4>*@
+
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Lấy thông tin tờ khai vận tải</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+
+                    <div class="row-fluid">
+                        <div class="span6">
+
+                            <div class="control-group span12">
+                                <label class="control-label">Số tờ khai vận chuyển</label>
+                                <div class="controls">
+
+                                    <input style="width:350px" type="text" class="span5" id="" name="" placeholder="" v-model="dclNo" required />
+                                    <button class="btn btn-success" style="margin-left: 20px;" v-on:click="submit(506)">Lấy tờ khai</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var cot11 = new Vue({
+        el: '#cot11',
+        data: {
+            dclNo: ''
+        },
+        methods: {
+            submit: function (status) {
+                var self = this;
+                var token = $('#hdfToken').val();
+                var data = this.data;
+                accounts.ShowLoading();
+                $.ajax({
+                    url: Config.API_Login + "TransportDeclaration/submit",
+                    type: 'POST',
+                    data: JSON.stringify({ status: status, btDclNo: this.dclNo }),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        debugger;
+                        accounts.Unloading();
+                        if (data) {
+                            if (data.ResponseCode >= 0) {
+                                bootbox.alert("Thành công!", function () {
+                                    window.location.href = Config.Url_Root + "TransportDeclaration/ola?olaid=" + data.Data.btDclId + "&type=7";
+
+                                });
+                            }
+                            else {
+                                accounts.Message(JSON.stringify(data.Data));
+                            }
+                        }
+                        else {
+                            accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        accounts.Unloading();
+                    }
+                });
+            }
+        }
+    });
+</script>

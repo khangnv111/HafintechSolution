@@ -1,0 +1,177 @@
+﻿
+@{
+    ViewBag.Title = "ListAccRegistry";
+}
+<div class="container-fluid" id="list-acc-registry">
+    <div class="row-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Danh sách tài khoản được trình ký</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid">
+                    <div class="span3">
+                        <label>Tài khoản trình ký</label>
+                        <input type="text" id="acc" class="span7" />
+                    </div>
+
+                    <div class="span2">
+                        <label>Trạng thái</label>
+                        <select class="span12" id="statusReg" v-model="status">
+                            @*<option value="0">--Chọn trạng thái--</option>*@
+                            <option value="1">Cho phép</option>
+                            <option value="0">Không cho phép</option>
+                        </select>
+                    </div>
+
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+                            <a v-on:click="getList()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            @*<a onclick="hq.getListDeclaration()" class="btn btn-warning"><i class="icon icon-file"></i> Xuất Excel</a>*@
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+                            <a onclick="TK.PopApplyAcc(0)" class="btn btn-default"><i class="fa fa-save"></i> Thiết lập</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách Tờ Khai nhập khẩu</h5>
+                </div>
+
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:70px">STT</th>
+                                <th class="text-center">Tài khoản</th>
+                                <th class="text-center">Công ty (tự động lấy về từ nhà cung cấp)</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Mã bảo mật</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="content-search-table">
+                            <tr v-for="(item, index) in data">
+                                <td>{{index+1}}</td>
+                                <td>{{item.email}}</td>
+                                <td>{{item.name}}</td>
+                                <td>
+                                    <select class="span6" v-model="item.status" :disabled="!item.isUpdate">
+                                        <option value="0">Không cho phép</option>
+                                        <option value="1">Cho phép</option>
+                                    </select>
+                                </td>
+                                <td>{{item.cusCode}}</td>
+                                <td>
+                                    <a class="btn btn-warning" v-on:click="viewEdit(item)">{{buttonText}}</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <ul class="pagination">
+        @*<li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>*@
+    </ul>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="~/Content/js/vue.min.js"></script>
+<script>
+
+    var idaProduct = new Vue({
+        el: '#list-acc-registry',
+        data: {
+            data: {},
+            buttonText: "Sửa",
+            isUpdate: false,
+            status : ""
+        },
+        methods: {
+            getList: async function () {
+                try {
+                    var token = $('#hdfToken').val();
+                    const response = await axios.get(Config.API_Login + "business/GetListParent?status=" + this.status,
+                        {
+                            headers: { "Authorization": "Bearer " + token }
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0)
+                        this.data = response.data.Data;
+
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            viewEdit: function (item) {
+                if (this.isUpdate) {
+                    var token = $('#hdfToken').val();
+                    var self = this;
+                    $.ajax({
+                        url: Config.API_Login + "business/UpdateBussinessStatus",
+                        type: 'POST',
+                        data: JSON.stringify({
+                            businessId: item.businessId,
+                            status: item.status
+                        }),
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        },
+                        cache: false,
+                        contentType: "application/json; charset=utf-8",
+                        processData: false,
+                        success: function (data) {
+                            if (data) {
+                                if (data.ResponseCode > 0) {
+                                    bootbox.alert("Cập nhật thành công!")
+                                }
+                                else {
+                                    utils.Message(data.Description);
+                                }
+                            }
+                            else {
+                                utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                            }
+                            //accounts.Unloading();
+                        },
+                        error: function (data) {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                            //accounts.Unloading();
+                        }
+                    });
+                }
+                this.buttonText = this.isUpdate ? "Sửa" : "Đồng ý";
+                this.isUpdate = !this.isUpdate;
+                item.isUpdate = this.isUpdate;
+
+            }
+
+        },
+        mounted() {
+            this.getList();
+        }
+
+    });
+
+
+
+</script>

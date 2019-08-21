@@ -1,0 +1,188 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row-fluid" id="list-hys">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Danh sách tờ khai đính kèm điện tử HYS</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Phân loại thủ tục khai báo</label>
+                        <select class="span12" v-model="data.appProType" id="appProType">
+                            <option value="">--Chọn--</option>
+                            <option v-for="item in txtappProType" :value="item.appProType">{{item.appProType}} || {{item.appProName}}</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Đơn vị HQ</label>
+                        <select class="span12" id="slCustoms">
+                            <option value="">--Tất cả--</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Từ ngày</label>
+                        <input type="text" class="span11 dDate" value="" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" required="">
+                    </div>
+                    <div class="span2">
+                        <label>Đến ngày</label>
+                        <div class="input-group date span12">
+                            <input type="text" class="span11 dDate" value="" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" required="">
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+                            <a v-on:click="getList()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+
+                </div>
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:100px">STT</th>
+                                <th class="text-center" style="min-width:70px">ID</th>
+                                <th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
+                                <th class="text-center">Ngày đăng ký</th>
+                                <th class="text-center">Mã phân loại thủ tục khai báo</th>
+                                <th class="text-center">Trạng thái</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in listHYS">
+                                @*<td colspan="11" style="text-align:center">
+                                    <img width="50" src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/loading.gif" />
+                                </td>*@
+                                <td style="text-align: center">{{index + 1}}</td>
+                                <td style="text-align: center">
+                                    <a v-on:click="viewEdit(item.id, item.attachmentNo)">{{item.id}}</a>
+                                </td>
+                                <td style="text-align: center">{{item.attachmentNo}}</td>
+                                <td style="text-align: center">{{formatDate(item.appDate)}}</td>
+                                <td style="text-align: center">{{item.appProType}}</td>
+                                <td style="text-align: center">{{item.appStatus}}</td>
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="container-fluid">
+        <ul class="pagination">
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+        </ul>
+    </div>*@
+
+<script type="text/javascript">
+
+    hq.getListCustom();
+
+    $(document).ready(function () {
+        $('.dDate').datepicker({
+        });
+        //setTimeout(function () { hq.getListDeclaration(); }, 1000);
+        //var a = $("li[class='treeview act']");
+        //if (a.length > 1) {
+        //    a[1].removeAttribute("class", "act");
+        //}
+
+    })
+</script>
+<script src="~/Content/js/vue.min.js"></script>
+<script src="~/Content/js.update/lib.js"></script>
+<script>
+    var appHys = new Vue({
+        el: '#list-hys',
+        data: {
+            data: {},
+            txtappProType: [], //phân loại thủ tục khai báo
+
+            listHYS: [],
+        },
+        methods: {
+            init: async function () {
+                var data = this.data;
+
+                data.appProType = "",
+
+                this.txtappProType = await Lib.GetApplicationProcedureType();
+                //await this.loadDetail();
+
+
+            },
+            getList: async function () {
+                try {
+                    var token = $('#hdfToken').val();
+                    var dt = this.data;
+                    var fromdate = $("#datepickerFromD").val();
+                    var todate = $("#datepickerToD").val();
+                    var slCustoms = $("#slCustoms").val();
+                     
+                    const response = await axios.get(Config.API_Login + "tax/SearchAttachment?cstOffice=" + slCustoms + "&appProType=" + dt.appProType + "&startDate=" + fromdate + "&endDate=" + todate,
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0)
+                    {
+                        this.listHYS = response.data.Data;
+                    }
+                    else return null;
+                } catch (error) {
+                    console.error(error);
+                }
+            }, 
+            formatDate: function(date) {
+                if(!date) return "";
+
+                return moment(String(date)).format('DD/MM/YYYY hh:mm')
+            },
+            formatDate2: function(date){
+                if (date == undefined || date == "" || date == null) {
+                    return "";
+                }
+                var d = date.substring(0, 2);
+                var m = date.substring(2, 4);
+                var y = date.substring(4, date.length);
+
+                var time = d + "/" + m + "/" + y;
+
+                return time;
+            },
+    viewEdit: async function (id, attNo) {
+                window.location.href = Config.Url_Root + "Declaration/Declaration_HYS?decID=" + id + "&type=4&attNo=" + attNo;
+               
+            },
+    },
+    mounted() {
+        this.init();
+        this.getList();
+
+    },
+    computed: {
+    }
+
+    });
+</script>

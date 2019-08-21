@@ -1,0 +1,113 @@
+﻿
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>DANH SÁCH NHÓM PHÂN QUYỀN</h5>
+            </div>
+
+            <div class="widget-content">
+                <div class="row-fluid">
+
+                    <div class="span2">
+                        <label>Từ ngày</label>
+                        <input type="text" class="span11 dDate" value="" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" required="">
+                    </div>
+                    <div class="span2">
+                        <label>Đến ngày</label>
+                        <input type="text" class="span11 dDate" value="" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" required="">
+                    </div>
+
+                    <div class="span2">
+                        <label>Nhóm quyền</label>
+                        <select class="span12" id="statusReg">
+                            <option value="0">--Chọn quyền--</option>
+                            <option value="1">Admin</option>
+                            <option value="2">Duyệt trình ký</option>
+                            <option value="3">Gửi trình ký</option>
+                        </select>
+                    </div>
+
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+                            <a onclick="" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+                            <a onclick="TK.PopSetRights()" class="btn btn-warning">Gán quyền</a>
+
+                        </div>
+                    </div>
+
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+
+                            <a onclick="TK.PopCreateGroup()" class="btn btn-warning">Tạo nhóm</a>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách</h5>
+                </div>
+
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:70px">STT</th>
+                                <th class="text-center" style="min-width:70px">ID</th>
+                                <th class="text-center" style="min-width:100px">Nhóm quyền</th>
+                                <th class="text-center">Thời gian tạo</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="content-search-table">
+                            <tr>
+                                <td colspan="12" style="text-align:center">
+                                    <img width="50" src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/loading.gif" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container-fluid">
+    <ul class="pagination">
+        @*<li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>*@
+    </ul>
+</div>
+
+<script>
+    $('.dDate').datepicker({
+        //dateFormat: 'dd/mm/yyyy'
+    });
+    $(document).ready(function () {
+        var h1 = $(".dDate").offset().top + 30;
+        //var h2 = $(".datepicker").offset().top;
+        //var top = h1 - h2 - $(".datepicker").height();
+
+        $(".datepicker").css("margin-top", h1 + "px");
+    });
+
+</script>

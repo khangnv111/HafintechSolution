@@ -1,0 +1,54 @@
+﻿
+<div id="loginbox" style="z-index: 111; position: fixed;transform: translate(-50%, -50%);top: 50%; left: 50%">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">NHẬP MÃ XÁC NHẬN OTP</b>
+        <b onclick="utils.closeAll();" class="icClose">X</b>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <div class="main_input_box" style="margin-bottom: 10px">
+                Mã xác thực được gửi vào email bạn đăng ký trên hệ thống
+            </div>
+            <div class="main_input_box" style="height: 35px">
+                <label style="float: left; display: inline; width: 20%">Mã OTP</label>
+                <input type="text" class="form-control" style="float: left; width: 70%; border: 1px solid #ccc" id="txtOTP" placeholder="Nhập OTP" />
+            </div>
+            <br />
+            @*<div class="main_input_box">
+                <div id="timeCountdow" style="color: red;">60s</div>
+                <div>
+                    Nếu không được chọn <a href="javascript:;">gửi lại</a>
+                </div>
+            </div>*@
+            <div class="social-auth-links text-center">
+                <p id="OTPError" style="color:red;display:none;"></p>
+            </div>
+            <div class="main_input_box">
+                <br />
+                <a class="btn btn-primary" style="display:inline-block; max-width:150px; text-transform:uppercase" onclick="Reg.confirmOTP()">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#txtOTP').on('keypress', function (e) {
+        if (e.which === 13) {
+            Reg.confirmOTP();
+        }
+    });
+
+    //$(document).ready(function () {
+    //    var dem = 60;
+    //    var count = setInterval(function () {
+    //        dem = dem - 1;
+    //        $("#timeCountdow").html(dem + "s");
+    //        if (dem <= 0) {
+    //            //clearInterval(count);
+    //            dem = 61;
+    //        }
+    //    }, 1000);
+
+    //});
+</script>

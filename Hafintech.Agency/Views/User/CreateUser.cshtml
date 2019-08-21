@@ -1,0 +1,116 @@
+﻿
+
+<div id="loginbox" style="width: 700px;">
+    <div class="control-group normal_text">
+        <b style="font-size:18px; text-transform: uppercase">Tạo thông tin người dùng</b>
+        <b onclick="utils.closeAll();" class="icClose">X</b>
+    </div>
+
+    <form enctype="multipart/form-data" id="form-input" name="form-input">
+        <div class="social-auth-links text-center">
+            <p id="LogError" style="color:red;display:none;"></p>
+        </div>
+
+        <div class="form-horizontal" style="padding:10px;">
+            
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Họ và tên <span class="error">*</span></label>
+                        </div>
+                        <div class="span9">
+                            <input type="text" class="span10" id="fullname" name="fullname" placeholder="Họ và tên" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Email <span class="error">*</span></label>
+                        </div>
+                        <div class="span9">
+                            <input type="text" class="span10" id="emailuser" name="emailuser" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Số điện thoại</label>
+                        </div>
+                        <div class="span9">
+                            <input type="text" class="span10" id="phoneuser" name="phoneuser" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Mật khẩu<span class="error">*</span></label>
+                        </div>
+                        <div class="span9">
+                            <input type="password" class="span10" id="passworduser" name="passworduser" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Nhập lại mật khẩu<span class="error">*</span></label>
+                        </div>
+                        <div class="span9">
+                            <input type="password" class="span10" id="rePassUser" name="rePassUser" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Nhóm quyền<span class="error">*</span></label>
+                        </div>
+                        <div class="span9">
+                            <input type="checkbox" id="roleId1" name="roleUser" value="1"/> Nhóm Admin
+                            <input type="checkbox" id="roleId2" name="roleUser" value="2" /> Nhóm Tạo tờ khai
+                            <input type="checkbox" id="roleId3" name="roleUser" value="3"/> Nhóm Duyệt tờ khai 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid" style="margin-top: 25px; margin-bottom: 15px;">
+                <div class="span9" style="float:right">
+                    @if (ViewBag.Id > 0)
+                    {
+                        <a href="javascript:;" onclick="UserAgen.UpdateUser(@ViewBag.Id)" class="btn btn-success" style="padding: 7px 35px;">Lưu lại</a>
+                    }
+                    else
+                    {
+                        <a href="javascript:;" onclick="UserAgen.InsertUser()" class="btn btn-success" style="padding: 7px 35px;">Lưu lại</a>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </form>
+</div>
+

@@ -1,0 +1,70 @@
+﻿<div id="loginbox" style="width: 800px;">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">TÌM KIẾM TỜ KHAI</b>
+        <b onclick="accounts.ClosePopup();" class="icClose">X</b>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="widget-box">
+                <div class="widget-content">
+                    <div class="row-fluid">
+                        <div class="span3">
+                            <label>Từ ngày</label>
+                            <div class="input-group date span12" style="margin-bottom:5px">
+                                <input type="text" class="span11" value="@DateTime.Now.AddDays(-5).ToShortDateString()" id="datepickerFrom" name="datepickerFrom" placeholder="Từ ngày" required="">
+                            </div>
+                        </div>
+                        <div class="span3">
+                            <label>Đến ngày</label>
+                            <div class="input-group date span12">
+                                <input type="text" class="span11" value="@DateTime.Now.ToShortDateString()" id="datepickerTo" name="datepickerTo" placeholder="Đến ngày" required="">
+                            </div>
+                        </div>
+                        <div class="span3">
+                            <label>Số Tờ khai</label>
+                            <input type="text" class="span11" id="txtDeclaration" name="txtDeclaration" placeholder="Số Tờ khai">
+                        </div>
+                        <div class="span3">
+                            <div style="margin-top:25px;">
+                                <a onclick="hq.getSeachDeclaration()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-body" id="dvContent">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon"><i class="icon-align-justify"></i></span>
+                        <h5>Danh sách tờ khai</h5>
+                    </div>
+                    <div class="widget-content nopadding fix_hgt_tbl_add" id="divUpdate">
+                        <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">STT</th>
+                                    <th class="text-center">Số tờ khai</th>
+                                    <th class="text-center">Ngày đăng ký</th>
+                                    <th class="text-center">Loại hình</th>
+                                    <th class="text-center">Hải quan</th>
+                                    <th class="text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#datepickerFrom,#datepickerFrom2,#datepickerFrom3').datetimepicker({
+        showTodayButton: true
+    });
+    $('#datepickerTo,#datepickerTo2,#txtDateReleased').datetimepicker({
+        showTodayButton: true
+    });
+</script>

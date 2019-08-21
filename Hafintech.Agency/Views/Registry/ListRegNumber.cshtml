@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "ListRegNumber";
+}
+
+<div class="container-fluid">
+    <div class="row-fluid">
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>DANH SÁCH CHỮ KÝ SỐ</h5>
+
+                    <button style="float: right" class="btn btn-success" onclick="TK.PopCKS()"><i class="fa fa-plus-circle"></i> Thêm CKS</button>
+                </div>
+
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:70px">STT</th>
+                                <th class="text-center" style="max-width:300px">Mã số thuế</th>
+                                <th class="text-center">Tên doanh nghiệp</th> 
+                                <th class="text-center" style="max-width:50px">Đặt mặc định ký CKS</th>
+                            </tr>
+                        </thead>
+                        <tbody class="content-search-table">
+                            <tr>
+                                <td colspan="12" style="text-align:center">
+                                    <img width="50" src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/loading.gif" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <ul class="pagination">
+        @*<li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>*@
+    </ul>
+</div>
+<script>
+    $(document).ready(function () {
+        TK.GetListSinature();
+    });
+</script>

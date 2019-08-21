@@ -1,0 +1,76 @@
+﻿
+
+<div id="loginbox" style="width: 800px;">
+    <div class="control-group normal_text">
+        <b style="font-size:18px; text-transform: uppercase" id="namePop">chọn đối tượng khai</b>
+        <b onclick="utils.closeAll()" id="CloseSearch" class="icClose">X</b>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="widget-box">
+                <div class="row-fluid">
+                    <div class="span3">
+                        <input type="radio" onclick="Obj.SelectTab()" name="selectObject" checked value="1"/> Cá nhân
+                    </div>
+                    <div class="span3">
+                        <input type="radio" onclick="Obj.SelectTab()" name="selectObject" value="2"/> Doanh nghiệp
+                    </div>
+                </div>
+
+            </div>
+            <div class="widget-box"> 
+                <div class="widget-content">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <label id="title-code-search-pop">Số CMT</label>
+                            <input type="text" class="span11" id="txtSearchPop" name="txtSearchPop" value="">
+                        </div>
+                        <div class="span3">
+                            <div style="margin-top:25px;">
+                                <a id="actSearchObject" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-body" id="dvContent">
+                <div class="widget-box">
+                    @*<div class="widget-title">
+                        <span class="icon"><i class="icon-align-justify"></i></span>
+                        <h5>Danh sách </h5>
+                    </div>*@
+                    <div class="widget-content nopadding fix_hgt_tbl_add" id="divUpdate">
+                        <table id="table-pop-search" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">STT</th>
+                                    <th class="text-center" style="width: 90px">Số CMND</th>
+                                    <th class="text-center">Họ và tên</th>
+                                    <th class="text-center">Điện thoại</th>
+                                    <th class="text-center">Địa chỉ</th>
+                                    <th class="text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list-search-pop">
+                                <tr>
+                                    <td colspan="10" style="text-align:center">
+                                        <img width="50" src="~/Content/img/loading.gif" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="" id="isHightDe"/>
+</div>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            Obj.SearchPersonal();
+        }, 500);
+    });
+</script>

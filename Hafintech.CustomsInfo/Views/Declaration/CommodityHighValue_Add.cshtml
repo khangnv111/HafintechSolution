@@ -1,0 +1,398 @@
+﻿<div id="loginbox" style="width:1000px;">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">THÊM HÀNG VÀO TỜ KHAI GTC</b>
+        <b onclick="accounts.ClosePopup();" class="icClose">X</b>
+    </div>
+
+    <form enctype="multipart/form-data" id="form-inputx" name="form-inputx">
+        <input type="hidden" id="hdf_declarationID" name="hdf_declarationID" />
+        <div class="form-horizontal" style="padding:10px 10px 0 10px; ">
+            <div class="row-fluid">
+                <div class="span12">
+                    <label class="control-label">Mã số hàng hóa  (HS): </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtProductCode" name="txtProductCode" />
+                        </div>
+                        <div class="span4">
+                            <label class="span6">
+                                Mã quản lý riêng:
+                            </label>
+                            <span class="span6">
+                                <input type="text" class="span12" id="txtPrivateCode" name="txtPrivateCode" />
+                            </span>
+                        </div>
+                        <div class="span4">
+                            <label class="span6">
+                                Mã NPL,SP:
+                            </label>
+                            <span class="span6">
+                                <input type="text" class="span12" id="txtNPLCode" name="txtNPLCode" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Thuế suất: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtTaxRate" name="txtTaxRate" />
+                        </div>&nbsp; %
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mức thuế tuyệt đối: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtAbsoluteTax" name="txtAbsoluteTax" />
+                        </div>
+                        <div class="span4">
+                            <span class="span6">
+                                <input type="text" class="span12" id="txtCurrcyCode" name="txtCurrcyCode" />
+                            </span>
+                            <span class="span6">
+                                <select onchange="hq.Currency3OnChange()" id="slCurrcyCode" name="slCurrcyCode" class="span12" >
+                                    <option value="">--Chọn--</option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mô tả hàng hóa:<span class="error">(*)</span> </label>
+                    <div class="controls">
+                        @*<textarea class="span12" name="txtDescription" id="txtDescription" required></textarea>*@
+                        <input type="text" class="span12" id="txtDescription" name="txtDescription" required />
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mã nước xuất xứ:<span class="error">(*)</span> </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <select id="slCodeCountry" name="slCodeCountry" class="span12" required>
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </div>
+                        <div class="span4">
+                            <label class="span6">
+                                Mã biểu thuế nhập khẩu:
+                            </label>
+                            <span class="span6">
+                                <select id="slTypeNumber" name="slTypeNumber" class="span12" >
+                                    <option value="">--Chọn--</option>
+                                </select>
+                            </span>
+                        </div>
+                        <div class="span4">
+                            <label class="span6">
+                                Mã ngoài hạn nghạch:
+                            </label>
+                            <span class="span6">
+                                <input type="text" class="span12" id="txtOutOfQoataCode" name="txtOutOfQoataCode" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mã áp dụng mức thuế tuyệt đối: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <select id="slTypeNumber" name="slTypeNumber" class="span12" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </div>
+                        <div class="span4">
+                            <a>
+                                (Tham khảo mã biểu thuế)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">(1) Số lượng:<span class="error">(*)</span> </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" id="txtQuantity" name="txtQuantity" class="span6" required>
+                            <select id="slTypeSeal" name="slTypeSeal" class="span6" required>
+                                <option value="">--Chọn--</option>
+                                <option value="thung">Thùng</option>
+                                <option value="kien">Kiện</option>
+                                <option value="goi">Gói</option>
+                            </select>
+                        </div>
+                        <div class="span3">
+                            (2) Trọng lượng:<span class="error">(*)</span>
+                        </div>
+                        <div class="span4">
+                            <input type="text" id="txtWeight" name="txtWeight" class="span6" required />
+                            <select id="slweightUnitCode" name="slweightUnitCode" class="span6" required>
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Trị giá hóa đơn: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtValue" name="txtValue" />
+                        </div>
+                        <div class="span3">
+                            Đơn giá hóa đơn:
+                        </div>
+                        <div class="span4">
+                            <input type="text" class="span6" id="txtPrice" name="txtPrice" />
+                       
+                            <select id="slCurrcyCode2" name="slCurrcyCode2" class="span6" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Trị giá tính thuế: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span6" id="txtTaxableValue" name="txtTaxableValue" />
+                            <select id="slCurrcyCode3" name="slCurrcyCode3" class="span6" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Số của mục khai khoản điều chỉnh:</label>
+                    <div class="controls">
+                        <div class="span2">
+                            (1)
+                            <input type="text" class="span8" id="txtAdjusmentIndex1" name="txtAdjusmentIndex1" />
+                        </div>
+                        <div class="span2">
+                            (2)
+                            <input type="text" class="span8" id="txtAdjusmentIndex2" name="txtAdjusmentIndex2" />
+                        </div>
+                        <div class="span2">
+                            (3)
+                            <input type="text" class="span8" id="txtAdjusmentIndex3" name="txtAdjusmentIndex3" />
+                        </div>
+                        <div class="span2">
+                            (4)
+                            <input type="text" class="span8" id="txtAdjusmentIndex4" name="txtAdjusmentIndex4" />
+                        </div>
+                        <div class="span2">
+                            (5)
+                            <input type="text" class="span8" id="txtAdjusmentIndex5" name="txtAdjusmentIndex5" />
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Số thứ tự của dòng hàng trên tờ khai tạm nhập tái xuất tương ứng:</label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtTempImportReExportItemFlowIndex" name="txtTempImportReExportItemFlowIndex" />
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Số đăng ký danh mục miễn thuê nhập khẩu: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtFreeImportTaxCategoryNumber" name="txtFreeImportTaxCategoryNumber" />
+                        </div>
+                        <div class="span4">
+                            Số dòng tương ứng trong danh mục:
+                        </div>
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtCorrespondingRowIndex" name="txtCorrespondingRowIndex" />
+                        </div>
+                    </div>
+                </div>
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mã miễn/ giảm/ không chịu thuế nhập khẩu: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <select id="slDeductCode" name="slDeductCode" class="span12" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </div>
+                        <div class="span4">
+                            Số tiền giảm thuế nhập khẩu:
+                        </div>
+                        <div class="span4">
+                            <input type="text" class="span12" id="txtDeductTax" name="txtDeductTax" />
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered" id="tbl_container_add">
+                    <tr>
+                        <th class="span3"><b>Thuế và thu khác:</b></th>
+                        <th class="span3">Mã áp dụng thuế suất/Mức thuế</th>
+                        <th class="span2">Mã miễn/ giảm/ không chịu thuế</th>
+                        <th class="span2">Số tiền giảm thuế</th>
+                        <th class="span2"></th>
+                    </tr>
+                    <tr>
+                        <td>Thuế tự vệ, thuế chống bán phá giá:</td>
+                        <td>
+                            <input type="text" class="span6" id="txtCode1" name="txtCode1" />
+                            <select id="slCode1" name="slCode1" class="span6" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="sltbDeductCode1" name="sltbDeductCode1" class="span12" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="span12" id="txtDeduct1" name="txtDeduct1" />
+                        </td>
+                        <td>
+                            <input type="text" class="span12" id="txtNum1" name="txtNum1" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Thuế chống phân biệt đối xử:</td>
+                        <td>
+                            <input type="text" class="span6" id="txtCode2" name="txtCode2" />
+                            <select id="slCode2" name="slCode2" class="span6" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="sltbDeductCode2" name="sltbDeductCode2" class="span12" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="span12" id="txtDeduct2" name="txtDeduct2" />
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Thuế tiêu thụ đặc biệt:</td>
+                        <td>
+                            <input type="text" class="span6" id="txtCode3" name="txtCode3" />
+                            <select id="slCode3" name="slCode3" class="span6" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="sltbDeductCode3" name="sltbDeductCode3" class="span12" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="span12" id="txtDeduct3" name="txtDeduct3" />
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Thuế bảo vệ môi trường:</td>
+                        <td>
+                            <input type="text" class="span6" id="txtCode4" name="txtCode4" />
+                            <select id="slCode4" name="slCode4" class="span6" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="sltbDeductCode4" name="sltbDeductCode4" class="span12" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="span12" id="txtDeduct4" name="txtCMND" />
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Thuế giá trị gia tăng:</td>
+                        <td>
+                            <input type="text" class="span6" id="txtCode5" name="txtCode5" />
+                            <select id="slCode5" name="slCode5" class="span6" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="sltbDeductCode5" name="sltbDeductCode5" class="span12" >
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="span12" id="txtDeduct5" name="txtDeduct5" />
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="social-auth-links text-center">
+                <p id="LogError" style="color:red;display:none;"></p>
+            </div>
+        </div>
+        <div class="form-actions" style="text-align: center;">
+            <input type="hidden" id="hdfTypeSubmit" />
+            <button type="submit" id="btnSubmitProduct"></button>
+            <a href="javascript:;" onclick="hq.CheckOnSubmit(1);" class="btn btn-warning">Lưu và Tiếp Tục</a>
+            <a href="javascript:;" onclick="hq.CheckOnSubmit(2);" class="btn btn-success">Lưu</a>
+        </div>
+    </form>
+</div>
+<style type="text/css">
+    #popupwrap {
+        position: absolute !important;
+        top: 73% !important;
+    }
+    .form-horizontal .control-label{
+        padding-top:0;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#hdfTypeSubmit').focus();
+        $("#form-inputx").validate({
+            rules: {
+                txtDescription: "required",
+                slCodeCountry: "required",
+                txtQuantity: "required",
+                slTypeSeal: "required",
+                txtWeight: "required",
+                slweightUnitCode: "required"
+            },
+            messages: {
+                txtDescription: "",
+                slCodeCountry: "",
+                txtQuantity: "",
+                slTypeSeal: "",
+                txtWeight: "",
+                slweightUnitCode: ""
+            },
+            submitHandler: function (form) {
+                if ($('#hdfTypeSubmit').val() == 1) {
+                    hq.confirmReAddProduct_HV();
+                }
+                else {
+                    hq.confirmAddProduct_HV();
+                }
+            }
+        });
+
+        hq.getProductType();
+        hq.getcountry();
+        //Danh sách loại tiền
+        hq.getCurrency3();
+        // Đơn vị trọng lượng
+        hq.getWeightUnit();
+
+    })
+</script>
+<style type="text/css">
+    label.error {
+        height: 0;
+        z-index: -1;
+        font-size: 0;
+        position: absolute;
+        top: 0;
+    }
+</style>

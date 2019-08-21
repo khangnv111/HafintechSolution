@@ -1,0 +1,96 @@
+﻿
+
+@{
+    ViewBag.Title = "Dashboard_list";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>THÔNG ĐIỆP TỜ KHAI</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Từ ngày</label>
+                        <input type="text" class="span11 dDate" value="@DateTime.Now.AddDays(-5).ToShortDateString()" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" required="">
+                    </div>
+                    <div class="span2">
+                        <label>Đến ngày</label>
+                        <div class="input-group date span12">
+                            <input type="text" class="span11 dDate" value="@DateTime.Now.ToShortDateString()" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" required="">
+                        </div>
+                    </div>
+                    @*<div class="span2">
+                        <label>Thông quan</label>
+                        <select class="span12" id="slclearanStatus">
+                            <option value="">--Tất cả--</option>
+                            <option value="-1">Chưa thông quan</option>
+                            <option value="1">Thông quan</option>
+                            <option value="2">Đợi thông quan</option>
+                        </select>
+                    </div>*@
+                    <div class="span2">
+                        @*<label>Trạng thái tờ khai</label>
+                        <select class="span12" id="slstatus">
+                            <option value="0">--Tất cả--</option>
+                            <option value="-1">Hủy tờ khai</option>
+                            <option value="1">Tờ khai tạm</option>
+                            <option value="2">Tờ khai chính thức</option>
+                            <option value="3">Tờ khai sửa</option>
+                        </select>*@
+                        <button onclick="hq2.getCustomsMessage(1);" class="span4" style="margin-top: 24px;">Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách chỉ thị hải quan</h5>
+                </div>
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:100px">STT</th>
+                                <th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
+                                <th class="text-center" style="min-width:100px">Mã thông điệp đầu ra</th>
+                                <th class="text-center">Mã thông điệp đầu vào</th>
+                                <th class="text-center">Định dạng</th>
+                                <th class="text-center">Mã kết quả xử lý</th>
+                                <th class="text-center">Tiêu đề</th>
+                                <th class="text-center">Thời gian gửi thông điệp</th>
+                                <th class="text-center">Loại</th>
+                                <th class="text-center">Cờ kết thúc</th>
+                            </tr>
+                        </thead>
+                        <tbody class="content-table">
+                            <tr>
+                                <td colspan="11" style="text-align:center">
+                                    <img width="50" src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/loading.gif" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.dDate').datepicker({
+        });
+        setTimeout(function () { hq2.getCustomsMessage(1); }, 1000);
+        hq2.removeClass();
+    })
+</script>

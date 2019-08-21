@@ -1,0 +1,31 @@
+﻿<div id="loginbox">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">NHẬP MÃ XÁC NHẬN OTP</b>
+        <b onclick="accounts.ClosePopup();" class="icClose">X</b>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <div class="main_input_box">
+                <label style="text-align:left; margin-left:12%; font-weight:bold">Nhập OTP</label>
+                <input type="text" class="form-control" id="txtOTP" placeholder="Nhập OTP" />
+            </div>
+            <div class="social-auth-links text-center">
+                <p id="OTPError" style="color:red;display:none;"></p>
+            </div>
+            <div class="main_input_box">
+                <br />
+                <a class="btn btn-primary" style=" display:inline-block; max-width:150px; text-transform:uppercase" onclick="hq.ConfirmIDCHighValue('@ViewBag.declarationId')">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#txtOTP').on('keypress', function (e) {
+        if (e.which === 13) {
+            hq.ConfirmIDCHighValue('@ViewBag.declarationId');
+        }
+    });
+</script>
+

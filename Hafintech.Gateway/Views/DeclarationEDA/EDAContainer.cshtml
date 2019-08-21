@@ -1,0 +1,82 @@
+﻿
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Địa điểm xếp hàng lên xe chở hàng</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+                    <div class="row-fluid">
+
+                        <div class="control-group span12">
+                            <label class="control-label">Mã </label>
+                            <div class="controls">
+                                @for (int i = 1; i < 6; i++)
+                                {
+                                    <input type="text" class="span2" id="" name="" />
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Tên </label>
+                            <div class="controls">
+                                <input type="text" style="max-width: 100%" class="span10" id="" name="" />
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Địa chỉ </label>
+                            <div class="controls">
+                                <textarea type="text" style="max-width: 100%" rows="3" class="span10" id="" name="" ></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Số container</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            
+                            <div class="controls">
+                                @for (int i = 1; i < 51; i++)
+                                {
+                                    if (i < 10)
+                                    {
+                                        <span>0@(i)</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@i</span>
+                                    }
+                                    <input type="text" class="span2" id="container_@i" name="container_@i" />
+                                    if(i % 5 == 0)
+                                    {
+                                        <div class="clearfix"></div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</div>

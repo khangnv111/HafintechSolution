@@ -1,0 +1,148 @@
+﻿<div id="content">
+    <div id="contentRight" style="float:left">
+        <div id="divContent_update">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Thông tin tài khoản</h5>
+            </div>
+            <div class="widget-content">
+                <div class="control-group">
+                    <div class="controls">
+                        <div class="item">
+                            <label>Số tài khoản:</label><span class="spID">@ViewBag.AccountID</span>
+                        </div>
+                        <div class="item">
+                            <label>Ngày đăng ký:</label><span class="spCreatedDate">@ViewBag.CreatedDate</span>
+                        </div>
+                        <div class="item">
+                            <label>Số dư tài khoản:</label><span class="sp">0</span>
+                        </div>
+                        <div class="item">
+                            <label>Số dư khả dụng:</label><span class="sp">0</span>
+                        </div>
+                        <div class="item">
+                            <label>Email:</label><span class="spEmail">@ViewBag.UserName</span>
+                        </div>
+                        <div class="item">
+                            <label>Số điện thoại:</label><span class="spPhone">@ViewBag.Mobile</span>
+                        </div>
+                        <div class="item">
+                            <label>Mật khẩu:</label><span class="sp">*******</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Thông tin cá nhân</h5>
+            </div>
+            <div class="widget-content">
+                <div class="control-group">
+                    <div class="controls">
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Họ và tên (*)</label>
+                            <input type="text" value="@ViewBag.FullName" class="form-control" id="txtFullName" placeholder="Nhập họ và tên" />
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left; font-weight:bold">Ngày sinh </label>
+                            <input type="text" style="width:110px; margin-right:5px;" class="form-control" id="txtDay" value="@ViewBag.Bd_Day" placeholder="Ngày sinh" />
+                            <select style="width:110px; margin-right:5px;" class="form-control" id="slMonth">
+                                <option value="0">Chọn Tháng</option>
+                                <option @(ViewBag.Bd_Month == "1" ? "selected='selected'" : "") value="1">1</option>
+                                <option @(ViewBag.Bd_Month == "2" ? "selected='selected'" : "") value="2">2</option>
+                                <option @(ViewBag.Bd_Month == "3" ? "selected='selected'" : "") value="3">3</option>
+                                <option @(ViewBag.Bd_Month == "4" ? "selected='selected'" : "") value="4">4</option>
+                                <option @(ViewBag.Bd_Month == "5" ? "selected='selected'" : "") value="5">5</option>
+                                <option @(ViewBag.Bd_Month == "6" ? "selected='selected'" : "") value="6">6</option>
+                                <option @(ViewBag.Bd_Month == "7" ? "selected='selected'" : "") value="7">7</option>
+                                <option @(ViewBag.Bd_Month == "8" ? "selected='selected'" : "") value="8">8</option>
+                                <option @(ViewBag.Bd_Month == "9" ? "selected='selected'" : "") value="9">9</option>
+                                <option @(ViewBag.Bd_Month == "10" ? "selected='selected'" : "") value="10">10</option>
+                                <option @(ViewBag.Bd_Month == "11" ? "selected='selected'" : "") value="11">11</option>
+                                <option @(ViewBag.Bd_Month == "12" ? "selected='selected'" : "") value="12">12</option>
+                            </select>
+                            <input type="text" style="width:110px; margin-right:10px;" class="form-control" id="txtYear" value="@ViewBag.Bd_Year" placeholder="Năm sinh" />
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Giới tính</label>
+                            <select style="width:110px; margin-right:5px;" class="form-control" id="slGt">
+                                <option @(ViewBag.Gender == 1 ? "selected='selected'" : "") value="1">Nam</option>
+                                <option @(ViewBag.Gender == 0 ? "selected='selected'" : "") value="0">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Ảnh hộ chiếu</label>
+                            <input type="file" class="form-control" id="txtIdentity" placeholder="Nhập Số CMTND" />
+                            <span>@ViewBag.PassportImgPath</span>
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Số CMTND (*)</label>
+                            <input type="text" style="width:170px; margin-right:10px;" class="form-control" id="txtIdentity" value="@ViewBag.Identity" placeholder="Nhập Số CMTND" />
+                            <input type="text" style="width:170px; margin-right:10px;" class="form-control" value="@ViewBag.Identity" id="txtIdentity" placeholder="Ngày cấp" />
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Nơi cấp</label>
+                            <input type="text" value="@ViewBag.Identity" class="form-control" id="txtTaxCode" placeholder="Nơi cấp" />
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Mặt trước CMND</label>
+                            <input type="file" class="form-control" id="txtIdentityImgPath1" placeholder="Mặt trước CMND" />
+                            <span>@(_2017Utilities.Config.Config.UrlRootAPI + ViewBag.IdentityImgPath1)</span>
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Mặt sau CMND</label>
+                            <input type="file" class="form-control" id="txtIdentityImgPath2" placeholder="Mặt trước CMND" />
+                            <span>@(_2017Utilities.Config.Config.UrlRootAPI + ViewBag.IdentityImgPath2)</span>
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Tỉnh / Thành Phố</label>
+                            <select class="form-control" id="slTinhThanh" onchange="accounts.GetListDistrict()">
+                                <option value="0">--Chọn Tỉnh Thành--</option>
+                            </select>
+                        </div>
+                        <div class="item" id="divQuanHuyen" style="display:none">
+                            <label style="text-align:left;  font-weight:bold">Quận / Huyện</label>
+                            <select class="form-control" id="slQuanHuyen" onchange="accounts.GetListCommune();">
+                                <option value="0">--Chọn Quận / Huyện--</option>
+                            </select>
+                        </div>
+                        <div class="item" id="divPhuongXa" style="display:none">
+                            <label style="text-align:left;  font-weight:bold">Phường / Xã</label>
+                            <select class="form-control" id="slPhuongXa">
+                                <option value="0">--Chọn Phường / Xã--</option>
+                            </select>
+                        </div>
+                        <div class="item">
+                            <label style="text-align:left;  font-weight:bold">Địa chỉ (*)</label>
+                            <input type="text" class="form-control" id="txtAddress" placeholder="Nhập địa chỉ" value="@ViewBag.Address" />
+                        </div>
+
+                        <div class="social-auth-links text-center">
+                            <p id="Error" style="color:red;display:none;"></p>
+                        </div>
+                        <div class="item">
+                            <label></label>
+                            <a class="btn btn-primary" style=" display:inline-block; max-width:150px; text-transform:uppercase" onclick="accounts.confirmUpdateInfo()">Cập nhật</a>
+                        </div>
+
+                        <input type="hidden" id="hdfProvinceCode" value="@ViewBag.ProvinceCode" />
+                        <input type="hidden" id="hdfDistrictCode" value="@ViewBag.DistrictCode" />
+                        <input type="hidden" id="hdfCommuneCode" value="@ViewBag.CommuneCode" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        accounts.GetAccountInfo();
+    })
+</script>

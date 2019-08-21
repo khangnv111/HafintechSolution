@@ -1,0 +1,496 @@
+﻿
+@{
+    ViewBag.Title = "Declaration_Detail";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+
+    var url = Request.Url.ToString();
+    Uri myUri = new Uri(url);
+    var status = HttpUtility.ParseQueryString(myUri.Query).Get("status");
+    var type = HttpUtility.ParseQueryString(myUri.Query).Get("type");
+}
+
+<form action="#" enctype="multipart/form-data" id="form-input-file" name="form-input-file">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4><a href="@Url.Action("Declaration_List", "Declaration")">Danh sách Tờ khai</a> >> Chi tiết Tờ Khai:</h4>
+            <a class="btn btn-warning" id="btnTab2">Thông tin chung</a>
+            <a onclick="hq2.linkToCustomsMessage(1, 1);" class="btn btn-success">Kết quả xử lý tờ khai</a>
+            
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông Tin chung</h5>
+                </div>
+                <div class="widget-content nopadding">
+
+                    <div class="form-horizontal">
+                        <div class="span6">
+                            <label class="control-label">Phân luồng: </label>
+                            <div class="controls" id="phan-luong">
+                                Chưa phân luồng
+                            </div>
+
+                        </div>
+                        <div class="span6">
+                            <label class="control-label">Thông quan: </label>
+                            <div class="controls" id="thong-quan">
+                                Chưa thông quan
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã Tờ khai: </label>
+                                    <div class="controls">
+                                        @if ((int)ViewBag.declarationID > 0)
+                                        {
+                                            <b style="line-height: 30px;" id="txtDeclaration">@ViewBag.declarationID</b>
+                                            <input style="width:350px" type="hidden" class="span5" id="hdfdclNo" name="hdfdclNo" value="@ViewBag.declarationID" />
+                                            @*<input type="hidden" class="span5" id="dclNoHQ" name="dclNoHQ" />*@
+                                        }
+                                        else
+                                        {
+                                            <input style="width:350px" type="text" class="span5" id="txtdclNo" name="txtdclNo" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Phân loại cá nhân tổ chức:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <select id="slclsOrg" name="slclsOrg" class="span11 SKB" required disabled>
+                                            <option value="">--Chọn--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Cơ quan hải quan:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="hidden" id="hdfcstOffice" name="hdfcstOffice" />
+                                        <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" />
+                                        <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" disabled required />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()" disabled>...</button>
+                                    </div>
+                                </div>
+
+                                @*<div class="control-group span12">
+                                <label class="control-label">Ngày đăng ký:</label>
+                                <div class="controls">
+                                    <input style="width:350px" type="text" id="regDate" name="regDate" class="span5 dDate" disabled />
+                                </div>
+                            </div>*@
+
+                            </div>
+                            <div class="span6">
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Số tờ khai:</label>
+                                    <div class="controls">
+                                        <input type="text" id="dclNoHQ" value="" disabled />
+                                    </div>
+                                </div>
+
+                                @*<div class="control-group span12">
+                                <label class="control-label">Phân loại kiểm tra tài liệu / hàng hóa:</label>
+                                <div class="controls">
+                                    <input type="text" id="insClsCd" value="" disabled />
+                                </div>
+                            </div>*@
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã bộ phận xử lý tờ khai:</label>
+                                    <div class="controls">
+                                        <select id="slcstSubSection" name="slcstSubSection" class="span11" disabled>
+                                            <option value="">--Chọn--</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                @*<div class="control-group span12">
+                                <label class="control-label">Ngày thay đổi đăng ký:</label>
+                                <div class="controls">
+                                    <input style="width:350px" type="text" id="regDateOfCor" name="regDateOfCor" class="span5 dDate" disabled />
+                                </div>
+                            </div>*@
+
+                            </div>
+                        </div>
+                        <div class="row-fluid" style="display:none">
+                            <div class="span12">
+                                <div class="control-group span12">
+                                    <label class="control-label">Văn Bản Liên Quan : </label>
+                                    <div class="controls">
+                                        <input name="file" type="file" id="file-input-docs" disabled />
+                                        <input type="hidden" id="dataFileDocsInput" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <!--<div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông tin Xuất nhập khẩu:</h5>
+                </div>
+                    -->
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <h5 style="margin-left:10px;">NGƯỜI NHẬP KHẨU</h5>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtimperCd" name="txtimperCd" disabled/>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Tên: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtimperNm" name="txtimperNm" disabled />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã bưu chính: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtpostcode" name="txtpostcode" disabled />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Điện thoại: </label>
+                                    <div class="controls">
+                                        <input type="text" id="txtphoneNoOfImp" name="txtphoneNoOfImp" class="span6" disabled/>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa chỉ: </label>
+                                    <div class="controls">
+                                        <input style="max-width:700px; width:700px" type="text" id="txtaddressOfImp" name="txtaddressOfImp" class="span11" disabled/>
+                                    </div>
+                                </div>
+                                <h5 style="margin:10px 0 0 10px; float:left">NGƯỜI XUẤT KHẨU</h5>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtconsignorCd" name="txtconsignorCd" disabled/>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Tên:</label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtconsignorNm" name="txtconsignorNm" disabled />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã bưu chính: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtpostcodeIdt" name="txtpostcodeIdt" disabled/>
+                                    </div>
+                                </div>
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã nước: </label>
+                                    <div class="controls">
+
+                                        <input type="text" id="txthdfcountryCd" name="txthdfcountryCd" class="span3" disabled="disabled" />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachCountryExport()" disabled>...</button>
+                                    </div>
+
+                                </div>
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa chỉ: </label>
+                                    <div class="controls">
+                                        <p>
+                                            <input type="text" class="span6" id="txtaddress1Street" name="txtaddress1Street" disabled/>
+                                            <input type="text" class="span6" id="txtaddress2Street" name="txtaddress2Street" disabled/>
+                                        </p>
+                                        <p>
+                                            <input type="text" class="span6" id="txtaddress3CityNm" name="txtaddress3CityNm" disabled/>
+                                            <input type="text" class="span6" id="txtcountryNmAddress" name="txtcountryNmAddress" disabled/>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group span12">
+                                    <label class="control-label">Số House AWB:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" class="span8" id="txthouseAwbNo" name="txthouseAwbNo" disabled required />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số lượng kiện:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" id="txtcargoPiece" name="txtcargoPiece" class="span3" disabled required />
+                                        <span>
+                                            Gói
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã địa điểm lưu kho hàng chờ thông quan dự kiến:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="hidden" id="hdfcstWrhCd" name="hdfcstWrhCd" class="span6" />
+                                        <input type="text" id="txtcstWrhCd" name="txtcstWrhCd" class="span3" disabled="disabled" />
+                                        <input type="text" id="txtcstWrhCd_text" name="txtcstWrhCd_text" class="span7" disabled onclick="hq.getSeachUncstWrhCd()" onchange="hq.getSeachUncstWrhCd(); $('#hdfcstWrhCd,#txtcstWrhCd_text').val('');" autocomplete="off" required />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachUncstWrhCd()" disabled>...</button>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Tên máy bay chở hàng:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" class="span8" id="txtflightNo" name="txtflightNo" disabled required />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa điểm dỡ hàng:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input type="hidden" id="hdfunloadPortCd" name="hdfunloadPortCd" class="span7" />
+                                        <input type="text" id="txtunloadPortCd" name="txtunloadPortCd" class="span3" disabled="disabled" />
+                                        <input type="text" id="txtunloadPortNm" name="txtunloadPortNm" class="span7" disabled onclick="hq.getSeachUnPlace()" onchange="hq.getSeachUnPlace(); $('#txtPlace2,#hdfPlace2').val('');" autocomplete="off" required />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachUnPlace()" disabled>...</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group span12">
+                                    <label class="control-label">Số Master AWB :</label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" class="span8" id="txtmasterAwbNo" name="txtmasterAwbNo" disabled/>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Tổng trọng lượng hàng (Gross):<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" id="txtcargoWeigGrs" name="txtcargoWeigGrs" class="span3" required disabled/>
+                                        <span>KGM</span>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày hàng đến: <span class="error">(*)</span></label>
+                                    <div class="controls" style="position:relative;">
+                                        <input style="width:350px" type="text" id="txtarrDate" name="txtarrDate" class="span5 dDate" required disabled/>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa điểm xếp hàng:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="hidden" id="hdfloadLocCd" name="hdfloadLocCd" class="span6" />
+                                        <input type="text" id="txtloadLocCd" name="txtloadLocCd" class="span3" disabled="disabled" />
+                                        <input type="text" id="txtloadLocNm" name="txtloadLocNm" class="span7" disabled onclick="hq.getSeachPlace()" onchange="hq.getSeachPlace(); $('#hdfPlace,#txtloadLocNm').val('');" autocomplete="off" required />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachPlace()" disabled>...</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group span12">
+                                    <label class="control-label">Trị giá hóa đơn:</label>
+                                    <div class="controls">
+                                        <div class="span11">
+                                            <select id="slinvPrcKindCd" name="slinvPrcKindCd" class="span3" style="width:167px" disabled>
+                                                <option value="">--Chọn giá trị--</option>
+                                            </select>
+                                            <span> - </span>
+                                            <select id="slinvPrcCdtCd" name="slinvPrcCdtCd" class="span3" style="width:167px" disabled>
+                                                <option value="">--Chọn--</option>
+                                            </select>
+                                            <span> - </span>
+                                            <select id="slinvCurCd" name="slinvCurCd" class="span3" style="width:167px" disabled>
+                                                <option value="">--Đồng tiền--</option>
+                                            </select>
+                                            <span> - </span>
+                                            <input type="text" class="span12" id="txttotalInvPrc" name="txttotalInvPrc" disabled/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Phí vận chuyển:</label>
+                                    <div class="controls">
+                                        <div class="span11">
+                                            <select id="slfreightDemarCd" name="slfreightDemarCd" class="span3" style="width:167px" disabled>
+                                                <option value="">--Chọn giá trị--</option>
+                                            </select>
+                                            <span> - </span>
+                                            <select id="slfreightCurCd" name="slfreightCurCd" class="span3" style="width:167px" disabled>
+                                                <option value="">--Đồng tiền--</option>
+                                            </select>
+                                            <span> - </span>
+                                            <input type="text" class="span12" id="txtfreight" name="txtfreight" style="max-width:530px; width:530px" disabled/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Phí bảo hiểm:</label>
+                                    <div class="controls">
+                                        <div class="span11">
+                                            <select id="slinsDemarCd" name="slinsDemarCd" class="span3" style="width:167px" disabled>
+                                                <option value="">--Chọn giá trị--</option>
+                                            </select>
+                                            <span> - </span>
+                                            <select id="slinsCurCd" name="slinsCurCd" class="span3" style="width:167px" disabled>
+                                                <option value="">--Đồng tiền--</option>
+                                            </select>
+                                            <span> - </span>
+                                            <input type="text" class="span12" id="txtinsAmt" name="txtinsAmt" style="max-width:530px; width:530px" disabled/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mô tả hàng hóa: <span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input id="txtitemName" name="txtitemName" class="span11" required disabled/>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã nước xuất xứ:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        
+                                        <input type="text" id="txtplaceOriginCd" name="txtplaceOriginCd" class="span3" disabled="disabled" />
+                                        <input type="text" id="txtcountryNm" name="txtcountryNm" class="span7" disabled onclick="hq.getSeachCountry()" onchange="hq.getSeachCountry(); $('#hdfcountryCd,#txtcountryCd_text').val('');" required autocomplete="off" />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachCountry()" disabled>...</button>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Trị giá tính thuế :</label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" class="span8" id="txtcstValue" name="txtcstValue" disabled/>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Phần ghi chú:</label>
+                                    <div class="controls">
+                                        <textarea id="txtnotes" name="txtnotes" class="span11" disabled></textarea>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số QL nội bộ của DN :</label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" class="span8" id="txteiControlNo" name="txteiControlNo" disabled/>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="form-actions" style="text-align: center;">
+                <button type="submit" class="btn btn-success" id="btnSaveDeclaration" style="display:none"></button>
+                @if ((long)ViewBag.declarationID > 0)
+                {
+
+                    if (status != null && status != "" && Convert.ToInt32(status) != 8)
+                    {
+                        <a class="btn btn-success" onclick="hq.linkToUpdateform('@(ViewBag.declarationID)',1)">CẬP NHẬT TỜ KHAI</a>
+
+                        <a class="btn btn-warning" onclick="hq.newSubmitIDALowValue(@ViewBag.declarationID)">SUBMIT MIC</a>
+                    }
+
+                   
+
+                }
+                else
+                {
+                    <a class="btn btn-primary" onclick="">THÊM MỚI</a>
+                    <a class="btn btn-warning" onclick="hq.CheckSubmitDeclaration(0)">LƯU NHÁP</a>
+                    <a class="btn btn-success" onclick="hq.CheckSubmitDeclaration(1)">LƯU TỜ KHAI</a>
+                    <a class="btn btn-danger" onclick="">XÓA TỜ KHAI</a>
+                    <a class="btn btn-sm" onclick="">IN TỜ KHAI</a>
+                    <a class="btn btn-warning" onclick="">XÁC THỰC TÀI KHOẢN</a>
+                    <a class="btn btn-primary" onclick="">IN EXEL</a>
+                }
+
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('.dDate').datetimepicker({
+            showTodayButton: false,
+            format: 'MM/DD/YYYY'
+        });
+
+        //Phương thức thành toán
+        hq.getMethodPaid();
+        //Lấy danh sách phương thức vận chuyển
+        hq.getVehicleMethod();
+        // Phân loại cá nhân tổ chức
+        hq.getOrganizationType();
+        // Phương tiện vận chuyển
+        hq.getmeansOfTrsCd();
+        // Phân loại cá nhân tổ chức
+        //hq.getOrganizationType();
+        // Mã địa điểm lưu kho hàng chờ thông quan dự kiến
+        //hq.getWaitingPlace();
+        //Mã bộ phận xử lý tờ khai
+        hq.getDepartment();
+        //Mã danh sách loại tiền
+        hq.getCurrency2();
+        // Mã loại Phí vận chuyển
+        hq.GetTransportFeeCodes();
+        // Mã loại Phí bảo hiểm
+        hq.getInsuranceFeeCode();
+        // Mã phân loại giá hóa đơn
+        hq.getinvPrcKindCd();
+        // Điều kiện giá hóa đơn
+        hq.getInvoiceValueCondition();
+
+        setTimeout(function () {
+            hq.getDeclarationDetail();
+        }, 500);
+
+
+        var a = $("li[class='treeview act']");
+        if (a.length > 1) {
+            a[1].removeAttribute("class", "act");
+        }
+    })
+</script>
+

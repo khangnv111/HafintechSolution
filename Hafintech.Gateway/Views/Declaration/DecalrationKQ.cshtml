@@ -1,0 +1,108 @@
+﻿
+
+@{
+    ViewBag.Title = "DecalrationKQ";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+<form action="#" enctype="multipart/form-data" id="form-input" name="form-input">
+    
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="box-body" id="dvContent">
+                <h4><a href="@Url.Action("Declaration_List", "Declaration")">Danh sách Tờ khai</a> >> Lấy kết quả phân luồng</h4>
+                <div class="row-fluid">
+                    <div class="span12" id="divBtn">
+                        <a class="btn btn-warning" id="btnTab1" onclick="hq.OnClickTabDeclaration(1);">Tờ khai</a>
+                        <a class="btn btn-success" id="btnTab2" onclick="hq.OnClickTabDeclaration(2);">Kết quả xử lý</a>
+                    </div>
+                </div>
+                <div class="widget-box">
+                    <div style="clear:both"></div>
+                    <div class="widget-title">
+                        <span class="icon"><i class="icon-align-justify"></i></span>
+                        <h5>Lấy kết quả phân luồng, thông quan</h5>
+                    </div>
+
+                    <div class="widget-content nopadding">
+                        <div class="form-horizontal">
+                            <div class="row-fluid">
+                                <fieldset>
+                                    <legend>Thông tin chứng từ</legend>
+                                </fieldset>
+                                <fieldset>
+                                    <div class="span6">
+                                        <div class="control-group span12">
+                                            <label class="control-label">1.Số tờ khai: </label>
+                                            <div class="controls">
+                                                <p style="text-align: left;margin-top: -11px;" id="txtdclNo" class="control-label"> </p>
+                                            </div>
+                                        </div>
+                                        <label class="control-label">TỜ KHAI NHẬP KHẨU </label>
+                                        <div class="control-group span12">
+                                            <div class="controls">
+                                                <p id="txtdclNo" class="control-label"> </p>
+                                            </div>
+                                        </div>
+                                        <label class="control-label" style="color:red">
+                                            Tờ khai được phân luồng VÀNG
+
+                                            Bạn làm theo chỉ dẫn của Hải quan trả về sau đó chờ kết quả thông quan
+                                        </label>
+                                        <div class="control-group span12">
+                                            <div class="controls">
+                                                <p id="txtdclNo" class="control-label"> </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group span12">
+                                            <label class="control-label">Ngày đăng ký </label>
+                                            <div class="controls">
+                                                <p id="txtdclNo" class="control-label"> </p>
+                                            </div>
+                                        </div>
+                                        <label class="control-label">Trạng thái thông quan </label>
+                                        <div class="control-group span12">
+                                            <div class="controls">
+                                                <p id="txtdclNo" class="control-label"> </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th style="min-width:100px">STT</th>
+                                <th>Loại tờ khai</th>
+                                <th>Số tờ khai</th>
+                                <th>Tên thông điệp</th>
+                                <th>Mã thông điệp</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="hdfdclNo" value="@ViewBag.declarationID" />
+</form>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var url_string = window.location.href;
+            var url = new URL(url_string);
+            var dclNo = url.searchParams.get("dclNo");
+            $("#txtdclNo").text(dclNo);
+            setTimeout(function () {
+                hq2.getCustomsMessage_TK(dclNo);
+            },1000)
+            var a = $("li[class='treeview act']");
+            if (a.length > 1) {
+                a[1].removeAttribute("class", "act");
+            }
+        })
+    </script>

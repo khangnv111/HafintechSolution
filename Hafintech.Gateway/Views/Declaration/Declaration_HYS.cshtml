@@ -1,0 +1,197 @@
+﻿
+@{
+    ViewBag.Title = "Declaration_HYS";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<form action="#" enctype="multipart/form-data" id="form-input-file" name="form-input-file">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4><a href="javascript:;">Nghiệp vụ khai báo đính kèm</a> >> Khái báo đính kèm điện tử:</h4>
+            <a class="btn btn-warning" id="btnTab2"> Tờ khai </a>
+            <a onclick="hq2.linkToCustomsMessage_Attach();" class="btn btn-success">Kết quả xử lý tờ khai</a>
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông Tin chung</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal" id="form-hys">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group span12">
+                                    <label class="control-label">Cơ quan hải quan:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input style="margin-left:2px" type="text" class="span6" id="txtcstOffice" name="txtcstOffice" required />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Nhóm xử lý hồ sơ: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtcstSubSection" name="txtcstSubSection" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Phân loại thủ tục khai báo:</label>
+                                    <div class="controls" style="position:relative;">
+                                        <input  style="width:70px" type="text" id="txtappProType" name="txtappProType" class="span3 TSB" v-model="data.appProType"/>
+                                        <select style="width:277px" class="span5" id="slappProType" name="slappProType" v-model="data.appProType">
+                                            <option value="">--chọn--</option>
+                                            <option v-for="item in txtappProType" :value="item.appProType">{{item.appProType}} || {{item.appProName}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số điện thoại người khai báo:</label>
+                                    <div class="controls" style="position:relative;">
+                                        <input type="text" id="txtappPhoneNo" name="txtappPhoneNo" class="span11" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số quản lý trong nội bộ doanh nghiệp: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txteiControlNo" name="txteiControlNo" />
+                                    </div>
+                                    
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ghi chú: </label>
+                                    <div class="controls">
+                                        <input style="max-width: 980px; height: 100px;" type="text" class="span20" id="txtremarks" name="txtremarks" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Tải file đính kèm: </label>
+                                    <div class="controls">
+                                        <input type="file" id="fileAttach" onchange="readNameFile()" name="fileAttach" class="span6" multiple/>
+                                    </div>
+
+                                    <div class="controls listAttach">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <input type="hidden" id="attachmentNo" />
+            <div class="form-actions" style="text-align: center;">
+                <button type="submit" class="btn btn-success" id="btnSaveDeclaration" style="display:none"></button>
+                @if ((long)ViewBag.declarationID > 0)
+                {
+                }
+                else
+                {
+                    <a class="btn btn-warning" onclick="hq.CheckSubmitDeclaration(1);">XÁC THỰC TÀI KHOẢN</a>
+                }
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    var decID = "@(ViewBag.declarationID)";
+    $(document).ready(function () {
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var attNo = url.searchParams.get("attNo");
+        setTimeout(function () {
+            if (attNo != "" && attNo != undefined && attNo != null) {
+                hq2.getDataItemAttachfile(attNo);
+            }
+        }, 1000)
+        $('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+        $("#form-input-file").validate({
+            rules: {
+                txtcstOffice: "required",
+            },
+            messages: {
+                txtcstOffice: "",
+            },
+            submitHandler: function (form) {
+                if (parseInt(decID) != 0) {
+                    hq.confirmUpdateDeclaration_HV();
+                }
+                else {
+                    hq2.submitHYS();
+                }
+            }
+        });
+
+        $('.dDate').datetimepicker({
+            showTodayButton: false,
+            format: 'MM/DD/YYYY'
+        }).on('dp.change', function (t) {
+            hq.KeyPressTextboxBill(t);
+        });
+
+
+        var a = $("li[class='treeview act']");
+        if (a.length > 1) {
+            a[0].removeAttribute("class", "act");
+        }
+    })
+</script>
+
+<script>
+    function readNameFile(){
+        var fileUpload = $("#fileAttach").get(0);
+        var files = fileUpload.files;
+        var nameFile = "";
+        if (files.length != 0) { 
+            for (var i = 0; i < files.length; i++) {
+                nameFile += files[i].name + ", ";
+            }  
+        }
+        $(".listAttach").html(nameFile);
+    }
+</script>
+
+<script>
+    var appHys = new Vue({
+        el: '#form-hys',
+        data: {
+            data: {},
+            txtappProType: [],
+             
+        },
+        methods: {
+            init: async function () {
+                var data = this.data;
+
+                //data.appProType = "";
+
+                this.txtappProType = await Lib.GetApplicationProcedureType();
+                //await this.loadDetail();
+                accounts.Unloading();
+
+            },
+    loadDetail: async function () {
+        try {
+            var token = $('#hdfToken').val();
+            
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    listChange: function () {
+        this.$forceUpdate()
+    }
+    },
+    mounted() {
+        this.init();
+        var self = this;
+
+    },
+    computed: {
+    }
+
+    });
+</script>

@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "TabDirective_List";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h4><a href="@Url.Action("Declaration_List", "Declaration")">Danh sách Tờ khai</a> >> Tờ Khai: @ViewBag.declarationID</h4>
+        <a href="@Url.Action("Declaration_Detail", "Declaration", new { decID = ViewBag.declarationID })" class="btn btn-success">Chi tiết Tờ khai</a>
+        <a href="@Url.Action("TabCommodity_List", "Declaration", new { decID = ViewBag.declarationID })" class="btn btn-success">Danh sách hàng</a>
+        <a href="@Url.Action("TabDirective_List", "Declaration", new { decID = ViewBag.declarationID })" class="btn btn-warning">Chỉ thị của hải quan</a>
+        <a href="@Url.Action("TabResult", "Declaration", new { decID = ViewBag.declarationID })" class="btn btn-success">Kết quả xử lý tờ khai</a>
+        <a href="@Url.Action("Declaration_List", "Declaration")" class="btn btn-warning" style="float:right; margin: 0px 0px;"><i class="icon icon-book"></i> << Danh sách tờ khai </a>
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>CHỈ THỊ CỦA HẢI QUAN</h5>
+            </div>
+            <table id="listContainer" class="table table-bordered data-table" role="grid" aria-describedby="example1_info">
+                <thead>
+                    <tr>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="span12" style="padding:10px 0; background:#fff;">
+                                <div class="text-left span2">
+                                    <div class="text-center" style="float:left; padding-right:10px;">
+                                        <img src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/avatar-HQ.png" width="50" />
+                                    </div>
+                                    <div>
+                                        <p>  <a href="@Url.Action("Direction_Detail", "Hateco")" style="color:#0026ff;">HQ - item.Account_FullName</a>
+                                        <p><a href="@Url.Action("Direction_Detail", "Hateco")" style=" color:#ff6a00;">MST: item.Declaration_Code</a></p>
+                                    </div>
+                                </div>
+                                <div class="text-left col-lg-8 col-md-8 col-sm-8">
+                                    <p>  <a href="@Url.Action("Direction_Detail", "Hateco")" style="color:#808080; ">Ngày item.Created_Date.ToString("dd/MM/yyyy HH:mm")</a></p>
+                                    <p>
+                                        <a style="" href="@Url.Action("Direction_Detail", "Hateco")">
+                                            item.Title
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="span12" style="padding:10px 0; background:#fff;">
+                                <div class="text-left span2">
+                                    <div class="text-center" style="float:left; padding-right:10px;">
+                                        <img src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/avatar-HQ.png" width="50" />
+                                    </div>
+                                    <div>
+                                        <p>  <a href="@Url.Action("Direction_Detail", "Hateco")" style="color:#0026ff;">HQ - item.Account_FullName</a>
+                                        <p><a href="@Url.Action("Direction_Detail", "Hateco")" style=" color:#ff6a00;">MST: item.Declaration_Code</a></p>
+                                    </div>
+                                </div>
+                                <div class="text-left col-lg-8 col-md-8 col-sm-8">
+                                    <p>  <a href="@Url.Action("Direction_Detail", "Hateco")" style="color:#808080; ">Ngày item.Created_Date.ToString("dd/MM/yyyy HH:mm")</a></p>
+                                    <p>
+                                        <a style="" href="@Url.Action("Direction_Detail", "Hateco")">
+                                            item.Title
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="span12" style="padding:10px 0; background:#fff;">
+                                <div class="text-left span2">
+                                    <div class="text-center" style="float:left; padding-right:10px;">
+                                        <img src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/avatar-HQ.png" width="50" />
+                                    </div>
+                                    <div>
+                                        <p>  <a href="@Url.Action("Direction_Detail", "Hateco")" style="color:#0026ff;">HQ - item.Account_FullName</a>
+                                        <p><a href="@Url.Action("Direction_Detail", "Hateco")" style=" color:#ff6a00;">MST: item.Declaration_Code</a></p>
+                                    </div>
+                                </div>
+                                <div class="text-left col-lg-8 col-md-8 col-sm-8">
+                                    <p>  <a href="@Url.Action("Direction_Detail", "Hateco")" style="color:#808080; ">Ngày item.Created_Date.ToString("dd/MM/yyyy HH:mm")</a></p>
+                                    <p>
+                                        <a style="" href="@Url.Action("Direction_Detail", "Hateco")">
+                                            item.Title
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="span12" style="padding:10px 0; background:#fff;">
+                                <div class="text-left span2">
+                                    <div class="text-center" style="float:left; padding-right:10px;">
+                                        <img src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/avatar-HQ.png" width="50" />
+                                    </div>
+                                    <div>
+                                        <p>  <a href="@Url.Action("Direction_Detail", "Hateco")" style="color:#0026ff;">HQ - item.Account_FullName</a>
+                                        <p><a href="@Url.Action("Direction_Detail", "Hateco")" style=" color:#ff6a00;">MST: item.Declaration_Code</a></p>
+                                    </div>
+                                </div>
+                                <div class="text-left col-lg-8 col-md-8 col-sm-8">
+                                    <p>  <a href="@Url.Action("Direction_Detail", "Hateco")" style="color:#808080; ">Ngày item.Created_Date.ToString("dd/MM/yyyy HH:mm")</a></p>
+                                    <p>
+                                        <a style="" href="@Url.Action("Direction_Detail", "Hateco")">
+                                            item.Title
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdfdeclarationID" value="@ViewBag.declarationID" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    })
+</script>
+

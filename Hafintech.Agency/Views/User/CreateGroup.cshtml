@@ -1,0 +1,84 @@
+﻿
+
+<div id="loginbox" style="width: 500px;">
+    <div class="control-group normal_text">
+        <b style="font-size:18px; text-transform: uppercase">tạo nhóm</b>
+        <b onclick="utils.closeAll();" class="icClose">X</b>
+    </div>
+
+    <form enctype="multipart/form-data" id="form-input" name="form-input">
+        <div class="social-auth-links text-center">
+            <p id="LogError" style="color:red;display:none;"></p>
+        </div>
+
+        <div class="form-horizontal" style="padding:10px;">
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Mã nhóm</label>
+                        </div>
+                        <div class="span8">
+                            <input type="text" class="span10"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Tên nhóm <span class="error">*</span></label>
+                        </div>
+                        <div class="span8">
+                            <input type="text" class="span10" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Mô tả</label>
+                        </div>
+                        <div class="span9">
+                            <textarea class="span12" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Trạng thái</label>
+                        </div>
+                        <div class="span8">
+                            <select class="span10">
+                                <option value="">Chọn trạng thái</option>
+                                <option value="1">Hoạt động</option>
+                                <option value="2">Không hoạt động</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid" style="margin: 20px 0 15px 0;">
+                <div class="span12">
+                    <div class="span3"></div>
+                    <div class="span8">
+                        <button class="btn btn-success span4">Tạo</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+         
+    </form>
+</div>

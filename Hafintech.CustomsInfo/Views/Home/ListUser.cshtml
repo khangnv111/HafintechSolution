@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "ListUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .container-fluid, .row-fluid, .widget-box {
+        margin-top: 0 !important;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Tìm kiếm</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid" style="margin:0">
+                    <div class="span4">
+                        <label>Thời gian đăng ký tài khoản</label>
+                        <input type="text" class="span6 datepicker" id="startCreatedDate" placeholder="Từ ngày">
+                        <input type="text" class="span6 datepicker" id="endCreatedDate" placeholder="Đến ngày">
+                    </div>
+                    <div class="span2">
+                        <label>Số tờ khai</label>
+                        <input type="text" class="span12" id="declarCode" placeholder="">
+                    </div>
+                    <div class="span2">
+                        <label>AccountID</label>
+                        <input type="text" class="span12" id="txtAccountID" placeholder="AccountID">
+                    </div>
+                    <div class="span2">
+                        <label>Email</label>
+                        <input type="text" class="span12" id="txtEmail" placeholder="Email">
+                    </div>
+                </div>
+                <div class="row-fluid">
+                   
+                    <div class="span2">
+                        <label>Số Điện thoại</label>
+                        <input type="text" class="span12" id="txtMobile" placeholder="Số điện thoại">
+
+                    </div>
+                    <div class="span2">
+                        <label>Số CMND</label>
+                        <input type="text" class="span12" id="txtIdentity" placeholder="CMND">
+                    </div>
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+                            <a onclick="accounts.SearchUser_More()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách khách hàng</h5>
+                </div>
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-left">AccountID</th>
+                                <th class="text-left">Username</th>
+                                <th class="text-left">FullName</th>
+                                <th class="text-left">Identity</th>
+                                <th class="text-left">Mobile</th>
+                                <th class="text-left">Address</th>
+                                <th class="text-left">CreatedDate</th>
+                                <th class="text-left">UpdatedDate</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        accounts.SearchUser_More();
+    })
+</script>
+

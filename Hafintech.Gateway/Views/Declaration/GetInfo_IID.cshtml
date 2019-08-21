@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "GetInfo_IID";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h4>Tờ khai nhập khẩu giá trị thấp >> Xem thông tin tờ khai</h4>
+
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Xem thông tin tờ khai hải quan</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Số Tờ khai: </label>
+                                <div class="controls">
+
+                                   
+                                        <input style="width:350px" type="text" class="span5" id="txtdclNo" name="txtdclNo" placeholder="Số tờ khai hải quan" />
+
+                                        <a href="javascript:;" class="btn btn-success" onclick="hq.newSubmitIIDHighValue()">Lấy thông tin</a>
+                                    
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,199 @@
+﻿
+@{
+    ViewBag.Title = "ReviewRegistry"; 
+}
+
+<div class="container-fluid">
+    <div class="row-fluid" id="lstTK">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>DUYỆT CHỨNG TỪ TRÌNH KÝ</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Tài khoản trình ký</label>
+                        @*<input type="text" class="span12" value=""  placeholder="" v-model="data.createdAccId">*@
+                        <select class="span12" id="createdAccId" v-model="data.createdAccId">
+                            <option value="">-- Tất cả --</option>
+                        </select>
+                    </div>
+
+                    <div class="span2">
+                        <label>Trạng thái ký</label>
+                        <select class="span12" id="statusReg" v-model="data.status">
+                            <option value="">--Chọn trạng thái--</option>
+                            <option value="2">Cho phép</option>
+                            <option value="0">Không cho phép</option> 
+                        </select>
+                    </div>
+
+                    <div class="span2">
+                        <input type="checkbox"/> Tự động lấy chứng từ trình ký
+                    </div>
+                    <div class="span3">
+                        <button class="btn" v-on:click="getList(1)">Lấy chứng từ trình ký</button>
+                    </div>
+
+                </div>
+
+                <div class="row-fluid">
+
+                    <div class="span2">
+                        <label>Từ ngày</label>
+                        <input type="date" class="span12 dDate" value="" id="datepickerFromD" name="datepickerFrom" v-model="data.startCreatedDate" placeholder="Từ ngày" required="">
+                    </div>
+
+                    <div class="span2">
+                        <label>Đến ngày</label>
+                        <input type="date" class="span12 dDate" value="" id="datepickerToD" name="datepickerTo" v-model="data.endCreatedDate" placeholder="Đến ngày" required="">
+                    </div>
+
+                    <div class="span2">
+                        <label>Loại tờ khai</label>
+                        <select class="span12" id="slType">
+                            <option value="0">--Tất cả--</option>
+                            <option value="1">Nhập khẩu</option>
+                            <option value="2">Xuất khẩu</option>
+                        </select>
+                    </div>
+                     
+                    <div class="span4">
+                        Lưu ý: Khi tự ký chứng từ, bạn nên tắt chế độ Tự động lấy chứng từ trình ký
+                    </div>
+
+                </div> 
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách</h5>
+                </div>
+
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:70px">STT</th> 
+                                <th class="text-center" style="min-width:100px">Số tờ khai</th> 
+                                <th class="text-center">Trạng thái ký</th>
+                                <th class="text-center">Trạng thái tờ khai</th>
+                                <th class="text-center">Tài khoản trình ký</th>
+                                <th class="text-center">Loại chứng từ</th>
+                                <th class="text-center">Số Ref</th>
+                                <th class="text-center">Chữ ký</th>
+                            </tr>
+                        </thead>
+                        <tbody class="content-search-table">
+
+                            <tr v-for="(item, index) in lstDeclaration">
+                                <td>{{index+1}}</td>
+                                <td>
+                                    <a v-on:click="viewDeclaration(item.dclId, item.type)">{{item.dclId}}</a>
+                                </td>
+                                <td>
+                                    <span v-if="item.status > 1">Cho phép</span>
+                                    <span v-else="item.status <= 1">Không cho phép</span>
+                                </td>
+                                <td>{{getTextStatus(item.status)}}</td>
+                                <td>{{item.acceptAccId}}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <ul class="pagination">
+        @*<li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>*@
+    </ul>
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="~/Content/js/vue.min.js"></script>
+<script src="~/Content/js/lib.js"></script>
+<script type="text/javascript">
+    var calltable = 0;
+    UserAgen.GetListUser(1);
+
+    var lstDeImport = new Vue({
+        el: '#lstTK',
+        data: {
+            data: {},
+            lstDeclaration: []
+        },
+        methods: {
+            init: async function () {
+                var data = this.data; 
+                data.status = "";
+                data.startCreatedDate = "";
+                data.endCreatedDate = "";
+                data.createdAccId = "";
+            },
+            getList: async function (page, callback) {
+                try {
+                    var token = $('#hdfToken').val();
+                    if(page == undefined || page == null) page = 0;
+                    var createdAccId = $("#accIdLogin").val();
+
+                    var dt = this.data;
+                    const response = await axios.get(Config.API_Login + "agency/SearchDeclaration?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&status=" + dt.status + "&page=" + page + "&createdAccId=" + dt.createdAccId + "&page=" + page + "&signatureId=0&acceptAccId=",
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0)
+                    {
+                        this.lstDeclaration = response.data.Data.ListDeclarations;
+
+                        if(typeof callback != 'undefined' && typeof callback == 'function')
+                            callback()
+                    }
+                    else return null;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            getTextStatus: function(code){
+                var txt = Decla.getNameStatusCode(code);
+                return txt;
+            },
+            viewDeclaration: function(id, type){
+                if(type == 1){
+                    var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + id + "&ishight=1&tab=1";
+                    window.open(urlLink,'_blank');
+                }
+                else if(type == 2){
+                    var urlLink = Config.Url_Root + "Declaration/HightDeclarationDetail?IdDec=" + id + "&ishight=2&tab=1";
+                    window.open(urlLink,'_blank');
+                }
+            },
+        },
+        mounted() {
+            this.init();
+            this.getList(0);
+
+        },
+
+    });
+
+
+
+</script>
+

@@ -1,0 +1,32 @@
+﻿@using _2017Utilities.Session
+
+@{
+    ViewBag.Title = "Header";
+}
+
+<!--Header-part-->
+<div id="header">
+    <a href="/" style="margin:5px 0 0 10px; float:left">
+        <img style="height:50px;" src="~/Content/img/logo.png" /> 
+        <span style="font:bold 18px arial;margin-left:10px;">CỔNG THÔNG TIN KHÁCH HÀNG</span>
+    </a>
+</div>
+<!--close-Header-part-->
+<!--top-Header-messaages-->
+<div class="btn-group rightzero">
+    <a class="top_message tip-left" title="Manage Files"><i class="icon-file"></i></a>
+    <a class="top_message tip-bottom" title="Manage Users"><i class="icon-user"></i></a>
+    <a class="top_message tip-bottom" title="Manage Comments"><i class="icon-comment"></i><span class="label label-important">5</span></a>
+    <a class="top_message tip-bottom" title="Manage Orders"><i class="icon-shopping-cart"></i></a>
+</div>
+<!--close-top-Header-messaages-->
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class=""><a title="" href="#"><i class="icon icon-user"></i> <span class="text">@AccountSession.FullName</span></a></li>
+        <li class=""><a title="Thoát" href="javascript:;" onclick="accounts.Logout();"><i class="icon icon-share-alt"></i> <span class="text">Thoát</span></a></li>
+    </ul>
+</div>
+<!--close-top-Header-menu-->
+
+<input type="hidden" id="hdfToken" value="@_2017Utilities.Session.AccountSession.Token" />

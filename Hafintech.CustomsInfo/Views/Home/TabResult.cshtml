@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "TabResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row-fluid" style="margin:0">
+        <div class="span12">
+            <h4><a href="@Url.Action("Declaration_List", "Home", new { uid = ViewBag.uid})">Danh sách Tờ khai</a> >> Tờ Khai: @ViewBag.declarationID</h4>
+            <a href="@Url.Action("Declaration_Detail", "Home", new { decID = ViewBag.declarationID })" class="btn btn-success">Chi tiết Tờ khai</a>
+            <a href="@Url.Action("TabCommodity_List", "Home", new { decID = ViewBag.declarationID })" class="btn btn-success">Danh sách hàng</a>
+            <a href="@Url.Action("TabDirective_List", "Home", new { decID = ViewBag.declarationID })" class="btn btn-success">Chỉ thị của hải quan</a>
+            <a href="@Url.Action("TabResult", "Home", new { decID = ViewBag.declarationID })" class="btn btn-warning">Kết quả xử lý tờ khai</a>
+            <a href="@Url.Action("Declaration_List", "Home")" class="btn btn-warning" style="float:right; margin: 0px 0px;"><i class="icon icon-book"></i> << Danh sách tờ khai </a>
+            <div class="widget-box">
+                <div style="clear:both"></div>
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    @*<h5>Chi tiết danh sách hàng</h5>*@
+
+                    <a onclick=" hq.ShowCommodity_Add()" class="btn btn-success" style="float:right; margin: 2px 5px;"><i class="icon icon-book"></i> In thông điệp trả về</a>
+                </div>
+                <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                    <thead>
+                        <tr>
+                            <th style="min-width:50px">STT</th>
+                            <th>Số chứng từ</th>
+                            <th>Tên thông điệp</th>
+                            <th>Mã thông điệp</th>
+                            <th>Ngày nhận</th>
+                            <th>Định dạng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="span6" style="margin:0">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông tin thuế của tờ khai</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="span12">
+                                    <label class="control-label">Số lần miễn thuế: </label>
+                                    <div class="controls">
+                                        <b style="line-height: 30px;" id="txtDeclaration">@ViewBag.declarationID</b>
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <label class="control-label">Tỷ giá tính thuế: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span5" id="txtD_code2" name="txtD_code2" disabled />
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <label class="control-label">Thuế xuất nhập khẩu: </label>
+                                    <div class="controls">
+                                        <input type="text" id="txtCodeType" name="txtCodeType" class="span5" disabled="disabled" />
+                                    </div>
+                                </div>
+
+                                <div class="span12">
+                                    <label class="control-label">Số tiền giảm thuế xuất nhập khẩu: </label>
+                                    <div class="controls">
+                                        <input type="text" id="txtCodeCustom" name="txtCodeCustom" disabled class="span5" />
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <label class="control-label">Thuế VAT: </label>
+                                    <div class="controls">
+                                        <input type="text" id="txtCodeCustom" name="txtCodeCustom" disabled class="span5" />
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <label class="control-label">Thuế tờ khai tái xuất: </label>
+                                    <div class="controls">
+                                        <input type="text" id="txtCodeCustom" name="txtCodeCustom" disabled class="span5" />
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <label class="control-label"><b>Thuế tờ khai tái xuất:</b> </label>
+                                    <div class="controls">
+                                        <input type="text" id="txtCodeCustom" name="txtCodeCustom" disabled class="span5" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="span6">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>In thông tin tờ khai</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="span12" style="text-align:center">
+                                    <span><a class="btn btn-success">1. In xác nhận nội dung tờ khai</a></span><br /><br />
+                                    <span><a class="btn btn-success">2. In xác nhận bổ sung hàng hóa</a></span><br /><br />
+                                    <span><a class="btn btn-success">3. In quyết định thông quan hàng hóa</a></span><br /><br />
+                                    <span><a class="btn btn-success">4. In chứng từ lệ phí phải thu</a></span><br /><br />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

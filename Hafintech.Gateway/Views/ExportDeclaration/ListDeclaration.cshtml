@@ -1,0 +1,310 @@
+﻿<div class="container-fluid" id="lstExport">
+    <div class="row-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Tìm kiếm tờ khai</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Cục Hải Quan</label>
+                        <select class="span12" id="slCustoms" v-model="data.cstOffice">
+                            <option value="">--Chọn cục HQ--</option>
+                            <option v-for="item in lstCustoms" :value="item.cstOfficeCd">{{item.cstOfficeCd}} || {{item.cstOfficeNm}}</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Loại tờ khai</label>
+                        <select class="span12" id="slType" v-model="data.type">
+                            <option value="0">--Tất cả--</option>
+                            <option value="3">Tờ khai xuất khẩu giá trị thấp</option>
+                            <option value="4">Tờ khai xuất khẩu giá trị cao</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Loại hình HH</label>
+                        <select class="span12" id="grType" v-model="data.groupTypeId">
+                            <option value="">--Chọn loại hình--</option>
+                            <option v-for="item in lstGroupType" :value="item.groupTypeCode"> {{item.groupTypeName}}</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Từ ngày</label>
+                        <input type="date" class="span11 dDate" value="" id="datepickerFromD" v-model="data.startCreatedDate" name="datepickerFrom" placeholder="Từ ngày" required="">
+                    </div>
+                    <div class="span2">
+                        <label>Đến ngày</label>
+                        <div class="input-group date span12">
+                            <input type="date" class="span11 dDate" value="" id="datepickerToD" v-model="data.endCreatedDate" name="datepickerTo" placeholder="Đến ngày" required="">
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <label>Đối tượng</label>
+                        <select class="span12 SKB" id="slclsOrg" v-model="data.clsOrgCd">
+                            <option value="">--Tất cả--</option>
+                            <option v-for="item in lstOrganizationType" :value="item.clsOrgCd">{{item.clsOrgCd}} || {{item.clsOrgNm}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Số Tờ khai hải quan</label>
+                        <input type="text" class="span12" id="txtDclNo" name="txtDclNo" v-model="data.dclNo" placeholder="Số Tờ khai">
+                    </div>
+                    <div class="span2">
+                        <label>Phân luồng</label>
+                        <select class="span12" id="slinsClsCd" v-model="data.insClsCd">
+                            <option value="">--Chưa phân luồng--</option>
+                            <option value="1">Luồng Xanh</option>
+                            <option value="3">Luồng Đỏ</option>
+                            <option value="2">Luồng Vàng</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Thông quan</label>
+                        <select class="span12" id="slclearanStatus" v-model="data.clearanStatus">
+                            <option value="0">--Tất cả--</option>
+                            <option value="-1">Chưa thông quan</option>
+                            <option value="1">Thông quan</option>
+                            <option value="2">Đợi thông quan</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Trạng thái tờ khai</label>
+                        <select class="span12" id="slstatus" v-model="data.status">
+                            <option value="0">--Tất cả--</option>
+                            <option value="-1">Hủy tờ khai</option>
+                            <option value="1">Tờ khai tạm</option>
+                            <option value="2">Tờ khai chính thức</option>
+                            <option value="3">Tờ khai sửa</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Mã nghiệp vụ</label>
+                        <select class="span12" id="slstatusCode" v-model="data.statusCode">
+                            <option value="">--Tất cả--</option>
+                            <option value="EDA">EDA</option>
+                            <option value="EDA01">EDA01</option>
+                            <option value="EDB">EDB</option>
+                            <option value="EDC">EDC</option>
+                            <option value="EDD">EDD</option>
+                            <option value="EDE">EDE</option>
+                            <option value="MEC">MEC</option>
+                            <option value="MED">MED</option>
+                            <option value="MEE">MEE</option>
+                            <option value="IEX">IEX</option>
+                        </select>
+                    </div>
+                    <div class="span4">
+                        <div style="margin-top:25px;">
+                            <a v-on:click="getList(0)" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            <a class="btn btn-warning"><i class="icon icon-file"></i> Xuất Excel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách Tờ Khai nhập khẩu</h5>
+                </div>
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:100px">STT</th>
+                                <th class="text-center" style="min-width:100px">ID</th>
+                                <th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
+                                <th class="text-center" style="min-width:100px">Số tờ khai</th>
+                                <th class="text-center">Ngày đăng ký</th>
+                                <th class="text-center">Ủy thác nhập khẩu</th>
+                                <th class="text-center">Loại hình</th>
+                                <th class="text-center">Phân luồng</th>
+                                <th class="text-center">Thông quan</th>
+                                <th class="text-center">CQ Hải quan</th>
+                                <th class="text-center">Ngày thông quan</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in lstDeclaration">
+                                <td>{{index+1}}</td>
+                                <td>
+                                    <a v-on:click="viewDeclaration(item.declarationId, item.type)">{{item.declarationId}}</a>
+                                </td>
+                                <td>{{item.statusCode}}</td>
+                                <td>
+                                    <a v-on:click="viewDeclaration(item.declarationId, item.type)">{{item.dclNo}}</a>
+                                </td>
+                                <td>{{formatDate(item.createdDate)}}</td>
+                                <td>{{item.expCtrCd}}</td>
+                                <td>{{item.dclKindCd}}</td>
+                                <td>{{item.insClsCd}}</td>
+                                <td>
+                                    <span v-show="item.clearanStatus == -1">Chưa thông quan</span>
+                                    <span v-show="item.clearanStatus == 1">Thông quan</span>
+                                    <span v-show="item.clearanStatus == 2">Đợi thông quan</span>
+                                </td>
+                                <td>{{item.cstOffice}}</td>
+                                <td>{{formatDate2(item.dateOfPermit)}}</td>
+                                <td>
+                                    <a class="btn btn-warning" v-on:click="viewEdit(item.declarationId, item.type)" >Sửa</a>
+                                    <a class="btn btn-danger" v-on:click="removeDe(item.declarationId)">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="~/Content/js/vue.min.js"></script>
+<script src="~/Content/js.update/lib.js"></script>
+<script type="text/javascript">
+    var calltable = 0;
+    var lstExport = new Vue({
+        el: '#lstExport',
+        data: {
+            data: {},
+            lstOrganizationType: [],
+            lstGroupType: [],
+            lstCustoms: [],
+            lstDeclaration: []
+
+        },
+        methods: {
+            init: async function () {
+                var data = this.data;
+                data.cstOffice = ""
+                data.groupTypeId = "";
+                data.clsOrgCd = "";
+                data.insClsCd = "";
+                data.clearanStatus = 0;
+                data.status = 0;
+                data.statusCode = "";
+                data.type = 0;
+                data.startCreatedDate = "";
+                data.endCreatedDate = "";
+                data.dclNo = "";
+                accounts.ShowLoading();
+                this.lstGroupType = await Lib.getGroupType();
+                this.lstCustoms = await Lib.getCustomsOffice();
+                this.lstOrganizationType = await Lib.getOrganizationType();
+                accounts.Unloading();
+
+            },
+            getList: async function (page, callback) { 
+                try {
+                    var token = $('#hdfToken').val();
+                    var dt = this.data;
+                    const response = await axios.get(Config.API_Login + "export/SearchEDADeclaration?type=" + dt.type + "&cstOffice=" + dt.cstOffice + "&dclNo=" + dt.dclNo +
+                        "&startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&dclKindCd=" + dt.groupTypeId + "&insClsCd=" + dt.insClsCd
+                        + "&clearanStatus=" + dt.clearanStatus + "&status=" + dt.status + "&statusCode=" + dt.statusCode + "&page=" + page + "&count=100",
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0)
+                    {
+                        this.lstDeclaration = response.data.Data;
+
+                        if(typeof callback != 'undefined' && typeof callback == 'function')
+                            callback()
+                    }
+                    else return null;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            viewEdit: async function (id, type) {
+                if(type == 4){
+                    window.location.href = Config.Url_Root + "DeclarationEDA/EDAGeneral?Id=" + id + "&type=5";
+                }
+                else if(type == 3){
+                    window.location.href = Config.Url_Root + "ExportDeclaration/MECDeclaration?Id=" + id + "&type=6";
+                }
+            },
+            viewDeclaration: function(id, type){
+                if(type == 4){
+                    window.location.href = Config.Url_Root + "DeclarationEDA/DeclEDAContent?Id=" + id + "&type=5";
+                }
+                else if(type == 3){
+                    window.location.href = Config.Url_Root + "ExportDeclaration/MECDeclarationView?Id=" + id + "&type=6";
+                }
+            },
+            formatDate: function(date) {
+                return moment(String(date)).format('DD/MM/YYYY hh:mm')
+            },
+    formatDate2: function(date){
+        if (date == undefined || date == "" || date == null) {
+            return "";
+        }
+        var d = date.substring(0, 2);
+        var m = date.substring(2, 4);
+        var y = date.substring(4, date.length);
+
+        var time = d + "/" + m + "/" + y;
+
+        return time;
+    },
+            removeDe:  function(idDe){
+                bootbox.confirm("Bạn có chắc xóa tờ khai này!", function(resultCon){
+                    if(resultCon)
+                    {
+                        var token = $('#hdfToken').val();
+                        $.ajax({
+                            type: 'GET',
+                            url: Config.API_Login + "export/DeleteEDADeclaration",
+                            data: {
+                                declarationID: idDe
+                            },
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                //console.log(data);
+                                debugger;
+                                accounts.Unloading();
+                                if (data != null && data != '' && data != undefined) {
+                                    if (data.ResponseCode > 0) {
+                                        lstExport.getList();
+                                    }
+                                    else {
+                                        accounts.Message(data.Description);
+                                    }
+                                }
+                                else {
+                                    accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                }
+
+                            },
+                            error: function (data) {
+                                bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                                return;
+                            }
+                        });
+                    }
+                });
+
+            }
+        },
+        mounted() {
+            this.init();
+            this.getList(0);
+
+            var a = $("li[class='treeview act']");
+            if (a.length > 1) {
+                a[1].removeAttribute("class", "act");
+            }
+        }
+    });
+</script>

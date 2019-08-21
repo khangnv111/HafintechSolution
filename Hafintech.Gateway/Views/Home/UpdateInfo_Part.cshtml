@@ -1,0 +1,242 @@
+﻿<div class="widget-box">
+    <div class="widget-title">
+        <span class="icon"><i class="icon-align-justify"></i></span>
+        <h5>Thông tin tài khoản</h5>
+    </div>
+    <div class="widget-content">
+        <div class="control-group">
+            <div class="controls">
+                <div class="item">
+                    <label>Số tài khoản:</label><span class="spID">@ViewBag.AccountID</span>
+                </div>
+                <div class="item">
+                    <label>Ngày đăng ký:</label><span class="spCreatedDate">@ViewBag.CreatedDate</span>
+                </div>
+                <div class="item">
+                    <label>Số dư tài khoản:</label><span class="sp">0</span>
+                </div>
+                <div class="item">
+                    <label>Số dư khả dụng:</label><span class="sp">0</span>
+                </div>
+                <div class="item">
+                    <label>Email:</label>
+                    @if (string.IsNullOrEmpty(ViewBag.UserName))
+                    {
+                        <input type="text" id="txtEmail" placeholder="Nhập Email" />
+                    }
+                    else
+                    {
+                        <input type="hidden" id="txtEmail" value="@ViewBag.UserName" placeholder="Nhập Email" />
+                        <span class="spEmail">
+                            @ViewBag.UserName
+                        </span>
+                        <a onclick="accounts.InfoAuthentication(1);" class="btn btn-warning" id="btnVerifyEmail" style="display:none">Xác thực Email</a>
+                    }
+                </div>
+                <div class="item">
+                    <label>Số điện thoại:</label>
+                    @if (string.IsNullOrEmpty(ViewBag.Mobile))
+                    {
+                        <input type="text" id="txtMobile" placeholder="Nhập số điện thoại" />
+                    }
+                    else
+                    {
+                        <input type="hidden" id="txtMobile" value="@ViewBag.Mobile" placeholder="Nhập số điện thoại" />
+                        <span class="spPhone">
+                            @ViewBag.Mobile
+                        </span>
+                        <a onclick="accounts.InfoAuthentication(2);" class="btn btn-warning" id="btnVerifyMobile" style="display:none">Xác thực ĐT</a>
+                    }
+                </div>
+                <div class="item">
+                    <label>Mật khẩu:</label>
+                    @if (string.IsNullOrEmpty(ViewBag.UserName))
+                    {
+                        <input type="password" id="txtPassword" placeholder="Nhập password" />
+                    }
+                    else
+                    {
+                        <input type="hidden" id="txtPassword" placeholder="Nhập password" />
+                        <span class="spPhone">
+                            ****************
+                        </span>
+                        <i>(<a onclick="accounts.ShowChangePassWord()">Đổi mật khẩu</a>)</i>
+                    }
+                </div>
+                <div class="item">
+                    <label></label>
+                    <p id="Update1Error" style="color:red;display:none;"></p>
+                </div>
+                <div class="item">
+                    <label></label>
+                    @if (string.IsNullOrEmpty(ViewBag.UserName) || string.IsNullOrEmpty(ViewBag.Mobile))
+            {
+                        <a onclick="accounts.UpdatePhoneAndMail();" class="btn btn-success">Cập nhật</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="widget-box">
+    <div class="widget-title">
+        <span class="icon"><i class="icon-align-justify"></i></span>
+        <h5>Thông tin cá nhân</h5>
+    </div>
+    <div class="widget-content">
+        <div class="control-group">
+            <div class="controls">
+                <form enctype="multipart/form-data" id="form-input-file" name="form-input-file">
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Họ và tên (*)</label>
+                        <input type="text" value="@ViewBag.FullName" class="form-control" id="txtFullName" name="txtFullName" placeholder="Nhập họ và tên" />
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left; font-weight:bold">Ngày sinh </label>
+                        <input type="text" style="width:110px; margin-right:5px;" class="form-control" id="txtDay" name="txtDay" value="@ViewBag.Bd_Day" placeholder="Ngày sinh" />
+                        <select style="width:110px; margin-right:5px;" class="form-control" id="slMonth" name="slMonth">
+                            <option @(ViewBag.Bd_Month == "1" ? "selected='selected'" : "") value="1">1</option>
+                            <option @(ViewBag.Bd_Month == "2" ? "selected='selected'" : "") value="2">2</option>
+                            <option @(ViewBag.Bd_Month == "3" ? "selected='selected'" : "") value="3">3</option>
+                            <option @(ViewBag.Bd_Month == "4" ? "selected='selected'" : "") value="4">4</option>
+                            <option @(ViewBag.Bd_Month == "5" ? "selected='selected'" : "") value="5">5</option>
+                            <option @(ViewBag.Bd_Month == "6" ? "selected='selected'" : "") value="6">6</option>
+                            <option @(ViewBag.Bd_Month == "7" ? "selected='selected'" : "") value="7">7</option>
+                            <option @(ViewBag.Bd_Month == "8" ? "selected='selected'" : "") value="8">8</option>
+                            <option @(ViewBag.Bd_Month == "9" ? "selected='selected'" : "") value="9">9</option>
+                            <option @(ViewBag.Bd_Month == "10" ? "selected='selected'" : "") value="10">10</option>
+                            <option @(ViewBag.Bd_Month == "11" ? "selected='selected'" : "") value="11">11</option>
+                            <option @(ViewBag.Bd_Month == "12" ? "selected='selected'" : "") value="12">12</option>
+                        </select>
+                        <input type="text" style="width:110px; margin-right:10px;" class="form-control" id="txtYear" name="txtYear" value="@ViewBag.Bd_Year" placeholder="Năm sinh" />
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Giới tính</label>
+                        <span style="margin-right:20px"><input type="radio" name="rdgender" @(ViewBag.Gender == 1 ? "checked='checked'" : "") value="1"> Nam</span>
+                        <span><input type="radio" name="rdgender" @(ViewBag.Gender == 0 ? "checked='checked'" : "") value="0"> Nữ</span>
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Hộ chiếu</label>
+                        <input type="text" class="form-control" id="txtPasspostID" name="txtPasspostID" placeholder="Nhập hộ chiếu" value="@ViewBag.PasspostID" />
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Ảnh hộ chiếu</label>
+                        <input type="file" class="form-control" id="filePassportImgPath" name="filePassportImgPath" placeholder="Nhập Số CMTND" />
+                        @if (!string.IsNullOrEmpty(ViewBag.PasspostImgPath))
+                        {
+                            <a href="@(_2017Utilities.Config.Config.UrlRootAPI)Data\upload\@ViewBag.PasspostImgPath" data-lightbox="roadtrip"><img src="@(_2017Utilities.Config.Config.UrlRootAPI)Data\upload\@ViewBag.PasspostImgPath" style="height:50px;" /> </a>
+                        }
+                        <input type="hidden" id="hdfPassportImgPath" name="hdfPassportImgPath" />
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Số CMND (*)</label>
+                        <input type="text" style="width:170px; margin-right:5px;" class="form-control" id="txtIdentity" name="txtIdentity" value="@ViewBag.Identity" placeholder="Nhập Số CMTND" />
+                        <span style="position:relative">
+                            <input type="text" style="width:170px; margin-right:10px;" class="form-control " value="@ViewBag.DateReleased" id="txtDateReleased" name="txtDateReleased" placeholder="Ngày cấp" />
+                        </span>
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Nơi cấp</label>
+                        <input type="text" value="@ViewBag.PlaceReleased" class="form-control" id="txtPlaceReleased" name="txtPlaceReleased" placeholder="Nơi cấp" />
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Mặt trước CMND</label>
+                        <input type="file" class="form-control" id="fileIdentityImgPath1" name="fileIdentityImgPath1" placeholder="Mặt trước CMND" />
+                        @if (!string.IsNullOrEmpty(ViewBag.IdentityImgPath1))
+                        {
+                            <a href="@(_2017Utilities.Config.Config.UrlRootAPI)Data\upload\@ViewBag.IdentityImgPath1" data-lightbox="roadtrip"><img src="@(_2017Utilities.Config.Config.UrlRootAPI)Data\upload\@ViewBag.IdentityImgPath1" style="height:50px;" /> </a>
+                        }
+                        <input type="hidden" id="hdfIdentityImgPath1" name="hdfIdentityImgPath1" />
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Mặt sau CMND</label>
+                        <input type="file" class="form-control" id="fileIdentityImgPath2" name="fileIdentityImgPath2" placeholder="Mặt trước CMND" />
+                        @if (!string.IsNullOrEmpty(ViewBag.IdentityImgPath2))
+                        {
+                            <a href="@(_2017Utilities.Config.Config.UrlRootAPI)Data\upload\@ViewBag.IdentityImgPath2" data-lightbox="roadtrip"><img src="@(_2017Utilities.Config.Config.UrlRootAPI)Data\upload\@ViewBag.IdentityImgPath2" style="height:50px;" /> </a>
+                        }
+                        <input type="hidden" id="hdfIdentityImgPath2" name="hdfIdentityImgPath2" />
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Tỉnh / Thành Phố</label>
+                        <select class="form-control" id="slTinhThanh" name="slTinhThanh" onchange="accounts.GetListDistrict()">
+                            <option value="0">--Chọn Tỉnh Thành--</option>
+                        </select>
+                    </div>
+                    <div class="item" id="divQuanHuyen">
+                        <label style="text-align:left;  font-weight:bold">Quận / Huyện</label>
+                        <select class="form-control" id="slQuanHuyen" name="slQuanHuyen" onchange="accounts.GetListCommune();">
+                            <option value="0">--Chọn Quận / Huyện--</option>
+                        </select>
+                    </div>
+                    <div class="item" id="divPhuongXa">
+                        <label style="text-align:left;  font-weight:bold">Phường / Xã</label>
+                        <select class="form-control" id="slPhuongXa" name="slPhuongXa">
+                            <option value="0">--Chọn Phường / Xã--</option>
+                        </select>
+                    </div>
+                    <div class="item">
+                        <label style="text-align:left;  font-weight:bold">Địa chỉ (*)</label>
+                        <input type="text" class="form-control" id="txtAddress" name="txtAddress" placeholder="Nhập địa chỉ" value="@ViewBag.Address" />
+                    </div>
+
+                    <div class="social-auth-links text-center">
+                        <p id="UpdateError" style="color:red;display:none;"></p>
+                    </div>
+                    <div class="item">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-primary" style=" display:inline-block; max-width:150px; text-transform:uppercase" type="submit">Cập nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdfProvinceCode" value="@ViewBag.ProvinceCode" />
+<input type="hidden" id="hdfDistrictCode" value="@ViewBag.DistrictCode" />
+<input type="hidden" id="hdfCommuneCode" value="@ViewBag.CommuneCode" />
+<input type="hidden" id="hdfAccountID" value="@ViewBag.AccountID" />
+
+<script type="text/javascript">
+
+    $("#form-input-file").validate({
+        rules: {
+            txtFullName: "required",
+            txtDay: "required",
+            slMonth: "required",
+            txtYear: "required",
+            txtIdentity: "required",
+            txtDateReleased: "required",
+            txtPlaceReleased: "required",
+            slTinhThanh: "required",
+            txtAddress: "required"
+        },
+        messages: {
+            txtFullName: "Vui lòng nhập tên",
+            txtDay: "",
+            slMonth: "",
+            txtYear: "Vui lòng nhập đầy đủ ngày sinh",
+            txtIdentity: "Vui lòng nhập CMND",
+            txtDateReleased: "",
+            txtPlaceReleased: "Vui lòng nhập nơi cấp",
+            slTinhThanh: "Vui lòng chọn Tỉnh/Thành phố",
+            txtAddress: "Vui lòng nhập địa chỉ"
+        },
+        submitHandler: function (form) {
+            accounts.confirmUpdateInfo();
+        }
+    });
+
+    $('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+
+    $('#txtDateReleased').datetimepicker({
+        showTodayButton: false,
+        format: 'MM/DD/YYYY'
+    });
+
+    lightbox.option({
+        'maxHeight': 650
+    })
+</script>

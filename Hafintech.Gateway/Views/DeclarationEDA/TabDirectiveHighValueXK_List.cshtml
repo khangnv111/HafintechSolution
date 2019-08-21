@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "TabDirectiveHighValueXK_List";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h4><a href="#">Danh sách Tờ khai</a> >> Tờ Khai</h4>
+        <a href="javascript:;" onclick="Export.LinktoTTTK(2)" id="edaTab1" class="btn btn-success">Thông tin chung</a>
+        <a onclick="Export.Reloadpage();" id="edaTab4" class="btn btn-success">Chỉ thị của hải quan</a>
+        <a onclick="Export.LinktoKQ(2);" id="edaTab5" class="btn btn-success">Kết quả xử lý tờ khai</a> 
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>CHỈ THỊ CỦA HẢI QUAN</h5>
+            </div>
+            <table id="listContainer" class="table table-bordered data-table" role="grid" aria-describedby="example1_info">
+                <thead>
+                    <tr>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="dclId" value="@ViewBag.IdDe" />
+<input type="hidden" id="txtdclNo" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var dclNo = url.searchParams.get("dclNo");
+        $("#txtdclNo").val(dclNo);
+        setTimeout(function () {
+            hq2.listChithi();
+        }, 1800)
+    })
+</script>
+
+

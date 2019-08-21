@@ -1,0 +1,19 @@
+﻿@if (ViewBag.Show == 1)
+{
+    <div id="loginbox" style="background: #fff;width:650px;">
+        <div class="control-group normal_text">
+            <b style="font-size:18px;">THÔNG BÁO</b>
+            <b onclick="accounts.ClosePopup();" class="icClose">X</b>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <div class="main_input_box">
+                    <p>
+                        <img src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/imgGuide.PNG" />
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,177 @@
+﻿
+
+@{
+    ViewBag.Title = "Declaration_IHY";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+    var url = Request.Url.ToString();
+    Uri MyUrl = new Uri(url);
+    var attNo = HttpUtility.ParseQueryString(MyUrl.Query).Get("attNo");
+}
+<input type="hidden" value="@attNo" id="attachmentNo" />
+<form action="#" enctype="multipart/form-data" id="form-input-file" name="form-input-file">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4><a href="javascript:;">Nghiệp vụ khai báo đính kèm</a> >> Xem file đính kèm:</h4>
+            <a class="btn btn-warning" id="btnTab2"> Tờ khai </a>
+            <a onclick="hq2.linkToCustomsMessage_Attach()" class="btn btn-success">Kết quả xử lý tờ khai</a>
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông Tin chung</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group span12">
+                                    <label class="control-label">Số tờ khai:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input style="margin-left:2px" type="text" class="span6" id="txtDeclarationNo" name="txtDeclarationNo" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Phân loại thủ tục khai báo:</label>
+                                    <div class="controls" style="position:relative;">
+                                        <input style="width:70px" type="text" id="txtappProType" name="txtappProType" class="span3" />
+                                        <select style="width:277px" class="span5" id="slappProName" name="slappProName">
+                                            <option>--chọn--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Cơ quan hải quan:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input style="margin-left:2px" type="text" class="span6 CH" id="txtcstOffice" name="txtcstOffice" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Nhóm xử lý hồ sơ: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtcstSubSection" name="txtcstSubSection"  />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày khai báo:</label>
+                                    <div class="controls" style="position:relative;">
+                                        <input type="text" id="txtappDate" name="txtappDate" class="span11 dDate" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Trạng thái khai báo: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtappStatus" name="txtappStatus"  />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày sửa đổi cuối cùng:</label>
+                                    <div class="controls" style="position:relative;">
+                                        <input type="text" id="txtlastUpdateDate" name="txtlastUpdateDate" class="span11 dDate" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Tên người khai báo: </label>
+                                    <div class="controls">
+                                        <input style="max-width: 980px;" type="text" class="span12" id="txtappName" name="txtappName" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa chỉ người khai báo: </label>
+                                    <div class="controls">
+                                        <input style="max-width: 980px;" type="text" class="span12" id="txtappAddress" name="txtappAddress" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số điện thoại người khai báo: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtappPhoneNo" name="txtappPhoneNo" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số để lấy tệp đính kèm: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtamendDclNo" name="txtamendDclNo" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số quản lý trong nội bộ doanh nghiệp: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txteiControlNo" name="txteiControlNo" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ghi chú: </label>
+                                    <div class="controls">
+                                        <input style="max-width: 980px; height: 100px;" type="text" class="span20" id="txtremarks" name="txtremarks" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày hoàn thành kiểm tra:</label>
+                                    <div class="controls" style="position:relative;">
+                                        <input type="text" id="txtdateCmplInsp" name="txtdateCmplInsp" class="span11 dDate" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ghi chú(hải quan): </label>
+                                    <div class="controls">
+                                        <input style="max-width: 980px; height: 100px;" type="text" class="span20" id="txtremarksCustom" name="txtremarksCustom" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="form-actions" style="text-align: center;">
+                <button type="submit" class="btn btn-success" id="btnSaveDeclaration" style="display:none"></button>
+                
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    var decID = "@(ViewBag.declarationID)";
+    $(document).ready(function () {
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var attNo = url.searchParams.get("attNo");
+        setTimeout(function () {
+            if (attNo != "" && attNo != undefined && attNo != null) {
+                hq2.getDataItemAttachfile(attNo);
+            }
+        }, 1000)
+        $("#form-input-file").validate({
+            rules: {
+
+            },
+            messages: {
+
+            },
+            submitHandler: function (form) {
+
+            }
+        });
+
+        $('.dDate').datetimepicker({
+            showTodayButton: false,
+            format: 'MM/DD/YYYY'
+        }).on('dp.change', function (t) {
+            hq.KeyPressTextboxBill(t);
+        });
+
+        setTimeout(function () {
+
+        }, 500);
+
+
+        var a = $("li[class='treeview act']");
+        if (a.length > 1) {
+            a[0].removeAttribute("class", "act");
+        }
+    })
+</script>

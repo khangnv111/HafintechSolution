@@ -1,0 +1,139 @@
+﻿
+<div id="loginbox" style="margin-top:-100px">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">THÊM HÀNG VÀO TỜ KHAI</b>
+        <b onclick="accounts.ClosePopup();" class="icClose">X</b>
+    </div>
+
+    <form enctype="multipart/form-data" id="form-input" name="form-input">
+        <input type="hidden" id="hdf_declarationID" name="hdf_declarationID" />
+        <div class="form-horizontal" style="padding:10px;">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <label>Tên hàng: <span class="error">(*)</span></label>
+                        <div class="main_input_box">
+                            <input type="text" class="span12" id="txtName" name="txtName" style="width:100%;" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="control-group1">
+                        <label>Loại sản phẩm: <span class="error">(*)</span></label>
+                        <div class="main_input_box">
+                            <select id="slProductType" style="width:100%" name="slProductType" class="span12" required>
+                                <option value="">--Chọn loại--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group1">
+                        <label>Xuất xứ: <span class="error">(*)</span> </label>
+                        <div class="main_input_box">
+                            <select id="slCodeCountry" style="width:100%" name="slCodeCountry" class="span12" required>
+                                <option value="">--Chọn--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group1">
+                        <label>Số lượng: <span class="error">(*)</span></label>
+                        <div class="main_input_box">
+                            <input type="text" class="span12" style="width:100%" id="txtNumber" name="txtNumber" required />
+                        </div>
+                    </div>
+                    <div class="control-group1">
+                        <label class="text-left">Giá trị hàng: <span class="error">(*)</span></label>
+                        <div class="main_input_box">
+                            <input type="text" style="width:100%" class="span12" id="txtValue" name="txtValue" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span6">
+                    <div class="control-group1">
+                        <label>Đơn vị tính: <span class="error">(*)</span></label>
+                        <div class="main_input_box">
+                            <select id="slUnit" name="slUnit" style="width:100%" class="span12" required>
+                                <option value="">Chọn đơn vị tính</option>
+                                <option value="cai">Cái</option>
+                                <option value="chiec">Chiếc</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group1">
+                        <label>Trọng lượng: <span class="error">(*)</span></label>
+                        <div class="main_input_box">
+                            <input type="text" style="width:100%" class="span12" id="txtWeight" name="txtWeight" required />
+                        </div>
+                    </div>
+                    <div class="control-group1">
+                        <label>Thuế suất: <span class="error">(*)</span></label>
+                        <div class="main_input_box">
+                            <input type="text"  style="width:100%" class="span12" id="txtTax" name="txtTax" required />
+                        </div>
+                    </div>
+                    <div class="control-group1" style="display:none">
+                        <label>Thuế thấp nhất: <span class="error">(*)</span></label>
+                        <div class="main_input_box">
+                            <input type="text"  style="width:100%" class="span12" id="txtTaxMinFee" name="txtTaxMinFee" value="0" required />
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="social-auth-links text-center">
+                <p id="LogError" style="color:red;display:none;"></p>
+            </div>
+        </div>
+        <div class="form-actions" style="text-align: center;">
+            <input type="hidden" id="hdfTypeSubmit" />
+            <button type="submit" id="btnSubmitProduct"></button>
+            <a href="javascript:;" onclick="hq.CheckOnSubmit(1);" class="btn btn-warning">Lưu và Tiếp Tục</a>
+            <a href="javascript:;" onclick="hq.CheckOnSubmit(2);" class="btn btn-success">Lưu</a>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#form-input").validate({
+            rules: {
+                txtName: "required",
+                slProductType: "required",
+                slUnit: "required",
+                slCodeCountry: "required",
+                txtWeight: "required",
+                txtTax: "required",
+                txtNumber: "required",
+                txtValue: "required"
+            },
+            messages: {
+                txtName: "Vui lòng nhập tên hàng",
+                slProductType: "Vui lòng chọn loại sản phẩm",
+                slUnit: "Vui lòng chọn đơn vị tính",
+                txtWeight: "Vui lòng nhập trọng lượng",
+                slCodeCountry: "Vui lòng chọn xuất xứ",
+                txtTax: "Vui lòng nhập thuế xuất",
+                txtNumber: "Vui lòng nhập số lượng",
+                txtValue: "Vui lòng nhập giá trị hàng"
+               
+            },
+            submitHandler: function (form) {
+                console.log($('#hdfTypeSubmit').val());
+                if ($('#hdfTypeSubmit').val() == 1)
+                {
+                    hq.confirmReAddProduct();
+                }
+                else
+                {
+                    hq.confirmAddProduct();
+                }
+            }
+        });
+
+        hq.getProductType();
+        hq.getcountry();
+    })
+</script>

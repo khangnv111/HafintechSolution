@@ -1,0 +1,102 @@
+﻿
+
+<div id="loginbox" style="width: 700px;">
+    <div class="control-group normal_text">
+        <b style="font-size:18px; text-transform: uppercase">Thiết lập tài khoản</b>
+        <b onclick="utils.closeAll();" class="icClose">X</b>
+    </div>
+
+    <form enctype="multipart/form-data" id="form-input" name="form-input">
+        <div class="social-auth-links text-center">
+            <p id="LogError" style="color:red;display:none;"></p>
+        </div>
+        <div class="form-horizontal" style="padding:10px;">
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Mã số thuế</label>
+                        </div>
+                        <div class="span6">
+                            <input type="text" class="span12" id="numberCert" name="numberCert" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Mã người sử dụng (UserID) </label>
+                        </div>
+                        <div class="span6">
+                            <input type="text" class="span12" id="userId" name="userId" placeholder="" maxlength="8"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Mật khẩu</label>
+                        </div>
+                        <div class="span8">
+                            <input type="password" class="span12" id="passwordTKS" name="passwordTKS" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Mã thiết bị đầu cuối (Terminal ID)</label>
+                        </div>
+                        <div class="span8">
+                            <input type="text" class="span12" id="terminalId" name="terminalId" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>Khóa truy cập</label>
+                        </div>
+                        <div class="span8">
+                            <input type="text" class="span12" id="accessKey" name="accessKey" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="span3">
+                            <label>File chữ ký số</label>
+                        </div>
+                        <div class="span8">
+                            <input type="file" class="span12" id="fileAttach"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid" style="margin-top: 25px; margin-bottom: 15px;">
+                <div class="span9" style="float:right">
+                    <a href="javascript:;" onclick="TK.InsertRegNumber()" class="btn btn-success" style="padding: 7px 35px;">Thêm</a>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </form>
+</div>

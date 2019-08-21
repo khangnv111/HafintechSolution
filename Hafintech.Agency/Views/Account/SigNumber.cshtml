@@ -1,0 +1,174 @@
+﻿<div style="padding: 0 20px 0 20px; margin: auto">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="span12" style="border-bottom: 1px solid #808080; margin-bottom: 5px">
+                <h4 style="text-transform: uppercase">Thiết lập thông số mặc định</h4>
+            </div>
+
+            <div class="row-fluid">
+                <h5 id="nameCompany"></h5>
+            </div>
+
+            <div class="row-fluid" style="margin-bottom: 20px">
+                <a href="@Url.Action("Index", "Account")" class="btn btn-default" style="padding: 8px 20px 8px 20px;"> Cài đạt VNACCS</a>
+                <a href="javascript:;" class="btn btn-warning" style="padding: 8px 20px 8px 20px;"> Chữ ký số</a>
+            </div>
+
+            <div class="content-page-business-info">
+                <div class="widget-box">
+
+                    <div class="form-horizontal" style="padding:10px;">
+                        <div class="row-fluid">
+                            <input type="checkbox" /> Sử dụng chữ ký số đang cắm vào máy tính của bạn
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; display: inline-block;">Chọn chữ ký số bên dưới</label>
+                                    <br />
+                                    <div class="main_input_box" style="width: 30%;">
+                                        <input type="text" class="span12" id="codeBusiness" name="codeBusiness" style="width:100%;" placeholder="" />
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <span>Tính năng này sử dụng trong trường hợp máy tính đang chạy chương trình phải có chữ ký số cắm vào</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <input type="checkbox"/> Gửi file chữ ký số lên hệ thống 
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <input type="file" class="form-control" id="fileAttach" />
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div style="width: 95%; border-top: 1px solid #CDCDCD; margin: auto"></div>
+
+                    <div class="form-horizontal" style="padding:10px;">
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <input type="checkbox"/> Sử dụng tính năng TRình ký * Ký tờ khai HQ kết nối internet
+                                </div>
+                            </div>
+
+                            <div class="span12">
+                                <input type="radio" name="typeBusiness" />Doanh nghiệp trực tiếp XNK trình lãnh đạo ký
+                                <br />
+                                <input type="radio" name="typeBusiness" />Đại lý thủ tục trình lãnh đạo của Doanh nghiệp có hàng trên tờ khai ký
+                            </div>
+                        </div>
+
+                       
+
+                    </div>
+
+                    <div class="form-horizontal" style="padding:10px;">
+                        <h5 style="text-transform: uppercase"> Kết nối Hải quan VNACCS</h5>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Địa chỉ URL Hải quan VNACCS:</label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="url" class="span12" id="cusUrl" name="cusUrl" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Mã người sử dụng (User ID): </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="userId" name="userId" style="width:100%;" placeholder="" maxlength="8"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Mật khẩu (Password): </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="password" class="span12" id="passwordTKS" name="passwordTKS" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Mã thiết bị đầu cuối (Teminal ID): </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="terminalId" name="terminalId" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Khóa truy cập (Teminal access key):</label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="accessKey" name="accessKey" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-horizontal" style="padding:10px;">
+                        <label>
+                            Lưu ý: Thông tin người sử dụng sẽ được Hải quan cấp cho Doanh nghiệp sau khi Doanh nghiệp đăng ký thông tin khai báo Hải quan qua hệ thống VNACCS.
+                        </label>
+
+                    </div>
+
+                    <div class="form-actions" style="">
+                        <input type="hidden" id="signatureIdVnacc" value=""/>
+                        <a href="javascript:;" onclick="TK.InsertRegNumber()" class="btn btn-success" style="padding: 7px 35px;">Lưu lại</a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        Act.CheckActiveAcc();
+
+        Vnacc.GetInfoSignalture();
+    });
+</script>

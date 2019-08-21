@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = "CustomerPersonal";
+}
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Tìm kiếm</h5>
+            </div>
+            <div class="widget-content">
+                
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Số CMND</label>
+                        <input type="text" class="span12" id="identitySerch" name="identitySerch" placeholder="">
+                    </div>
+
+                    <div class="span2">
+                        <label>Họ và tên</label>
+                        <input type="text" class="span12" id="fullnameSearch" name="fullnameSearch" placeholder="">
+                    </div>
+
+                    <div class="span2">
+                        <label>Điện thoại</label>
+                        <input type="text" class="span12" id="phoneSearch" name="phoneSearch" placeholder="">
+                    </div>
+
+                    
+                    <div class="span4">
+                        <div style="margin-top:25px;">
+                            <a onclick="Customer.SearchListPersonal()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            <a onclick="Customer.ShowPopupPersonal()" class="btn btn-warning"><i class="fa fa-plus"></i> Thêm</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách khách hàng cá nhân</h5>
+                </div>
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:100px">STT</th>
+                                <th class="text-center" style="min-width:100px">Số CMND</th>
+                                <th class="text-center" style="min-width:100px">Họ và tên</th>
+                                <th class="text-center">Điện thoại</th>
+                                <th class="text-center">Địa chỉ</th> 
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list-content-table">
+                            <tr>
+                                <td colspan="11" style="text-align:center">
+                                    <img width="50" src="~/Content/img/loading.gif" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+
+            Customer.SearchListPersonal();
+        }, 1500);
+    });
+</script>

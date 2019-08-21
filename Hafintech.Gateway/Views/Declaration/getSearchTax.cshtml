@@ -1,0 +1,51 @@
+﻿<div id="loginbox" style="width: 800px;">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">DANH MỤC THUẾ</b>
+        <b onclick="accounts.ClosePopupTax();" class="icClose">X</b>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="widget-box">
+                <div class="widget-content">
+                    <div class="row-fluid">
+                        <div class="span3">
+                            <label>Mã thuế</label>
+                            <input type="text" class="span11" id="txtCode" name="txtCode" value="@ViewBag.code">
+                        </div>
+                        <div class="span3">
+                            <label>Tên thuế</label>
+                            <input type="text" class="span11" id="txtName" name="txtName" value="@ViewBag.name">
+                        </div>
+                        <div class="span3">
+                            <div style="margin-top:25px;">
+                                <a onclick="hq.getTaxAntiDumpingDuty(@ViewBag.Type, @ViewBag.page)" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-body" id="dvContent">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon"><i class="icon-align-justify"></i></span>
+                        <h5>Danh sách tìm kiếm</h5>
+                    </div>
+                    <div class="widget-content nopadding fix_hgt_tbl_add" id="divUpdate">
+                        <table id="listContainer2" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">STT</th>
+                                    <th class="text-center">Mã nước</th>
+                                    <th class="text-center">Tên nước</th>
+                                    <th class="text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

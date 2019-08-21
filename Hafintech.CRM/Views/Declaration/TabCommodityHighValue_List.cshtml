@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "TabCommodityHighValue_List";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+
+<div class="row-fluid">
+    <div class="span12">
+        <h4><a href="@Url.Action("Declaration_List", "Declaration", new { uid = ViewBag.uid})">Danh sách Tờ khai</a> >> Tờ Khai: @ViewBag.declarationID</h4>
+        <a href="@Url.Action("DeclarationHighValue_Detail", "Declaration", new { decID = ViewBag.declarationID, uid = ViewBag.uid })" class="btn btn-success">Chi tiết Tờ khai GTC</a>
+        <a href="@Url.Action("TabCommodityHighValue_List", "Declaration", new { decID = ViewBag.declarationID, uid = ViewBag.uid })" class="btn btn-warning">Danh sách hàng GTC</a>
+        <a href="@Url.Action("TabDirectiveHighValue_List", "Declaration", new { decID = ViewBag.declarationID,uid = ViewBag.uid })" class="btn btn-success">Chỉ thị của hải quan</a>
+        <a href="@Url.Action("TabResultHighValue", "Declaration", new { decID = ViewBag.declarationID, uid = ViewBag.uid })" class="btn btn-success">Kết quả xử lý tờ khai GTC</a>
+        @*<a href="@Url.Action("Declaration_List", "Declaration", new { uid = ViewBag.uid})" class="btn btn-warning" style="float:right; margin: 0px 0px;"><i class="icon icon-book"></i> << Danh sách tờ khai</a>*@
+        <div class="widget-box">
+            <div style="clear:both"></div>
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Chi tiết danh sách hàng</h5>
+                @*<a href="@Url.Action("DeclarationHighValue_List", "Declaration")" class="btn btn-warning" style="float:right; margin: 2px 2px;"><i class="icon icon-book"></i> Sửa</a>
+                    <a onclick="hq.ShowCommodity_Add()" class="btn btn-success" style="float:right; margin: 2px 5px; display:none"><i class="icon icon-book"></i> Thêm hàng hóa</a>*@
+            </div>
+            <div style="overflow-x:auto; overflow-y: scroll;">
+                <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                    <thead>
+                        <tr>
+                            <th style="min-width:50px">STT</th>
+                            <th>Mã số hàng hóa</th>
+                            <th style="min-width:100px">Tên hàng(Mô tả chi tiết)</th>
+                            <th>Xuất xứ</th>
+                            <th>Số lượng</th>
+                            <th style="min-width:100px">Số lương thực tế</th>
+                            <th>Đợn vị tính(SL)</th>
+                            <th style="min-width:100px">Đơn giá hóa đơn</th>
+                            <th style="min-width:100px">Đơn vị tiền tệ đơn giá hóa đơn</th>
+                            <th style="min-width:100px">Trị giá hóa đơn</th>
+                            <th style="min-width:100px">Trị giá tính thuế</th>
+                            <th style="min-width:100px">Mã biểu thuế NK</th>
+                            <th>TNNK(%)</th>
+                            <th style="min-width:100px">Mã Miễn/Giảm/Không chịu thuế NK</th>
+                            <th style="min-width:100px">Tiền thuế NK</th>
+                            <th style="min-width:100px">Mã biểu thuế TTDB</th>
+                            <th>Thuế suẩt TTDB(%)</th>
+                            <th style="min-width:100px">Mã Miễn/Giảm/Không chịu thuế TTDB</th>
+                            <th>Tiền thuế TTĐB</th>
+                            <th style="min-width:100px">Mã biểu thuế Môi trường</th>
+                            <th>Thuế suất môi trường(%)</th>
+                            <th style="min-width:100px">Mã Miễn/Giảm/Không chịu thuế BVMT</th>
+                            <th style="min-width:100px">Tiền thuế môi trường</th>
+                            <th style="min-width:100px">Mã biểu thuế VAT</th>
+                            <th>Thuế suẩ VAT(%)</th>
+                            <th style="min-width:100px">Mã Miễn/Giảm/Không chịu thuế Mã biểu thuế VAT</th>
+                            <th>Tiền thuế VAT</th>
+                            @*<th style="min-width:150px">Thao tác</th>*@
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdfdeclarationID" value="@ViewBag.declarationID" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        hq.getListProduct_HV();
+    })
+</script>
+

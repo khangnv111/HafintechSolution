@@ -1,0 +1,155 @@
+﻿
+
+<div id="loginbox" style="width: 100%; max-height: 70%">
+    <div class="control-group normal_text" style="width: 100%;">
+        <b id="title-pop" style="font-size:18px; text-transform: uppercase">Khai báo vận đơn</b>
+        <b onclick="Voucher.ClosePop();" class="icClose">X</b>
+    </div>
+
+    <div class="form-horizontal" style="padding:10px;">
+        <div class="border-box">
+            <div class="row-fluid">
+                <div class="" style="padding: 10px">
+                    <b>Thông tin khai báo</b>
+                </div>
+            </div>
+
+            <div class="row-fluid" style="margin-bottom: 15px">
+                <div class="span6">
+                    <div class="span4">
+                        Số TK
+                    </div>
+                    <div class="span7">
+                        <input type="text" id="so-tk" class="span10" />
+                    </div>
+                </div>
+
+                <div class="span6">
+                    <div class="span4">
+                        Trạng thái
+                    </div>
+                    <div class="span7">
+                        <b>Đã khai báo</b>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid" style="margin-bottom: 15px">
+                <div class="span6">
+                    <div class="span4">
+                        Ngày đăng ký
+                    </div>
+                    <div class="span7">
+                        <input type="date" id="date-sign" class="span7" />
+                    </div>
+                </div>
+
+                <div class="span6">
+                    <div class="span6">
+                        <div class="span4">
+                            Số TN
+                        </div>
+                        <div class="span7">
+                            <input type="text" id="so-tn" class="span11" />
+                        </div>
+                    </div>
+
+                    <div class="span6">
+                        <div class="span4">
+                            Ngày TN
+                        </div>
+                        <div class="span8">
+                            <input type="date" id="ngay-tn" class="span12" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid" style="margin-bottom: 15px">
+                <div class="span6">
+                    <div class="span6">
+                        <div class="span4">
+                            Mã LH
+                        </div>
+                        <div class="span7">
+                            <input type="text" id="ma-lh" class="span11" />
+                        </div>
+                    </div>
+
+                    <div class="span6">
+                        <div class="span4">
+                            Mã HQ
+                        </div>
+                        <div class="span8">
+                            <input type="text" id="ma-hq" class="span12" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span6">
+                    <div class="span4">
+                        Số tham chiếu
+                    </div>
+                    <div class="span7">
+                        <input type="text" id="tham-chieu" class="span11" />
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="border-box">
+
+            <div class="row-fluid">
+                <div class="widget-box">
+                    @if (ViewBag.pos == 1)
+                    {
+                        @Html.Action("PopupBillDeclare", "ElectronicVoucher")
+                    }
+                    else if (ViewBag.pos == 2)
+                    {
+                        @Html.Action("CO_Declare", "ElectronicVoucher")
+                    }
+                    else if (ViewBag.pos == 3)
+                    {
+                        @Html.Action("LicenseDeclare", "ElectronicVoucher")
+                    }
+                    else if (ViewBag.pos == 4)
+                    {
+                        @Html.Action("ContractDeclare", "ElectronicVoucher")
+                    }
+                    else if (ViewBag.pos == 5)
+                    {
+                        @Html.Action("CommerceDeclare", "ElectronicVoucher")
+                    }
+                    else if (ViewBag.pos == 6)
+                    {
+                        @Html.Action("ContainerDeclare", "ElectronicVoucher")
+                    }
+                    else
+                    {
+                        @Html.Action("OtherDeclare", "ElectronicVoucher")
+                    }
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <b>Lưu ý: Tổng dung lượng không được vượt quá  2MB. Chỉ được nhập các file có đuôi sau (*TXT, *DOC. CSV. JBG. *BMP. *TIF. *XML. *DOCX. *JPEG. *GIF. *). Các file đính kèm được hỗ trợ ký số trực tiếp trên phần mềm phải là File có đuôi  *PDF.. *DOCX. *XLSX</b>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span2">
+                <button class="btn btn-info"><i class="fa fa-stop-circle"></i> Khai báo</button>
+            </div>
+            <div class="span2">
+                <button class="btn btn-success"><i class="fa fa-save"></i> Lưu</button>
+            </div>
+            <div class="span3">
+                <button class="btn btn-default"><i class="fa fa-file-pdf-o" style="color: #0094ff"></i> Xem thông tin trả về từ Hải quan</button>
+            </div>
+        </div>
+    </div>
+</div>
+

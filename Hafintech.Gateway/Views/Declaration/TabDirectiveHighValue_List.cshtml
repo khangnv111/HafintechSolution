@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "TabDirectiveHighValue_List";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h4><a href="@Url.Action("Declaration_List", "Declaration")">Danh sách Tờ khai</a> >> Tờ Khai: @ViewBag.declarationID</h4>
+        <a href="@Url.Action("DeclarationHighValue_Detail", "Declaration", new { decID = ViewBag.declarationID })" class="btn btn-success">Chi tiết Tờ khai GTC</a>
+        <a href="@Url.Action("TabCommodityHighValue_List", "Declaration", new { decID = ViewBag.declarationID })" class="btn btn-success">Danh sách hàng GTC</a>
+        <a href="@Url.Action("TabDirectiveHighValue_List", "Declaration", new { decID = ViewBag.declarationID })" class="btn btn-warning">Chỉ thị của hải quan</a>
+        <a href="@Url.Action("TabResultHighValue", "Declaration", new { decID = ViewBag.declarationID })" class="btn btn-success">Kết quả xử lý tờ khai GTC</a>
+        <a href="@Url.Action("DeclarationHighValue_List", "Declaration")" class="btn btn-warning" style="float:right; margin: 0px 0px;"><i class="icon icon-book"></i> << Danh sách tờ khai GTC </a>
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>CHỈ THỊ CỦA HẢI QUAN</h5>
+            </div>
+            <table id="listContainer" class="table table-bordered data-table" role="grid" aria-describedby="example1_info">
+                <thead>
+                    <tr>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hdfdclNo" value="@ViewBag.declarationID" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        setTimeout(function () {
+            hq2.listChithi();
+        }, 1800)
+    })
+</script>
+

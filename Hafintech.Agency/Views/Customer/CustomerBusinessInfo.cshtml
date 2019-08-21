@@ -1,0 +1,182 @@
+﻿
+@{
+    ViewBag.Title = "CustomerBusinessInfo";
+}
+
+<div style="padding: 0 20px 0 20px; margin: auto">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="span12" style="border-bottom: 1px solid #808080; margin-bottom: 5px">
+                <span>Quản lý khách hàng doanh nghiệp   >>   Thông tin chi tiết khác hàng doanh nghiệp</span>
+            </div>
+
+            <div class="row-fluid" >
+                <h5 id="nameCompany"></h5>
+            </div>
+
+            <div class="row-fluid" style="margin-bottom: 20px">
+                <a href="javascript:;" class="btn btn-success" style="padding: 8px 20px 8px 20px;"> Thông tin tài khoản</a>
+                <a href="@Url.Action("CustomerBusinessDeclaration","Customer", new { businessId = ViewBag.businesId })" class="btn btn-warning" style="padding: 8px 20px 8px 20px;"> Danh sách tờ khai</a>
+                <a href="javascript:;" class="btn btn-danger" style="padding: 8px 20px 8px 20px;"> Lịch sử nộp tiền thuế</a>
+
+                @*<a href="javascript:;" class="btn btn-default" style="padding: 8px 20px 8px 20px; float: right"><i class="fa fa-edit" ></i> Sửa</a>*@
+            </div> 
+
+            <div class="content-page-business-info">
+                <div class="widget-box">
+                     
+                    <div class="form-horizontal" style="padding:10px;">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; display: inline-block; float: left">Mã doanh nghiệp: </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="codeBusiness" name="codeBusiness" style="width:100%;" placeholder="Mã doanh nghiệp" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; display: inline-block; float: left">Tên doanh nghiệp: </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="nameBusiness" name="nameBusiness" style="width:100%;" placeholder="Tên doanh nghiệp" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Địa chỉ: </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="adressBusiness" name="adressBusiness" style="width:100%;" placeholder="Địa chỉ doanh nghiệp" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group1">
+                                    <label>Số điện thoại: </label>
+                                    <div class="main_input_box">
+                                        <input type="text" class="span12" id="phoneBusiness" name="phoneBusiness" style="width:100%;" placeholder="Số điện thoại của doanh nghiệp" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span3">
+                                <div class="control-group1">
+                                    <label>Fax: </label>
+                                    <div class="main_input_box">
+                                        <input type="text" class="span12" id="faxBusiness" name="faxBusiness" style="width:100%;" placeholder="Số Fax hỗ trợ" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="control-group1">
+                                    <label>Email: </label>
+                                    <div class="main_input_box">
+                                        <input type="text" class="span12" id="emailBusiness" name="emailBusiness" style="width:100%;" placeholder="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span3">
+                                <div class="control-group1">
+                                    <label>Website: </label>
+                                    <div class="main_input_box">
+                                        <input type="text" class="span12" id="webBusiness" name="webBusiness" style="width:100%;" placeholder="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div style="width: 95%; border-top: 1px solid #CDCDCD; margin: auto"></div>
+
+                    <div class="form-horizontal" style="padding:10px;">
+                        <h5 style="text-transform: uppercase"> Kết nối Hải quan VNACCS</h5>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Địa chỉ URL Hải quan VNACCS:</label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="url" class="span12" id="urlBusinessVnaccs" name="urlBusinessVnaccs" style="width:100%;" placeholder="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Mã người sử dụng (User ID): </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="idUserVnaccs" name="idUserVnaccs" style="width:100%;" placeholder="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Mật khẩu (Password): </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="password" class="span12" id="passVnaccs" name="passVnaccs" style="width:100%;" placeholder="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Mã thiết bị đầu cuối (Teminal ID): </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="codeTerminalVnaccs" name="codeTerminalVnaccs" style="width:100%;" placeholder="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Khóa truy cập (Teminal access key):</label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="terminalKeyVnaccs" name="terminalKeyVnaccs" style="width:100%;" placeholder="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            Customer.LoadDetailBusiness(@ViewBag.businesId);
+        }, 500);
+    });
+</script>
+

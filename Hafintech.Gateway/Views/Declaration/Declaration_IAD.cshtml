@@ -1,0 +1,868 @@
+﻿
+@{
+    ViewBag.Title = "Declaration_IAD";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<form action="#" enctype="multipart/form-data" id="form-input-file" name="form-input-file">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4><a href="javascript:;">Danh sách Tờ khai</a> >> Tạo Tờ Khai:</h4>
+            <a class="btn btn-warning" id="btnTab2"> Tờ khai </a>
+            <a onclick="hq2.linkToAMCmessage();" class="btn btn-success">Kết quả xử lý tờ khai</a>
+ 
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông Tin chung</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group span12" style="display:none">
+                                    <label class="control-label">Mã Tờ khai: </label>
+                                    <div class="controls">
+                                        @if ((int)ViewBag.declarationID > 0)
+                                        {
+                                            <b style="line-height: 30px;" id="txtDeclaration">@ViewBag.declarationID</b>
+                                            <input style="width:350px" type="hidden" class="span5" id="hdfdclNo" name="hdfdclNo" value="@ViewBag.declarationID" />
+                                            <input type="hidden" class="span5" id="dclNoHQ" name="dclNoHQ" />
+                                        }
+                                        else
+                                        {
+                                            <input style="width:350px" type="text" class="span5" id="txtdclNoA" name="txtdclNoA" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số Thông báo: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtnotificationNo" name="txtnotificationNo" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số Tờ khai bổ sung: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtamendDclNo" name="txtamendDclNo" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Cơ quan hải quan:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="hidden" id="hdfcstOffice" name="hdfcstOffice" />
+                                        <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" />
+                                        <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" onclick="hq.getSeachCustom()" onchange="hq.getSeachCustom(); $('#hdfcstOffice,#txtcstOfficeNm').val('');" autocomplete="off" required />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()">...</button>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số Tờ khai:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input type="text" class="span3" id="txtieClsf" name="txtieClsf" />
+                                        <input style="margin-left:2px" type="text" class="span5" id="txtdclNo" name="txtdclNo" onchange="hq2.getDataItem();" />
+                                        <input style="margin-left:2px" type="text" class="span3 ICB" id="txtdclKindCd" name="txtdclKindCd" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày tờ khai Xuất nhập khẩu:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input type="text" class="span3" id="txtieDclDate" name="txtieDclDate" />
+                                        <input style="margin-left:2px" type="text" class="span5" id="txtsignOver60D" name="txtsignOver60D" />
+                                        <input style="margin-left:2px" type="text" class="span3" id="txtcdTimeLOver" name="txtcdTimeLOver" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Thời hạn nhập/tái xuất:</label>
+                                    <div class="controls" style="position:relative;">
+                                        <input type="text" id="txttimeLimReIE" name="txttimeLimReIE" class="span11" />
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="span6">
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày hoàn thành kiểm tra: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span5" id="txtdateCmplInsp" name="txtdateCmplInsp" />
+                                        <input type="text" class="span2" id="txttimeCmplInsp" name="txttimeCmplInsp" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày đăng ký: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span5" id="txtdDataEleRegis" name="txtdDataEleRegis" />
+                                        <input type="text" class="span2" id="txttDataEleRegis" name="txttDataEleRegis" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Nhóm xử lý hồ sơ: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtcstSubSection" name="txtcstSubSection" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Thời hạn tạm nhập tái xuất: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11 dDate" id="txttimeLimReIE" name="txttimeLimReIE" maxlength="12" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày cấp phép:</label>
+                                    <div class="controls" style="position:relative;">
+                                        <input type="text" id="txtdateOfPermit" name="txtdateOfPermit" class="span11 dDate" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <!--<div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông tin Xuất nhập khẩu:</h5>
+                </div>
+                    -->
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="span12">
+                                    <h5 style="margin-left:10px;">NGƯỜI KHAI</h5>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Mã: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtdclrCode" name="txtdclrCode" maxlength="13" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Tên: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span11" id="txtdclrName" name="txtdclrName" maxlength="100" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Mã bưu chính: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtdclrPostCode" name="txtdclrPostCode" maxlength="7" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Điện thoại: </label>
+                                        <div class="controls">
+                                            <input type="text" id="txtdclrPhoneNo" name="txtdclrPhoneNo" class="span6" maxlength="20" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Địa chỉ: </label>
+                                        <div class="controls">
+                                            <input style="max-width:700px; width:700px" type="text" id="txtaddrDclr" name="txtaddrDclr" class="span11" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="span12">
+                                    <div class="control-group span12">
+                                        <label class="control-label">Mã lý do khai bổ sung:<span class="error">(*)</span> </label>
+                                        <div class="controls">
+                                            <input class="span6" id="slamendDlcReaCd" name="slamendDlcReaCd" required />
+                                            @*<select class="span6" id="slamendDlcReaCd" name="slamendDlcReaCd" required>
+                                <option>--chọn--</option>
+                            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Mã ngân hàng trả thuế thay:</label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtbankPayCd" name="txtbankPayCd" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Năm phát hành hạn mức: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtbankPayIssYear" name="txtbankPayIssYear" maxlength="9" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Mã xác định thời hạn nộp thuế: </label>
+                                        <div class="controls">
+                                            <input type="text" id="txtextPayDueCd" name="txtextPayDueCd" class="span2" />
+                                            <select style="width:168px" class="span4" id="slextPayDueCd" name="slextPayDueCd">
+                                                <option>--chọn--</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Mã ngân hàng bảo lãnh: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtsecSupplBankCd" name="txtsecSupplBankCd" maxlength="9" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Năm phát hành bảo lãnh: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtissuedYear" name="txtissuedYear" maxlength="9" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Mã tiền tệ của trị giá khai báo: </label>
+                                        <div class="controls">
+                                            <input class="span6" id="slcurCdBTaxAmend" name="slcurCdBTaxAmend" />
+                                            @*<select class="span6" id="slcurCdBTaxAmend" name="slcurCdBTaxAmend">
+                                <option>--chọn--</option>
+                            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label"></label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtcurCdATaxAmend" name="txtcurCdATaxAmend" maxlength="9" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Số quản lý nội bộ doanh nghiệp: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txteiControlNo" name="txteiControlNo" maxlength="9" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="span12">
+                                    <div class="control-group span12">
+                                        <label class="control-label">Mã tiền tệ của tiền thuế:<span class="error">(*)</span> </label>
+                                        <div class="controls">
+                                            <input class="span6" id="slcurCdTaxAmt" name="slcurCdTaxAmt" required />
+                                            @*<select class="span6" id="slcurCdTaxAmt" name="slcurCdTaxAmt" required>
+                                <option>--chọn--</option>
+                            </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Kí hiệu chứng từ hạn mức:</label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtbankPaySign" name="txtbankPaySign" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Số chứng từ hạn mức: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtbankPayNo" name="txtbankPayNo" maxlength="9" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Hạn nộp thuế: </label>
+                                        <div class="controls" style="position:relative;">
+                                            <input type="text" id="txthnt" name="txthnt" class="span6 dDate" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Kí hiệu chứng từ bảo lãnh: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtsecBankSign" name="txtsecBankSign" maxlength="9" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Số chứng từ bảo lãnh: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtsecNo" name="txtsecNo" maxlength="9" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Tỷ giá tiền thuế: </label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtcurExRateBTaxA" name="txtcurExRateBTaxA" maxlength="9" />
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label"></label>
+                                        <div class="controls">
+                                            <input type="text" class="span6" id="txtcurExRateATaxA" name="txtcurExRateATaxA" maxlength="9" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span20">
+                                <div class="control-group span20">
+                                    <label class="control-label">Phần ghi chú: </label>
+                                    <div class="controls">
+                                        <input style="max-width: 980px; height: 70px;" type="text" class="span20" id="txtnoteBTaxAmend" name="txtnoteBTaxAmend" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label"></label>
+                                    <div class="controls">
+                                        <input style="max-width: 980px; height: 70px;" type="text" class="span20" id="txtnoteATaxAmend" name="txtnoteATaxAmend" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="control-group span12">
+                                <table class="table" id="tbl_container_add">
+                                    <tr>
+                                        <th class="span3">
+                                            Mã sắc thuế
+                                            Thuế Xuất nhập khẩu
+                                        </th>
+                                        <th class="span3"><b>Tổng số tiền tăng giảm thuế</b></th>
+                                        <th class="span2">Mã sắc thuế</th>
+                                        <th class="span3">Tổng số tiền tăng giảm thuế</th>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span8" id="" name="" />
+                                            <input type="text" class="span2" id="" name="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span10" id="" name="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span8" id="" name="" />
+                                            <input type="text" class="span2" id="" name="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="text" class="span4" id="" name="" />
+                                            <input type="text" class="span8" id="" name="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span8" id="" name="" />
+                                            <input type="text" class="span2" id="" name="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span10" id="" name="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span8" id="" name="" />
+                                            <input type="text" class="span2" id="" name="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span8" id="" name="" />
+                                            <input type="text" class="span2" id="" name="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span10" id="" name="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span2" id="" name="" />
+                                            <input type="text" class="span8" id="" name="" />
+                                            <input type="text" class="span2" id="" name="" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="span12">
+                                        <div class="control-group span20">
+                                            <label class="control-label">Tổng số trang của tờ khai: </label>
+                                            <div class="controls">
+                                                <input style="" type="text" class="span12" id="txtConfigPageNo" name="txtConfigPageNo" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="span12">
+                                        <div class="control-group span20">
+                                            <label class="control-label">Tổng số dòng của tờ khai: </label>
+                                            <div class="controls">
+                                                <input style="" type="text" class="span12" id="txtNoOfLineDcl" name="txtNoOfLineDcl" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span20">
+                                    <div class="control-group span20">
+                                        <label class="control-label">Lý do: </label>
+                                        <div class="controls">
+                                            <input style="max-width: 980px; height: 70px;" type="text" class="span20" id="reason" name="reason" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group span20">
+                                        <label class="control-label">Tên của người phụ trách: </label>
+                                        <div class="controls">
+                                            <input style="" type="text" class="span12" id="nmOPerCharge" name="nmOPerCharge" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <div class="control-group span20">
+                                        <label class="control-label">Tên trường đơn vị hải quan: </label>
+                                        <div class="controls">
+                                            <input style="" type="text" class="span12" id="txtnmHeadCstOff" name="txtnmHeadCstOff" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span12">
+                                    <div class="control-group span20">
+                                        <label class="control-label">Ngày đăng ký dữ liệu: </label>
+                                        <div class="controls">
+                                            <input style="" type="text" class="span10" id="txtdateDataEReg" name="txtdateDataEReg" />
+                                            <input style="" type="text" class="span12" id="txttimeDataEReg" name="txttimeDataEReg" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <h5 style="margin-left:10px;">THUẾ SUẤT</h5>
+                            <div class="control-group span12">
+                                <label class="control-label">Số thứ tự dòng/ hàng trên tờ khai gốc:</label>
+                                <div class="controls">
+                                    <input style="width:350px" type="text" class="span8" id="txtfieldNoOrgDcl" name="txtfieldNoOrgDcl" />
+                                </div>
+                            </div>
+                            <div class="control-group span20">
+                                <label class="control-label">Mô tả hàng hóa: </label>
+                                <div class="controls">
+                                    <input style="max-width: 980px; height: 70px;" type="text" class="span20" id="txtiNameBTaxAmend" name="txtiNameBTaxAmend" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label"></label>
+                                <div class="controls">
+                                    <input style="max-width: 980px; height: 70px;" type="text" class="span20" id="txtiNameATaxAmend" name="txtiNameATaxAmend" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Mã nước xuất xứ: </label>
+                                <div class="controls">
+                                    <input style="width:350px" type="text" class="span8" id="txtplcOriCdBTaxAm" name="txtplcOriCdBTaxAm" maxlength="35" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label"></label>
+                                <div class="controls">
+                                    <input style="width:350px" type="text" class="span8" id="txtplcOriCdATaxAm" name="txtplcOriCdATaxAm" maxlength="35" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="control-group span12">
+                                <label style="width:250px; text-align:left" class="control-label"><b>Thuế nhập khẩu và xuất khẩu:</b></label>
+                                <table class="table" id="tbl_container_add">
+                                    <tr>
+                                        <th></th>
+                                        <th class="span2"></th>
+                                        <th class="span3">Thuế và thu khác</th>
+                                        <th class="span3">Trị giá tính thuế</th>
+                                        <th class="span3"><b>Số lượng tính thuế</b></th>
+                                        <th class="span3">Mã số hàng hóa</th>
+                                        <th class="span3">Thuế suất</th>
+                                        <th class="span3">Số thiền thuế phải nộp</th>
+                                        <th class="span4">Tăng/ Giảm thuế</th>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="vertical-align: inherit">(1)</td>
+                                        <td>(Trước)</td>
+                                        <td>
+                                            
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtstTaxValBTaxAm" name="txtstTaxValBTaxAm" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtstQuanBTaxAm" name="txtstQuanBTaxAm" />
+                                            <input type="text" class="span4" id="txtmUCOQuanBTaxAm" name="txtmUCOQuanBTaxAm" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txthsCodeBTaxAm" name="txthsCodeBTaxAm" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateBTaxAm" name="txttaxRateBTaxAm" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtBTaxAm" name="txttaxAmtBTaxAm" />
+                                            <input type="text" class="span4" id="txtdisOTaxEBTaxAm1" name="txtdisOTaxEBTaxAm1" />
+                                        </td>
+                                        <td rowspan="2" style="vertical-align: inherit">
+                                            <input type="text" class="span4" id="txtdisplayInDe1" name="txtdisplayInDe1" />
+                                            <input type="text" class="span8" id="txtamtOTaxInDe1" name="txtamtOTaxInDe1" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>(Sau)</td>
+                                        <td></td>
+                                        <td><input type="text" class="span12" id="txtstTaxValATaxAm" name="txtstTaxValATaxAm" /></td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtstQuanATaxAm" name="txtstQuanATaxAm" />
+                                            <input type="text" class="span4" id="txtmUCOStQATaxAm" name="txtmUCOStQATaxAm" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txthsCodeATaxAm" name="txthsCodeATaxAm" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateATaxAm" name="txttaxRateATaxAm" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtATaxAm" name="txttaxAmtATaxAm" />
+                                            <input type="text" class="span4" id="txtdisOTaxEATaxAm1" name="txtdisOTaxEATaxAm1" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="vertical-align: inherit">(2)</td>
+                                        <td>(Trước)</td>
+                                        <td>
+                                            <input type="text" class="span4" id="txtcdRETtlAOTax2" name="txtcdRETtlAOTax2" />
+                                            <input type="text" class="span8" id="txtnmRETtlAOTax2" name="txtnmRETtlAOTax2" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtstdTaxValBOTax2" name="txtstdTaxValBOTax2" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtstdQuanBOTax2" name="txtstdQuanBOTax2" />
+                                            <input type="text" class="span4" id="txtmsUCSQuanBOTax2" name="txtmsUCSQuanBOTax2" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtclsfCdBOTaxAm2" name="txtclsfCdBOTaxAm2" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateBOTaxAm2" name="txttaxRateBOTaxAm2" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtBOTaxAm2" name="txttaxAmtBOTaxAm2" />
+                                            <input type="text" class="span4" id="txtdisOTaxEBTaxAm2" name="txtdisOTaxEBTaxAm2" />
+                                        </td>
+                                        <td rowspan="2" style="vertical-align: inherit">
+                                            <input type="text" class="span4" id="txtdisplayInDe2" name="txtdisplayInDe2" />
+                                            <input type="text" class="span8" id="txtamtOTaxInDe2" name="txtamtOTaxInDe2" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>(Sau)</td>
+                                        <td></td>
+                                        <td><input type="text" class="span12" id="txtsTaxValAOTaxAm2" name="txtsTaxValAOTaxAm2" /></td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtsQuanAOTaxAm2" name="txtsQuanAOTaxAm2" />
+                                            <input type="text" class="span4" id="txtmsUCOSQAOTaxAm2" name="txtmsUCOSQAOTaxAm2" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtclsfCdAOTaxAm2" name="txtclsfCdAOTaxAm2" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateAOTaxAm2" name="txttaxRateAOTaxAm2" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtAOTaxAm2" name="txttaxAmtAOTaxAm2" />
+                                            <input type="text" class="span4" id="txtdisOTaxEATaxAm2" name="txtdisOTaxEATaxAm2" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="vertical-align: inherit">(3)</td>
+                                        <td>(Trước)</td>
+                                        <td>
+                                            <input type="text" class="span4" id="txtcdRETtlAOTax3" name="txtcdRETtlAOTax3" />
+                                            <input type="text" class="span8" id="txtnmRETtlAOTax3" name="txtnmRETtlAOTax3" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtstdTaxValBOTax3" name="txtstdTaxValBOTax3" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtstdQuanBOTax3" name="txtstdQuanBOTax3" />
+                                            <input type="text" class="span4" id="txtmsUCSQuanBOTax3" name="txtmsUCSQuanBOTax3" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtclsfCdBOTaxAm3" name="txtclsfCdBOTaxAm3" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateBOTaxAm3" name="txttaxRateBOTaxAm3" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtBOTaxAm3" name="txttaxAmtBOTaxAm3" />
+                                            <input type="text" class="span4" id="txtdisOTaxEBTaxAm3" name="txtdisOTaxEBTaxAm3" />
+                                        </td>
+                                        <td rowspan="2" style="vertical-align: inherit">
+                                            <input type="text" class="span4" id="txtdisplayInDe3" name="txtdisplayInDe3" />
+                                            <input type="text" class="span8" id="txtamtOTaxInDe3" name="txtamtOTaxInDe3" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>(Sau)</td>
+                                        <td></td>
+                                        <td><input type="text" class="span12" id="txtsTaxValAOTaxAm3" name="txtsTaxValAOTaxAm3" /></td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtsQuanAOTaxAm3" name="txtsQuanAOTaxAm3" />
+                                            <input type="text" class="span4" id="txtmsUCOSQAOTaxAm3" name="txtmsUCOSQAOTaxAm3" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtclsfCdAOTaxAm3" name="txtclsfCdAOTaxAm3" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateAOTaxAm3" name="txttaxRateAOTaxAm3" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtAOTaxAm3" name="txttaxAmtAOTaxAm3" />
+                                            <input type="text" class="span4" id="txtdisOTaxEATaxAm3" name="txtdisOTaxEATaxAm3" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="vertical-align: inherit">(4)</td>
+                                        <td>(Trước)</td>
+                                        <td>
+                                            <input type="text" class="span4" id="txtcdRETtlAOTax4" name="txtcdRETtlAOTax4" />
+                                            <input type="text" class="span8" id="txtnmRETtlAOTax4" name="txtnmRETtlAOTax4" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtstdTaxValBOTax4" name="txtstdTaxValBOTax4" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtstdQuanBOTax4" name="txtstdQuanBOTax4" />
+                                            <input type="text" class="span4" id="txtmsUCSQuanBOTax4" name="txtmsUCSQuanBOTax4" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtclsfCdBOTaxAm4" name="txtclsfCdBOTaxAm4" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateBOTaxAm4" name="txttaxRateBOTaxAm4" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtBOTaxAm4" name="txttaxAmtBOTaxAm4" />
+                                            <input type="text" class="span4" id="txtdisOTaxEBTaxAm4" name="txtdisOTaxEBTaxAm4" />
+                                        </td>
+                                        <td rowspan="2" style="vertical-align: inherit">
+                                            <input type="text" class="span4" id="txtdisplayInDe4" name="txtdisplayInDe4" />
+                                            <input type="text" class="span8" id="txtamtOTaxInDe4" name="txtamtOTaxInDe4" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>(Sau)</td>
+                                        <td></td>
+                                        <td><input type="text" class="span12" id="txtsTaxValAOTaxAm4" name="txtsTaxValAOTaxAm4" /></td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtsQuanAOTaxAm4" name="txtsQuanAOTaxAm4" />
+                                            <input type="text" class="span4" id="txtmsUCOSQAOTaxAm4" name="txtmsUCOSQAOTaxAm4" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtclsfCdAOTaxAm4" name="txtclsfCdAOTaxAm4" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateAOTaxAm4" name="txttaxRateAOTaxAm4" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtAOTaxAm4" name="txttaxAmtAOTaxAm4" />
+                                            <input type="text" class="span4" id="txtdisOTaxEATaxAm4" name="txtdisOTaxEATaxAm4" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="vertical-align: inherit">(5)</td>
+                                        <td>(Trước)</td>
+                                        <td>
+                                            <input type="text" class="span4" id="txtcdRETtlAOTax5" name="txtcdRETtlAOTax5" />
+                                            <input type="text" class="span8" id="txtnmRETtlAOTax5" name="txtnmRETtlAOTax5" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtstdTaxValBOTax5" name="txtstdTaxValBOTax5" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtstdQuanBOTax5" name="txtstdQuanBOTax5" />
+                                            <input type="text" class="span4" id="txtmsUCSQuanBOTax5" name="txtmsUCSQuanBOTax5" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtclsfCdBOTaxAm5" name="txtclsfCdBOTaxAm5" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateBOTaxAm5" name="txttaxRateBOTaxAm5" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtBOTaxAm5" name="txttaxAmtBOTaxAm5" />
+                                            <input type="text" class="span4" id="txtdisOTaxEBTaxAm5" name="txtdisOTaxEBTaxAm5" />
+                                        </td>
+                                        <td rowspan="2" style="vertical-align: inherit">
+                                            <input type="text" class="span4" id="txtdisplayInDe5" name="txtdisplayInDe5" />
+                                            <input type="text" class="span8" id="txtamtOTaxInDe5" name="txtamtOTaxInDe5" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>(Sau)</td>
+                                        <td></td>
+                                        <td><input type="text" class="span12" id="txtsTaxValAOTaxAm5" name="txtsTaxValAOTaxAm5" /></td>
+                                        <td>
+                                            <input type="text" class="span8" id="txtsQuanAOTaxAm5" name="txtsQuanAOTaxAm5" />
+                                            <input type="text" class="span4" id="txtmsUCOSQAOTaxAm5" name="txtmsUCOSQAOTaxAm5" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txtclsfCdAOTaxAm5" name="txtclsfCdAOTaxAm5" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span12" id="txttaxRateAOTaxAm5" name="txttaxRateAOTaxAm5" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="span8" id="txttaxAmtAOTaxAm5" name="txttaxAmtAOTaxAm5" />
+                                            <input type="text" class="span4" id="txtdisOTaxEATaxAm5" name="txtdisOTaxEATaxAm5" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="form-actions" style="text-align: center;">
+                <button type="submit" class="btn btn-success" id="btnSaveDeclaration" style="display:none"></button>
+                @*@if ((long)ViewBag.declarationID > 0)
+                {
+                    <a class="btn btn-success" onclick="hq.CheckSubmitDeclaration(1)">CẬP NHẬT TỜ KHAI</a>
+
+                    <a class="btn btn-success" onclick="hq.confirmCloneDeclaration_HV('@ViewBag.declarationID')">COPY TỜ KHAI</a>
+                }
+                else
+                {
+                    <a class="btn btn-primary" onclick="">THÊM MỚI</a>
+                    <a class="btn btn-warning" onclick="hq.CheckSubmitDeclaration(0)">LƯU NHÁP</a>
+                    <a class="btn btn-success" onclick="hq.CheckSubmitDeclaration(1)">LƯU TỜ KHAI AMA</a>
+                    
+                    <a class="btn btn-sm" onclick="">IN TỜ KHAI</a>
+                    <a class="btn btn-warning" onclick="hq2.getDataItemAMCinfo();">XÁC THỰC TÀI KHOẢN AMC</a>
+                    <a class="btn btn-primary" onclick="">IN EXEL</a>
+                }*@
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    var decID = "@(ViewBag.declarationID)";
+    $(document).ready(function () {
+        //var url_string = window.location.href;
+        //var url = new URL(url_string);
+        //var amendDclNo = url.searchParams.get("amendDclNo");
+        //setTimeout(function () {
+        //    if (amendDclNo != "" && amendDclNo != undefined && amendDclNo != "null") {
+        //        hq2.getDataItemIADinfo(amendDclNo);
+        //    }
+        //}, 1000)
+        $('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+        $("#form-input-file").validate({
+            rules: {
+                txtieClsf: "required",
+                txtcstOffice: "required",
+                txtdclNo: "required",
+                txtcstOfficeNm: "required",
+                slamendDlcReaCd: "required",
+                slcurCdTaxAmt: "required",
+                txtdateOfPermit: "required",
+            },
+            messages: {
+                txtieClsf: "",
+                txtcstOffice: "",
+                txtdclNo: "",
+                txtcstOfficeNm: "",
+                slamendDlcReaCd: "",
+                slcurCdTaxAmt: "",
+                txtdateOfPermit: "",
+            },
+            submitHandler: function (form) {
+                if (hq.CheckUrl($('#txtWebsite').val()))
+                {
+                    if (parseInt(decID) != 0) {
+                        hq.confirmUpDateDeclaration();
+                    }
+                    else {
+                        hq.confirmInsertAMA();
+                    }
+                }
+                else
+                {
+                    $('#txtWebsite').addClass("error");
+                    $('#errWeb').html("Link website không đúng định dạng!");
+                    $('body,html').animate({ scrollTop: 800 }, 1000);
+                }
+            }
+        });
+
+        $('.dDate').datetimepicker({
+            showTodayButton: false,
+            format: 'DD/MM/YYYY'
+        }).on('dp.change', function (t) {
+            hq.KeyPressTextboxBill(t);
+        });
+
+        //Phương thức thành toán
+        hq.getMethodPaid();
+        //Lấy danh sách phương thức vận chuyển
+        hq.getVehicleMethod();
+        // Phân loại cá nhân tổ chức
+        hq.getOrganizationType();
+        // Phương tiện vận chuyển
+        hq.getmeansOfTrsCd();
+
+        // Mã địa điểm lưu kho hàng chờ thông quan dự kiến
+        //hq.getWaitingPlace();
+        //Mã bộ phận xử lý tờ khai
+        hq.getDepartment();
+        //Mã danh sách loại tiền
+        hq.getCurrency2();
+        // Mã loại Phí vận chuyển
+        hq.GetTransportFeeCodes();
+        // Mã loại Phí bảo hiểm
+        hq.getInsuranceFeeCode();
+        // Mã phân loại giá hóa đơn
+        hq.getinvPrcKindCd();
+        // Điều kiện giá hóa đơn
+        hq.getInvoiceValueCondition();
+
+        setTimeout(function () {
+            hq2.GetDataInfoIAD(decID);
+        }, 500);
+
+
+        var a = $("li[class='treeview act']");
+        if (a.length > 1) {
+            a[0].removeAttribute("class", "act");
+        }
+    })
+</script>

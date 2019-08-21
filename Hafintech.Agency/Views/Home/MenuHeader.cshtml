@@ -1,0 +1,140 @@
+﻿@{
+    string currentlink = Request.Url.ToString();
+}
+<style>
+    #sidebar > ul li ul li ul {
+        left: 100%;
+        top: auto;
+        margin-top: -40px;
+        /*position: relative;*/
+    }
+
+    #sidebar ul li.treeview{
+        
+    }
+</style>
+<div id="sidebar">
+    @*<a href="@Url.Action("Index", "Home")" class="visible-phone"><i class="icon icon-home"></i> Home</a>*@
+    <ul>
+        <li class="treeview">
+            <a href="@Url.Action("Index", "Home")">
+                <span><i class="icon icon-home"></i> Home</span>
+            </a>
+        </li>
+        <li class="treeview">
+
+            <a href="javascript:;">
+                <span>Quản lý khách hàng</span>
+            </a>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="@Url.Action("CustomerBusiness", "Customer")">
+                        Danh sách khách hàng doanh nghiệp
+                    </a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("CustomerPersonal", "Customer")">Danh sách khách hàng cá nhân</a>
+                </li>
+            </ul>
+
+        </li>
+        <li class="treeview">
+            <a href="javascript:;"><span>Quản lý tờ khai</span></a>
+
+            <ul class="submenu">
+
+                <li class="">
+                    <a href="@Url.Action("Index", "Declaration")">Danh sách tờ khai nhập khẩu</a>
+                </li>
+
+                <li class="li-mic-1">
+                    <a href="@Url.Action("LowValueDeInsert", "Declaration")?ishight=1&tab=1">
+                        Đăng ký tờ khai nhập khẩu GTT (MIC)
+                    </a>
+                </li>
+                <li class="li-ida-1">
+                    <a href="@Url.Action("HightValueDeInsert", "Declaration")?ishight=2&tab=2">Khai thông tin nhập khẩu (IDA)</a>
+                </li>
+
+
+
+                <li class="">
+                    <a href="">Danh sách tờ khai xuất khẩu</a>
+                </li>
+
+                <li class="">
+                    <a href="">
+                        Đăng ký tờ khai xuất khẩu GTT (MIE)
+                    </a>
+                </li>
+                <li class="">
+                    <a href="">Khai thông tin xuất khẩu (EDA)</a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="treeview">
+
+            <a href="javascript:;">
+                <span>Quản lý tài khoản</span>
+            </a>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="@Url.Action("AccInfo", "Account")">
+                        Thông tin doanh nghiệp
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="javascript:;" onclick="UserAgen.PopSecurity()">
+                        Đặt mã bảo mật
+                    </a>
+                </li>
+
+            </ul>
+
+        </li>
+
+        <li class="treeview">
+            <a href="#"><span>Quản lý trình ký</span></a>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="@Url.Action("ListDecleration", "Registry")">
+                        Danh sách tờ khai trình ký
+                    </a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("ListAccRegistry", "Registry")">Thiết lập tài khoản được trình ký</a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("ReviewRegistry", "Registry")">Duyệt trình ký</a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("ListRegNumber", "Registry")">Danh sách chữ ký số</a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="treeview">
+            <a href="#"><span>Quản lý hệ thống</span></a>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="@Url.Action("Index","Account")">
+                        Thiết lập thông tin số mặc định VNACCS
+                    </a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("ListUser", "User")">Quản lý người sử dụng</a>
+                </li> 
+                <li class="">
+                    <a href="@Url.Action("ListManagerRights", "User")">Danh sách quyền</a>
+                </li> 
+            </ul> 
+        </li>
+
+    </ul>
+</div>

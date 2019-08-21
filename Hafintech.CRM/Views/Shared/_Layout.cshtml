@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Hệ Thống Kho Vận Hateco</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="~/Content/css/maruti-style.css" />
+    <link rel="stylesheet" href="~/Content/css/maruti-media.css" />
+    <link href="~/Content/css/maruti-login.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <link href="~/Content/css/jquery.gritter.css" rel="stylesheet" />
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <link href="~/Content/css/uniform.css" rel="stylesheet" />
+    <link href="~/Content/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/js.update/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <script src="~/Content/js/jquery.min.js"></script>
+    <script src="~/Content/js/jquery.ui.custom.js"></script>
+    <script src="~/Content/js/jquery.flot.min.js"></script>
+    <script src="~/Content/js/jquery.flot.resize.min.js"></script>
+    <script src="~/Content/js/jquery.peity.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    @*<script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>*@
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+    <script src="~/Content/js/jquery.signalR-2.2.3.min.js"></script>
+    <script src="~/Content/js/jquery.gritter.min.js"></script>
+    @*<script src="~/Content/js/hubmanager.js"></script>
+        <script src="~/Content/js.update/funbuttons.js"></script>*@
+    <script src="~/Content/js.update/lightbox/js/lightbox-plus-jquery.min.js"></script>
+    <script src="~/Content/js/jquery.validate.min.js"></script>
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="/Content/js/jquery.ui.custom.js"></script>
+    <script src="~/Content/js/jquery-migrate-1.2.1.js"></script>
+    <script src="~/Content/js/jquery.uniform.js"></script>
+    <script src="~/Content/js/select2.min.js"></script>
+
+    <script src="~/Content/js.update/config.js"></script>
+    <script src="~/Content/js.update/accounts.js"></script>
+    <script src="~/Content/js.update/hq.js"></script>
+    
+</head>
+<body>
+
+    @Html.Action("Header", "Home")
+
+    @Html.Action("MenuHeader", "Home")
+
+    <div id="content">
+
+        @RenderBody()
+
+    </div>
+
+
+    <script src="~/Content/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript">
+        var denngay = new Date();
+        var dd = denngay.getDate();
+        var mm = denngay.getMonth() + 1; //January is 0!
+        var yyyy = denngay.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+        denngay = mm + '/' + (dd + 10) + '/' + yyyy;
+        tungay = mm + '/' + (dd - 1) + '/' + yyyy;
+        $('#datepickerFrom,#datepickerFrom2,#datepickerFrom3').datetimepicker({
+            showTodayButton: true
+        });
+        $('#datepickerTo,#datepickerTo2,#txtDateReleased').datetimepicker({
+            showTodayButton: true
+        });
+
+        $('.datepicker').datepicker({
+            dateFormat: 'dd/mm/yyyy'
+        });
+
+
+    </script>
+
+</body>
+</html>
+
+<script src="~/Content/js/bootbox.min.js"></script>
+<script src="~/Content/js/select2.min.js"></script>
+<script src="~/Content/js/jquery.dataTables.min.js"></script>
+<script src="~/Content/js/maruti.tables.js"></script>
+<script src="~/Content/js.update/md5.js"></script>

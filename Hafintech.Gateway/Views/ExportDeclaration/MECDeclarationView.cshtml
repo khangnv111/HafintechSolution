@@ -1,0 +1,369 @@
+﻿@{
+    ViewBag.Title = "Declaration_Update";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<form action="#" enctype="multipart/form-data" id="form-input-file" name="form-input-file">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4><a href="javascript:;">Danh sách Tờ khai</a> >> Tạo Tờ Khai:</h4>
+            <a class="btn btn-warning" id="btnTab2"> Tờ khai </a>
+            <a onclick="Export.LinktoCT(1);" class="btn btn-success">Chỉ thị của hải quan</a>
+            <a onclick="Export.LinktoKQ(1);" class="btn btn-success">Kết quả xử lý tờ khai</a>
+
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông Tin chung</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="span6">
+                            <label class="control-label">Phân luồng: </label>
+                            <div class="controls">
+                                {{stream}}
+                            </div>
+                        </div>
+                        <div class="span6">
+                            <label class="control-label">Thông quan: </label>
+                            <div class="controls" v-if="data.dateOfPermit">
+                                Thông quan
+                            </div>
+                            <div class="controls" v-else>
+                                Chưa thông quan
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã Tờ khai: </label>
+                                    <div class="controls">
+                                        <input type="hidden" class="span5" id="dclId" name="dclId" value="@ViewBag.IdDe" />
+                                        <input style="width:350px" type="text" class="span5" id="txtdclNo" name="txtdclNo" v-model="data.dclNo" disabled />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Cơ quan hải quan:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" v-model="data.cstOffice" />
+                                        <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7"
+                                               onclick="hq.getSeachCustom()" onchange="hq.getSeachCustom(); $('#hdfcstOffice,#txtcstOfficeNm').val('');" autocomplete="off" required />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()">...</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã bộ phận xử lý tờ khai:</label>
+                                    <div class="controls">
+                                        @*<input type="text" class="span5" v-model="data.cstSubSection" />*@
+
+                                        <select class="span11" v-model="data.cstSubSection">
+                                            <option value="0">--Chọn--</option>
+                                            <option v-for="item in lstCstSubSection" :value="item.cstSubCd">{{item.cstSubCd}} || {{item.cstSubNm}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày đăng ký:</label>
+                                    <div class="controls">
+                                        <input type="text" id="regDate" name="regDate" class="span3" disabled="disabled" v-model="data.regDate" />
+                                        <input type="text" id="regTime" name="regTime" class="span7" disabled v-model="data.regTime" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày thay đổi đăng ký:</label>
+                                    <div class="controls">
+                                        <input type="text" id="regDateOfCor" name="regDateOfCor" class="span3" disabled="disabled" v-model="data.regDateOfCor" />
+                                        <input type="text" id="regTimeOfCor" name="regTimeOfCor" class="span7" disabled v-model="data.regTimeOfCor" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid" style="display:none">
+                            <div class="span12">
+                                <div class="control-group span12">
+                                    <label class="control-label">Văn Bản Liên Quan : </label>
+                                    <div class="controls">
+                                        <input name="file" type="file" id="file-input-docs" v-model="data.file" />
+                                        <input type="hidden" id="dataFileDocsInput" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <!--<div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông tin Xuất nhập khẩu:</h5>
+                </div>
+                    -->
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <h5 style="margin-left:10px;">NGƯỜI XUẤT KHẨU</h5>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtimperCd" name="txtimperCd" maxlength="13" v-model="data.experCd" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Tên: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtimperNm" name="txtimperNm" maxlength="100" v-model="data.experNm" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã bưu chính: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtpostcode" name="txtpostcode" maxlength="7" v-model="data.postcode" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Điện thoại: <span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="text" id="txtphoneNoOfImp" name="txtphoneNoOfImp" v-model="data.phoneNoOfExp"
+                                               class="span6" maxlength="20" required />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa chỉ: </label>
+                                    <div class="controls">
+                                        <input style="max-width:700px; width:700px" type="text" v-model="data.addressOfExp"
+                                               id="txtaddressOfImp" name="txtaddressOfImp" class="span11" maxlength="100" />
+                                    </div>
+                                </div>
+                                <h5 style="margin:10px 0 0 10px; float:left">NGƯỜI NHẬP KHẨU</h5>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã: <span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtconsignorCd" name="txtconsignorCd" maxlength="13" v-model="data.consigneeCd" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Tên:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" id="txtconsignorNm" name="txtconsignorNm" v-model="data.consigneeNm"
+                                               maxlength="70" onkeyup="$('#txtconsignorNm').val(hq.ConvertVietNamese($('#txtconsignorNm').val()));" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã bưu chính: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" id="txtpostcodeIdt" name="txtpostcodeIdt" maxlength="9" v-model="data.postcodeIdt" />
+                                    </div>
+                                </div>
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã nước: </label>
+                                    <div class="controls">
+                                        <input type="text" id="txthdfcountryCd" name="txthdfcountryCd"
+                                               class="span3" disabled="disabled" v-model="data.countryCd" />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachCountryExport()">...</button>
+                                    </div>
+                                </div>
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa chỉ: </label>
+                                    <div class="controls">
+                                        <p>
+                                            <input type="text" class="span6" id="txtaddress1Street" name="txtaddress1Street" maxlength="35" v-model="data.address1Street"
+                                                   onkeyup="$('#txtaddress1Street').val(hq.ConvertVietNamese($('#txtaddress1Street').val()));" />
+                                            <input type="text" class="span6" id="txtaddress2Street" name="txtaddress2Street" maxlength="35" v-model="data.address2Street"
+                                                   onkeyup="$('#txtaddress2Street').val(hq.ConvertVietNamese($('#txtaddress2Street').val()));" />
+                                        </p>
+                                        <p>
+                                            <input type="text" class="span6" id="txtaddress3CityNm" name="txtaddress3CityNm" v-model="data.address3CityNm"
+                                                   maxlength="35" onkeyup="$('#txtaddress3CityNm').val(hq.ConvertVietNamese($('#txtaddress3CityNm').val()));" />
+                                            <input type="text" class="span6" id="txtcountryNmAddress" name="txtcountryNmAddress" v-model="data.countryNmAddress"
+                                                   maxlength="35" onkeyup="$('#txtcountryNmAddress').val(hq.ConvertVietNamese($('#txtcountryNmAddress').val()));" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="control-group span12">
+                                    <label class="control-label">Số House AWB:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" class="span8" id="txthouseAwbNo" v-model="data.houseAwbNo"
+                                               name="txthouseAwbNo" required maxlength="18" onkeyup="$('#txthouseAwbNo').val(hq.ConvertVietNamese($('#txthouseAwbNo').val()));" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số lượng kiện:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="hidden" id="hdfpieceUnitCd" name="hdfpieceUnitCd" class="span3" v-model="data.pieceUnitCd" />
+                                        <input type="number" min="0" id="txtcargoPiece" name="txtcargoPiece" class="span10" required maxlength="8" v-model="data.cargoPiece" />
+                                        <span>
+                                            Gói
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Mã địa điểm lưu kho hàng chờ thông quan dự kiến:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="text" id="txtcstWrhCd" name="txtcstWrhCd" class="span3" disabled="disabled" v-model="data.cstWrhCd" />
+                                        @*<input type="text" id="txtcstWrhCd_text" name="txtcstWrhCd_text" class="span7"
+                                            onclick="hq.getSeachUncstWrhCd()" onchange="hq.getSeachUncstWrhCd(); $('#hdfcstWrhCd,#txtcstWrhCd_text').val('');" autocomplete="off" required />*@
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachUncstWrhCd()">...</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="control-group span12">
+                                    <label class="control-label">Tổng trọng lượng hàng (Gross): </label>
+                                    <div class="controls">
+                                        <input type="hidden" id="hdfweigUnitCdGrs" name="hdfweigUnitCdGrs" class="span3" v-model="data.weigUnitCdGrs" />
+                                        <input type="number" min="0" id="txtcargoWeigGrs" name="txtcargoWeigGrs" class="span10" maxlength="10" v-model="data.cargoWeigGrs" />
+                                        <span>KGM</span>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa điểm nhận hàng cuối cùng:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input type="hidden" id="hdfloadLocCd" name="hdfloadLocCd" class="span6" />
+                                        <input type="text" id="txtloadLocCd" name="txtloadLocCd" class="span3" disabled="disabled" v-model="data.finalDesCd" />
+                                        <input type="text" id="txtloadLocNm" name="txtloadLocNm" class="span7" onclick="hq.getSeachPlace()" v-model="data.finalDesNm"
+                                               onchange="hq.getSeachPlace(); $('#hdfPlace,#txtloadLocNm').val('');" autocomplete="off" />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachPlace()">...</button>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Địa điểm xếp hàng:<span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input type="text" id="txtunloadPortCd" name="txtunloadPortCd" class="span3" disabled="disabled" v-model="data.loadPortCd" v-on:change="rename()" />
+                                        <input type="text" id="txtunloadPortNm" name="txtunloadPortNm" class="span7" v-model="data.loadPortNm"
+                                               onclick="hq.getSeachUnPlace()" onchange="hq.getSeachUnPlace(); $('#txtPlace2,#hdfPlace2').val('');" autocomplete="off" />
+                                        <button type="button" style="padding: 0 10px" onclick="hq.getSeachUnPlace()">...</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span12">
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Mô tả hàng hóa: <span class="error">(*)</span></label>
+                                    <div class="controls">
+                                        <input id="txtitemName" name="txtitemName" class="span11" disabled maxlength="200" v-model="data.itemName">
+                                    </div>
+                                </div>
+                                @*<div class="control-group span12">
+                                        <label class="control-label">Mã nước xuất xứ:<span class="error">(*)</span></label>
+                                        <div class="controls">
+                                            <input type="hidden" id="placeOriginCd" name="placeOriginCd" class="span3" value="" />
+                                            <input type="text" id="txtplaceOriginCd" name="txtplaceOriginCd" class="span3" disabled="disabled" v-model="data.placeOriginCd" />
+                                            <input type="text" id="txtcountryNm" name="txtcountryNm" class="span7" onclick="hq.getSeachCountryOrigin()" autocomplete="off" v-model="data.placeOriginCd" />
+                                            <button type="button" style="padding: 0 10px" onclick="hq.getSeachCountryOrigin()">...</button>
+                                        </div>
+                                    </div>*@
+                                <div class="control-group span12">
+                                    <label class="control-label">Trị giá tính thuế:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <div class="span4">
+                                            <input type="text" class="span6" id="txtcstValue" name="txtcstValue" v-model="data.totalTaxVal" />
+                                            <select id="slcstValueCurCd" name="slcstValueCurCd" class="span6" v-model="data.curCdTtlTaxVal">
+                                                <option value="0">--Chọn--</option>
+                                                <option v-for="item in currency" :value="item.currencyCode">{{item.currencyCode}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Giá khai báo :</label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="number" min="0" maxlength="20" class="span8" id="txtcstValue" name="txtcstValue" v-model="data.cstValue" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Phần ghi chú:</label>
+                                    <div class="controls">
+                                        <textarea id="txtnotes" name="txtnotes" class="span11" maxlength="100" v-model="data.notes" disabled></textarea>
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Số QL nội bộ của DN :</label>
+                                    <div class="controls">
+                                        <input style="width:350px" type="text" class="span8" id="txteiControlNo" v-model="data.eiControlNo"
+                                               name="txteiControlNo" maxlength="27" onkeyup="$('#txteiControlNo').val(hq.ConvertVietNamese($('#txteiControlNo').val()));" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày cấp phép xuất khẩu:</label>
+                                    <div class="controls">
+                                        <input type="text"  class="span3" disabled="disabled" v-model="data.dateOfPermit" />
+                                        <input type="text"  class="span7" disabled v-model="data.timeOfPermit" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày hủy khai báo Hải quan:</label>
+                                    <div class="controls">
+                                        <input type="text"  class="span3" disabled="disabled" v-model="data.dateExpDclCan" />
+                                        <input type="text"  class="span7" disabled v-model="data.timeExpDclCan" />
+                                    </div>
+                                </div>
+                                <div class="control-group span12">
+                                    <label class="control-label">Ngày chuyển xử lý khai báo xuất khẩu bằng tay:</label>
+                                    <div class="controls">
+                                        <input type="text"  class="span3" disabled="disabled" v-model="data.dtrfManPrExDcl" />
+                                        <input type="text"  class="span7" disabled v-model="data.ttrfManPrExDcl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="form-actions" style="text-align: center;">
+                <a v-show="data.declarationId" class="btn btn-success" v-on:click="update()">CẬP NHẬT TỜ KHAI</a> 
+                <a v-show="data.declarationId&&!data.dclNo" class="btn btn-success" v-on:click="submitMEC()">SUBMIT MEC</a>
+                <a v-if="data.statusCode==='MED'" class="btn btn-success" v-on:click="submitMEE()">SUBMIT MEE</a>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="~/Content/js.update/mec.js"></script>
+<script>
+    $("input[type=text], input[type=number], select, button").attr("disabled", "disabled");
+</script>

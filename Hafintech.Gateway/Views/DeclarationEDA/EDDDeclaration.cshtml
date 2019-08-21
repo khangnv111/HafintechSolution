@@ -1,0 +1,96 @@
+﻿@{
+
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+<div class="row-fluid" id="eda">
+    <div class="span12">
+        @*<h4>Tờ khai nhập khẩu giá trị thấp >> Lấy thông tin tờ khai</h4>*@
+
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Lấy thông tin tờ khai hải quan</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label" style="width: 220px;">Số Tờ khai: </label>
+                                <div class="controls">
+
+                                    <input style="width:350px; margin-left: 20px" type="text" class="span5" id="txtdclNo" name="txtdclNo"
+                                           placeholder="Số tờ khai hải quan" v-model="dclNo" />
+
+                                    @*<input style="width:350px" type="text" class="span5" id="txtdclNo" name="txtdclNo" placeholder="Số tờ khai hải quan" />*@
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+
+                                <div class="controls">
+                                    <button class="btn btn-success" style="margin-left: 20px;" v-on:click="submitEDD()">Tìm kiếm</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var eda = new Vue({
+        el: '#eda',
+        data: {
+            dclNo: ''
+        },
+        methods: {
+            submitEDD: function () {
+                accounts.ShowLoading();
+                var token = $('#hdfToken').val();
+                if (!this.dclNo) {
+                    accounts.Message("Chưa nhập tờ khai");
+                }
+
+                var dclNos = this.dclNo;
+                dclNos = dclNos.trim();
+
+                $.ajax({
+                    type: 'POST',
+                    url: Config.API_Login + "export/SubmitEDD",
+                    data: JSON.stringify({
+                        "dclNo": dclNos,
+                    }),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        accounts.Unloading();
+                        if (data) {
+
+                            if (data.ResponseCode > 0 && data.Data != null) {
+                                window.location.href = Config.Url_Root + "DeclarationEDA/EDAGeneral?id=" + data.Data.declarationId + "&type=5&tab=1";
+                            }
+                            else if (data.ResponseCode == -100001) {
+                                accounts.Message("Tờ khai không tồn tại");
+                            }
+                        }
+                    },
+                    error: function (data) {
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        accounts.Unloading();
+                        return;
+                    }
+                });
+            }
+        }
+    });
+</script>

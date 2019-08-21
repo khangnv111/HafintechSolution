@@ -1,0 +1,125 @@
+﻿
+
+@{
+    ViewBag.Title = "Declaration_Update";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<form action="#" enctype="multipart/form-data" id="ola" name="form-input-file">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4><a href="javascript:;">Danh sách Tờ khai</a> >> Tạo Tờ Khai:</h4>
+            <a class="btn btn-warning" id="btnTab2"> Thông tin chung </a>
+            <a onclick="hq2.linkToCustomsMessage(1, 1);" class="btn btn-success">Danh sách hàng</a>
+            <a onclick="hq2.linkToCustomsMessage(1, 1);" class="btn btn-success">Kết quả xử lý tờ khai</a>
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông Tin chung</h5>
+                </div>
+                <div class="widget-content nopadding">
+
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="control-group span12">
+                                <label class="control-label">Mã phân loại xử lý:<span class="error">(*)</span></label>
+                                <div class="controls">
+                                    <select id="slinvClsCd" name="slinvClsCd" class="span6" required v-model="data.invClsCd">
+                                        <option value="0">--Chọn--</option>
+                                        <option v-for="item in lstInvCls" :value="item.invClsCd">{{item.invClsCd}} || {{item.invClsNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Số tờ khai: </label>
+                                <div class="controls">
+                                    <input type="text" id="txtaddressOfImp" name="txtaddressOfImp" class="span11" v-model="data.addressOfExp" maxlength="300" />
+                                </div>
+                            </div>
+                            <div class="widget-box">
+                                <div class="widget-title">
+                                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                                    <h5>Địa điểm xếp hàng</h5>
+                                </div>
+                                <div class="widget-content nopadding">
+                                    <div class="form-horizontal">
+                                        <div class="row-fluid">
+                                            <div class="control-group span12">
+                                                <label class="control-label">Mã  (Khu vực chịu sự giám sát Hải quan):</label>
+                                                <div class="controls">
+                                                    <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" v-model="data.cstOffice" />
+                                                    <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" onclick="hq.getSeachCustom()" onchange="hq.getSeachCustom(); $('#hdfcstOffice,#txtcstOfficeNm').val('');" autocomplete="off" />
+                                                    <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()">...</button>
+                                                </div>
+                                            </div>
+                                            <div class="control-group span12">
+                                                <label class="control-label">Vị trí xếp hàng:</label>
+                                                <div class="controls">
+                                                    <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" v-model="data.cstOffice" />
+                                                    <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" onclick="hq.getSeachCustom()" onchange="hq.getSeachCustom(); $('#hdfcstOffice,#txtcstOfficeNm').val('');" autocomplete="off" />
+                                                    <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()">...</button>
+                                                </div>
+                                            </div>
+                                            <div class="control-group span12">
+                                                <label class="control-label">Cảng /cửa khẩu / ga xếp hàng:</label>
+                                                <div class="controls">
+                                                    <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" v-model="data.cstOffice" />
+                                                    <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" onclick="hq.getSeachCustom()" onchange="hq.getSeachCustom(); $('#hdfcstOffice,#txtcstOfficeNm').val('');" autocomplete="off" />
+                                                    <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()">...</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-box">
+                                <div class="widget-title">
+                                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                                    <h5>Địa điểm dỡ hàng</h5>
+                                </div>
+                                <div class="widget-content nopadding">
+                                    <div class="form-horizontal">
+                                        <div class="row-fluid">
+                                            <div class="control-group span12">
+                                                <label class="control-label">Mã  (Khu vực chịu sự giám sát Hải quan):</label>
+                                                <div class="controls">
+                                                    <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" v-model="data.cstOffice" />
+                                                    <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" onclick="hq.getSeachCustom()" onchange="hq.getSeachCustom(); $('#hdfcstOffice,#txtcstOfficeNm').val('');" autocomplete="off" />
+                                                    <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()">...</button>
+                                                </div>
+                                            </div>
+                                            <div class="control-group span12">
+                                                <label class="control-label">Vị trí dỡ hàng:</label>
+                                                <div class="controls">
+                                                    <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" v-model="data.cstOffice" />
+                                                    <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" onclick="hq.getSeachCustom()" onchange="hq.getSeachCustom(); $('#hdfcstOffice,#txtcstOfficeNm').val('');" autocomplete="off" />
+                                                    <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()">...</button>
+                                                </div>
+                                            </div>
+                                            <div class="control-group span12">
+                                                <label class="control-label">Cảng /cửa khẩu / ga dỡ hàng:</label>
+                                                <div class="controls">
+                                                    <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" disabled="disabled" v-model="data.cstOffice" />
+                                                    <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" onclick="hq.getSeachCustom()" onchange="hq.getSeachCustom(); $('#hdfcstOffice,#txtcstOfficeNm').val('');" autocomplete="off" />
+                                                    <button type="button" style="padding: 0 10px" onclick="hq.getSeachCustom()">...</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Ngày khởi hành vận chuyển:<span class="error">(*)</span></label>
+                                <div class="controls">
+                                    <input type="text" class="span3" disabled="disabled" v-model="data.dTrfManPrImDcl" />
+                                    <input type="text" class="span7" disabled v-model="data.tTrfManPrImDcl" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="http://localhost:62315/Content/js/ola.js"></script>

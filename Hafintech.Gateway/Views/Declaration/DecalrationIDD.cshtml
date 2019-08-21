@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "DecalrationIDD";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h4>Tờ khai nhập khẩu GTC >> Lấy thông tin tờ khai</h4>
+
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5 id="textlable"></h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Số Tờ khai hải quan: </label>
+                                <div class="controls">
+                                    @if (ViewBag.typeGTC == 20)
+                                    {
+                                        <input style="width:350px" type="text" class="span5" id="txtdclNo" name="txtdclNo" placeholder="Số tờ khai hải quan" />
+                                        <a href="javascript:;" class="btn btn-success" onclick="hq2.SubmitIDD()">Lấy thông tin</a>
+                                    }
+                                    else if (ViewBag.typeGTC == 21)
+                                    {
+                                        <input style="width:350px" type="text" class="span5" id="txtdclNo" name="txtdclNo" placeholder="Số tờ khai hải quan" />
+                                        <a href="javascript:;" class="btn btn-success" onclick="hq.newSubmitIIDHighValue()">Lấy thông tin</a>
+                                    }
+                                    else if (ViewBag.typeGTC == 22)
+                                    {
+                                        <input style="width:350px" type="text" class="span5" id="txtdclNo" name="txtdclNo" placeholder="Số tờ khai hải quan" />
+
+                                        <a href="javascript:;" class="btn btn-success" onclick="hq2.SubmitIDB()">Lấy thông tin</a>
+                                    }
+                                </div>
+                                @if (ViewBag.type == 22)
+                                {
+                                    <label class="control-label">Loại hình vận tải: </label>
+                                    <div class="controls">
+                                        <select style="width:350px" type="text" class="span5" id="txtlhvt" name="txtlhvt">
+                                            <option>--Chọn--</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Tra cứu theo Hóa đơn điện tử: </label>
+                                    </div>
+                                    <div class="control-group span12">
+
+                                        <label class="control-label">Số tiếp nhận hóa đơn: </label>
+                                        <div class="controls">
+                                            <input style="width:350px" type="text" class="span5" id="txthddt" name="txthddt" />
+                                            <a href="javascript:;" class="btn btn-success" onclick="hq2.SubmitIDB()">Lấy thông tin</a>
+                                        </div>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Tra cứu theo số Tờ khai: </label>
+                                    </div>
+                                    <div class="control-group span12">
+                                        <label class="control-label">Số tờ khai: </label>
+                                        <div class="controls">
+                                            <input style="width:350px" type="text" class="span5" id="txtdelarectionNo" name="txtdelarectionNo" />
+                                            <a href="javascript:;" class="btn btn-success" onclick="hq2.SubmitIDB()">Lấy thông tin</a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var idpage = @ViewBag.TypeGTC;
+        debugger;
+        if (idpage == 20) {
+            $("#textlable").text("Lấy thông tin tờ khai từ hải quan - IDD");
+        }
+        if (idpage == 21) {
+            $("#textlable").text("Lấy thông tin tờ khai từ hải quan - IID");
+        }
+        if (idpage == 22) {
+            $("#textlable").text("Lấy thông tin tờ khai từ hải quan - IDB");
+        }
+        var a = $("li[class='treeview act']");
+        if (a.length > 1) {
+            a[1].removeAttribute("class", "act");
+        }
+    })
+</script>

@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+@model Hafintech.CustomsInfo.Models.AccountLogin
+
+<div id="loginbox" style="margin-top:100px">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">ĐĂNG NHẬP TÀI KHOẢN</b>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <div class="main_input_box">
+                <span class="add-on"><i class="icon-user"></i></span>
+                <input type="text" class="form-control" id="txtUsername" placeholder="Nhập tài khoản" />
+            </div>
+            <div class="main_input_box">
+                <span class="add-on"><i class="icon-lock"></i></span>
+                <input type="password" class="form-control" id="txtPassword" placeholder="Nhập mật khẩu" />
+            </div>
+            <div class="social-auth-links text-center">
+                <p id="LoginError" style="color:red;display:none;"></p>
+            </div>
+            <div class="main_input_box">
+                <br />
+                <a class="btn btn-primary" style=" display:inline-block; max-width:150px; text-transform:uppercase" onclick="accounts.confirmLogin()">Đăng Nhập</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#txtUsername,#txtPassword').on('keypress', function (e) {
+        if (e.which === 13) {
+            accounts.confirmLogin();
+        }
+    });
+</script>

@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "ListVoucherCustom";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+
+    var url = Request.Url.ToString();
+    Uri MyUrl = new Uri(url);
+    var type = HttpUtility.ParseQueryString(MyUrl.Query).Get("type");
+}
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="box-body" id="dvContent"> 
+
+            <a href="@Url.Action("DeclarationHighValue_Update", "Declaration", new { decID = ViewBag.idDec })&type=@type" class="btn btn-success">Chi tiết Tờ khai GTC</a>
+            <a href="@Url.Action("TabCommodityHighValue_List", "Declaration", new { decID = ViewBag.idDec })&type=@type" class="btn btn-success">Danh sách hàng GTC</a>
+            <a href="@Url.Action("TabDirectiveHighValue_List", "Declaration", new { decID = ViewBag.idDec })&type=@type" class="btn btn-success">Chỉ thị của hải quan</a>
+            <a href="javascript:;" class="btn btn-success">Kết quả xử lý tờ khai GTC</a>
+            <a href="javascript:;" class="btn btn-warning">Quản lý chứng từ điện tử</a>
+
+            <div class="widget-box">
+                <div style="clear:both"></div>
+                <div class="widget-title">
+                    <div class="span6">
+                        <span class="icon"><i class="icon-align-justify"></i></span>
+                        <h5>Quản lý chứng từ hồ sơ hải quan</h5>
+                    </div>
+                    <div class="span6" style="text-align: right">
+                        <button class="btn btn-danger" onclick="Voucher.PopVoucher()"><i class="icon glyphicon-plus"></i> Thêm chứng từ</button>
+                    </div>
+
+                </div>
+                <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                    <thead>
+                        <tr>
+                            <th style="min-width:100px">STT</th>
+                            <th>Loại chứng từ</th>
+                            <th>Mã tham chiếu</th>
+                            <th>Mã loại hình</th>
+                            <th>Ngày tải lên chứng từ</th>
+                            <th>Ngày tiếp nhận</th>
+                            <th>Số tiếp nhận</th>
+                            <th>Trạng thái</th>
+                            <th>File đính kèm</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+

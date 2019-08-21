@@ -1,0 +1,207 @@
+﻿<div style="padding: 0 20px 0 20px; margin: auto">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="span12" style=" margin-bottom 5px">
+                <span style="text-transform: uppercase">Bạn cần điền đầy đủ các thông tin cá nhân để chúng tôi hỗ trợ bạn một cách tốt nhất.</span>
+            </div>
+
+            <div class="content-page-business-info">
+                <div class="widget-box">
+
+                    <div class="form-horizontal" style="padding:10px;">
+                        <h5> Thông tin tài khoản</h5>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; display: inline-block; float: left">Số tài khoản </label>
+                                    <div id="AccountID" class="main_input_box" style="width: 30%; float: left">
+                                        @_2017Utilities.Session.AccountSession.AccountID
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; display: inline-block; float: left">Ngày đăng ký: </label>
+                                    <div id="dateReg" class="main_input_box" style="width: 30%; float: left">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Số dư tài khoản </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        0
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Số dư khả dụng </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        0
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Email</label>
+                                    <div id="emailInfo" class="main_input_box" style="width: 15%; float: left">
+
+                                    </div>
+                                    <button class="btn btn-warning verifyEmail" onclick="Act.GetCodeOTP(1)" style="display: none">Xác thực Email</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Số điện thoại</label>
+                                    <div id="phoneInfo" class="main_input_box" style="width: 15%; float: left">
+
+                                    </div>
+                                    <button class="btn btn-warning verifyPhone" onclick="Act.GetCodeOTP(2)" style="display: none">Xác thực ĐT</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Mật khẩu</label>
+                                    <div class="main_input_box" style="width: 15%; float: left">
+                                        ************
+                                    </div>
+                                    <a href="javascript:;" onclick="Account.ShowChangePassWord()" title="Đổi mật khẩu"><i class="fa fa-2x fa-edit"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="width: 100%; border-top: 1px solid #CDCDCD; margin: auto"></div>
+
+                    <div class="form-horizontal" style="padding:10px;">
+                        <h5 style="text-transform: uppercase"> thông tin doanh nghiệp</h5>
+
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Tên doanh nghiệp:<span class="error">(*)</span></label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="nameBusiness" name="nameBusiness" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Địa chỉ </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="address" name="address" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group1">
+                                    <label style="width: 47%; float: left; display: inline-block">Người đại diện </label>
+                                    <div class="main_input_box" style="width: 40%; float: left">
+                                        <input type="text" class="span12" id="legalRepre" name="legalRepre" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span4">
+                                <div class="control-group1">
+                                    <label style="width: 25%; float: left; display: inline-block">Mã BC </label>
+                                    <div class="main_input_box" style="width: 40%; float: left">
+                                        <input type="text" class="span12" id="codeBc" name="codeBc" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group1">
+                                    <label style="width: 47%; float: left; display: inline-block">Điện thoại <span class="error">(*)</span></label>
+                                    <div class="main_input_box" style="width: 40%; float: left">
+                                        <input type="text" class="span12" id="phoneBusiness" name="phoneBusiness" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span4">
+                                <div class="control-group1">
+                                    <label style="width: 25%; float: left; display: inline-block">Fax </label>
+                                    <div class="main_input_box" style="width: 40%; float: left">
+                                        <input type="text" class="span12" id="fax" name="fax" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="control-group1">
+                                    <label style="width: 47%; float: left; display: inline-block">Email <span class="error">(*)</span></label>
+                                    <div class="main_input_box" style="width: 40%; float: left">
+                                        <input type="text" class="span12" id="emailBusiness" name="emailBusiness" style="width:100%;" placeholder="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="span4">
+                                <div class="control-group1">
+                                    <label style="width: 25%; float: left; display: inline-block">Website </label>
+                                    <div class="main_input_box" style="width: 40%; float: left">
+                                        <input type="text" class="span12" id="website" name="website" style="width:100%;" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    
+
+                </div>
+
+
+                <div class="form-actions" style="margin-left: 14%">
+                    <a href="javascript:;" onclick="Account.UpdateInfoBusiness()" class="btn btn-success" style="padding: 7px 35px;">Lưu thông tin</a>
+                    @*<a href="javascript:;" onclick="accounts.ClosePopup();" class="btn btn-default" style="padding: 7px 35px;">Đóng</a>*@
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        Act.CheckActiveAcc();
+        Account.GetAccountInfo();
+        Account.InfoAccLogin();
+    });
+</script>

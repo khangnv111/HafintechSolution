@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+@model Hafintech.Gateway.Models.AccountLogin
+
+<div id="loginbox" style="margin-top:100px">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">ĐĂNG NHẬP TÀI KHOẢN</b>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <div class="main_input_box">
+                <span class="add-on"><i class="icon-user"></i></span>
+                <input type="text" class="form-control" id="txtUsername" placeholder="Nhập vào email/Số điện thoại" />
+            </div>
+            <div class="main_input_box">
+                <span class="add-on"><i class="icon-lock"></i></span>
+                <input type="password" class="form-control" id="txtPassword" placeholder="Nhập mật khẩu" />
+            </div>
+            <div class="social-auth-links text-center">
+                <p id="LoginError" style="color:red;display:none;"></p>
+            </div>
+            <div class="main_input_box">
+                <br />
+                <a class="btn btn-primary" style=" display:inline-block; max-width:150px; text-transform:uppercase" onclick="accounts.confirmLogin()">Đăng Nhập</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div style="text-align: center; position: relative; width: 100%;  padding: 0; margin: 0; float: left; margin-top: -30px;  color: #c3c3c3;">Hoặc đăng nhập bằng</div>
+        <div class="controls">
+            <div class="main_input_box">
+                <a onclick="accounts.loginFacebook();" class="btn btn-primary" style="width:23%"><i><img style="height:25px; padding-right:5px;" src="~/Content/img/facebook.png" /></i>Facebook</a>
+                <a onclick="accounts.loginGmail();" class="btn btn-primary" style="width:23%"><i><img style="height:25px; padding-right:5px;" src="~/Content/img/email.png" /></i>Gmail</a>
+                <div style="display:none" class="g-signin2" data-onsuccess="onSignIn">abcs</div>
+                @*<a onclick="accounts.LoginZalo();" class="btn btn-primary" style="width:23%"><i><img style="height:25px; padding-right:5px;" src="~/Content/img/zalo.png" /></i>Zalo</a>*@
+            </div>
+        </div>
+    </div>
+    <div class="control-group" style="padding-bottom:30px;">
+        <div class="controls">
+            <a onclick="accounts.ShowForgotPassword();" style="float:left">Quên mật khẩu</a>
+            <span style="float:right">Thành viên mới? <a onclick="accounts.ShowRegister();">Đăng ký tại đây?</a></span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#txtUsername,#txtPassword').on('keypress', function (e) {
+        if (e.which === 13) {
+            accounts.confirmLogin();
+        }
+    });
+</script>

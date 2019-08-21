@@ -1,0 +1,76 @@
+﻿@{
+    string currentlink = Request.Url.ToString();
+}
+<div id="sidebar">
+    <ul>
+        <li class="@(currentlink.Contains("Dashboard_list")?"act":"")"><a style="color:white" href="@Url.Action("Dashboard_list", "Declaration")" class=""><i class="icon icon-home"></i> Home</a></li>
+        <li class="treeview @(currentlink.Contains("Declaration")?"act":"")">
+            <a href="#">
+                <span>Quản lý tờ khai TMĐT XBG</span>
+            </a>
+            <ul class="submenu">
+                <li class="@(currentlink.Contains("Declaration_List")?"act":"")">
+                    <a href="@Url.Action("Declaration_List", "Declaration")">
+                        Danh sách tờ khai nhập khẩu
+                    </a>
+                </li>
+                <li class="@(currentlink.Contains("Declaration_Update")?"act":"")">
+                    <a href="@Url.Action("Declaration_Update", "Declaration")?type=1">Tạo mới tờ khai nhập khẩu GTT</a>
+                </li>
+                <li class="@(currentlink.Contains("DeclarationHighValue_Update")?"act":"")">
+                    <a href="@Url.Action("DeclarationHighValue_Update", "Declaration")?type=2">Tạo mới tờ khai nhập khẩu GTC</a>
+                </li>
+
+                <li class="@(currentlink.Contains("ListDeclaration")?"act":"")">
+                    <a href="@Url.Action("ListDeclaration", "ExportDeclaration")">
+                        Danh sách tờ khai xuất khẩu
+                    </a>
+                </li>
+                <li class="@(currentlink.Contains("MECDeclaration")?"act":"")">
+                    <a href="@Url.Action("MECDeclaration", "ExportDeclaration")?type=6&tab=1">
+                        Tạo mới tờ khai xuất khẩu GTT
+                    </a>
+                </li>
+                <li class="@(currentlink.Contains("EDAGeneral")?"act":"")">
+                    <a href="@Url.Action("EDAGeneral", "DeclarationEDA")?type=5&tab=1">
+                        Tạo mới tờ khai xuất khẩu GTC
+                    </a>
+                </li>
+                <li class="@(currentlink.Contains("OLA")?"act":"")">
+                    <a href="@Url.Action("Index", "TransportDeclaration")?type=7&tab=1">
+                        Danh sách OLA
+                    </a>
+                </li>
+                <li class="@(currentlink.Contains("OLA")?"act":"")">
+                    <a href="@Url.Action("OLA", "TransportDeclaration")?type=7&tab=1">
+                        OLA
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="treeview @(currentlink.Contains("UpdateInfo")?"act":"")"><a href="@Url.Action("UpdateInfo", "Home")"><span>Quản lý tài khoản</span></a></li>
+        <li class="treeview"><a href="#"><span>Quản lý giao dịch</span></a></li>
+        <li class="treeview @(currentlink.Contains("Declaration")?"act":"")">
+            <a href="#">
+                <span>Nghiệp vụ khác</span>
+            </a>
+            <ul class="nvk">
+                <li class="@(currentlink.Contains("Declaration_HYS")?"act":"")">
+                    <a href="@Url.Action("Declaration_HYS", "Declaration")?type=4">
+                        Khai báo đính kèm điện tử HYS
+                    </a>
+                </li>
+                <li class="@(currentlink.Contains("ListHYS")?"act":"")">
+                    <a href="@Url.Action("ListHYS", "Declaration")">Danh sách file đính kèm</a>
+                </li>
+                <li class="@(currentlink.Contains("Declaration_AMA")?"act":"")">
+                    <a href="@Url.Action("Declaration_AMA", "Declaration")?type=3">Khai thông tin sửa đổi bổ sung AMA</a>
+                </li>
+                <li class="@(currentlink.Contains("ListAMA")?"act":"")">
+                    <a href="@Url.Action("ListAMA", "Declaration")">Danh sách tờ khai sửa thuế AMA</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<input type="hidden" value="@_2017Utilities.Session.AccountSession.AccountID" />

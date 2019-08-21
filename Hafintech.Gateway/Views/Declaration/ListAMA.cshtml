@@ -1,0 +1,292 @@
+﻿
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row-fluid" id="list-ama">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Danh sách tờ khai AMA</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Cục Hải Quan</label>
+                        <select class="span12" id="slCustoms" v-model="data.cstOffice">
+                            <option value="">--Chọn cục HQ--</option>
+                            <option v-for="item in lstCustoms" :value="item.cstOfficeCd">{{item.cstOfficeCd}} || {{item.cstOfficeNm}}</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Loại tờ khai</label>
+                        <select class="span12" id="slType" v-model="data.type">
+                            <option value="0">--Tất cả--</option>
+                            <option value="3">Tờ khai nhập khẩu </option>
+                            <option value="4">Tờ khai xuất khẩu</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Từ ngày</label>
+                        <input type="date" class="span11 dDate" value="" v-model="data.startCreatedDate" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" required="">
+                    </div>
+                    <div class="span2">
+                        <label>Đến ngày</label>
+                        <div class="input-group date span12">
+                            <input type="date" class="span11 dDate" value="" v-model="data.endCreatedDate" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" required="">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Số Tờ khai </label>
+                        <input type="text" class="span12" v-model="data.dclNo" id="txtDeclaration" name="txtDeclaration" placeholder="Số Tờ khai">
+                    </div>
+
+                    <div class="span2">
+                        <label>Vận đơn </label>
+                        <input type="text" class="span12" id="" name="" placeholder="">
+                    </div>
+
+                    <div class="span2">
+                        <label>Hóa đơn thương mại </label>
+                        <input type="text" class="span11" id="" name="" placeholder="">
+                    </div>
+
+                    <div class="span4">
+                        <div style="margin-top:25px;">
+                            <a v-on:click="getList()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            @*<a onclick="hq.getListDeclaration()" class="btn btn-warning"><i class="icon icon-file"></i> Xuất Excel</a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách Tờ Khai nhập khẩu</h5>
+                </div>
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:100px">STT</th>
+                                <th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
+                                <th class="text-center" style="min-width:100px">Số tờ khai</th>
+                                <th class="text-center">Ngày đăng ký</th>
+                                <th class="text-center">Loại hình</th>
+                                <th class="text-center">Vận đơn</th>
+                                <th class="text-center">Số hóa đơn</th>
+                                <th class="text-center">Phân luồng</th>
+                                <th class="text-center">Ngày hóa đơn</th> 
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in listAMA">
+                                <td class="text-center">{{index+1}}</td>
+                                <td>
+                                    <a v-on:click="viewEdit(item.id)">{{item.amendDclNo}}</a>
+                                </td>
+                                <td>
+                                    <a v-on:click="viewEdit(item.id)">{{item.dclNo}}</a>
+                                </td> 
+                                <td>{{formatDate(item.createdDate)}}</td>
+                                <td></td>
+                                <td></td>
+                                <td>{{item.InvoiceNo}}</td>
+                                <td>
+                                    <span v-show="item.clearanStatus == -1">Chưa thông quan</span>
+                                    <span v-show="item.clearanStatus == 1">Thông quan</span>
+                                    <span v-show="item.clearanStatus == 2">Đợi thông quan</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <a class="btn btn-warning" v-on:click="viewEdit(item.id)">Sửa</a>
+                                    <a class="btn btn-danger" v-on:click="removeDe(item.id)">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="container-fluid">
+        <ul class="pagination">
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+        </ul>
+    </div>*@
+
+<script type="text/javascript">
+
+    //hq.getListCustom();
+    //hq.getGroupType();
+    //hq.getOrganizationType();
+    //$(document).ready(function () {
+    //    $('.dDate').datepicker({
+    //    });
+    //    setTimeout(function () { hq.getListDeclaration(); }, 1000);
+    //    var a = $("li[class='treeview act']");
+    //    if (a.length > 1) {
+    //        a[1].removeAttribute("class", "act");
+    //    }
+
+    //})
+</script>
+
+<script src="~/Content/js/vue.min.js"></script>
+<script src="~/Content/js.update/lib.js"></script>
+
+<script>
+    var appAMA = new Vue({
+        el: '#list-ama',
+        data: {
+            data: {},
+            txtappProType: [], //phân loại thủ tục khai báo
+            lstCustoms: [],
+
+            listAMA: [],
+        },
+        methods: {
+            init: async function () {
+                var data = this.data;
+                data.cstOffice = "";
+                data.type = 0;
+                data.startCreatedDate = "";
+                data.endCreatedDate = "";
+                data.dclNo = "";
+
+                this.lstCustoms = await Lib.getCustomsOffice();
+                this.txtappProType = await Lib.GetApplicationProcedureType();
+                //await this.loadDetail();
+
+
+            },
+            getList: async function () {
+             
+                var token = $('#hdfToken').val();
+                var dt = this.data;
+                //var fromdate = $("#datepickerFromD").val();
+                //var todate = $("#datepickerToD").val();
+                var slCustoms = $("#slCustoms").val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: Config.API_Login + "tax/SearchAMA",
+                    data: {
+                        dclNo: dt.dclNo,
+                        startCreatedDate: dt.startCreatedDate,
+                        endCreatedDate: dt.endCreatedDate,
+                        cstOffice: dt.cstOffice,
+                        amendDclNo: "",
+                    },
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    //contentType: "application/json; charset=utf-8",
+                    //dataType: "json",
+                    success: function (data) {
+                        //console.log(data);
+                        if (data.ResponseCode >= 0)
+                        {
+                            appAMA.listAMA = data.Data.ListAmendedTaxInfomation;
+                        }
+                    },
+                    error: function (data) {
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        return;
+                    }
+                });
+            },
+            formatDate: function(date) {
+                if(!date) return "";
+
+                return moment(String(date)).format('DD/MM/YYYY hh:mm')
+            },
+            formatDate2: function(date){
+                if (date == undefined || date == "" || date == null) {
+                    return "";
+                }
+                var d = date.substring(0, 2);
+                var m = date.substring(2, 4);
+                var y = date.substring(4, date.length);
+
+                var time = d + "/" + m + "/" + y;
+
+                return time;
+            },
+            viewEdit: async function (id, attNo) {
+                window.location.href = Config.Url_Root + "Declaration/Declaration_AMA?decID=" + id + "&type=3";
+
+            },
+            removeDe: async function (id) {
+
+                bootbox.confirm("Bạn có chắc xóa tờ khai này!", function(resultCon){
+                    if(resultCon)
+                    {
+                        var token = $('#hdfToken').val();
+                        accounts.ShowLoading();
+                        $.ajax({
+                            type: 'GET',
+                            url: Config.API_Login + "export/DeleteEDADeclaration",
+                            data: {
+                                declarationID: id
+                            },
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                //console.log(data);
+                                debugger;
+                                accounts.Unloading();
+                                if (data != null && data != '' && data != undefined) {
+                                    if (data.ResponseCode > 0) {
+                                        accounts.Message("Thành công");
+                                        appAMA.getList();
+                                    }
+                                    else {
+                                        accounts.Message(data.Description);
+                                    }
+                                }
+                                else {
+                                    accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                }
+
+                            },
+                            error: function (data) {
+                                bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                                return;
+                            }
+                        });
+                    }
+                });
+
+            },
+        },
+        mounted() {
+            this.init();
+            this.getList();
+
+        },
+        computed: {
+        }
+
+   });
+</script>

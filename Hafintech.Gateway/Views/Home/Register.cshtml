@@ -1,0 +1,91 @@
+﻿<div id="loginbox">
+    <div class="control-group normal_text">
+        <b style="font-size:18px;">ĐĂNG KÝ TÀI KHOẢN</b>
+        <b onclick="accounts.ClosePopup();" class="icClose">X</b>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <div class="main_input_box">
+                <label style="text-align:left; margin-left:12%; font-weight:bold">Họ và tên (*)</label>
+                <input type="text" class="form-control" id="txtFullName" placeholder="Nhập họ và tên" />
+            </div>
+            <div class="main_input_box">
+                <label style="text-align:left; margin-left:12%; font-weight:bold">Email (*)</label>
+                <input type="text" class="form-control" id="txtEmail" placeholder="Nhập email" />
+            </div>
+            <div class="main_input_box" style="position:relative;">
+                <label style="text-align:left; margin-left:12%; font-weight:bold">Số điện thoại (*)</label>
+                <input type="text" class="form-control" id="txtPhone" placeholder="Nhập Số điện thoại" />
+            </div>
+            @*<div class="main_input_box">
+                    <label style="text-align:left; margin-left:12%; font-weight:bold">Số CMTND (*)</label>
+                    <input type="text" class="form-control" id="txtIdentity" placeholder="Nhập Số CMTND" />
+                </div>
+                <div class="main_input_box">
+                        <label style="text-align:left; margin-left:12%; font-weight:bold">Mã số Thuế (*)</label>
+                        <input type="text" class="form-control" id="txtTaxCode" placeholder="Nhập mã số thuế" />
+                    </div>
+                    <div class="main_input_box">
+                        <label style="text-align:left; margin-left:12%; font-weight:bold">Tỉnh</label>
+                        <select class="form-control" id="slTinhThanh" onchange="accounts.GetListDistrict()">
+                            <option value="0">--Chọn Tỉnh Thành--</option>
+                        </select>
+                    </div>
+                    <div class="main_input_box" id="divQuanHuyen" style="display:none">
+                        <label style="text-align:left; margin-left:12%; font-weight:bold">Quận / Huyện</label>
+                        <select class="form-control" id="slQuanHuyen" onchange="accounts.GetListCommune();">
+                            <option value="0">--Chọn Quận / Huyện--</option>
+                        </select>
+                    </div>
+                    <div class="main_input_box" id="divPhuongXa" style="display:none">
+                        <label style="text-align:left; margin-left:12%; font-weight:bold">Phường / Xã</label>
+                        <select class="form-control" id="slPhuongXa">
+                            <option value="0">--Chọn Phường / Xã--</option>
+                        </select>
+                    </div>
+                    <div class="main_input_box">
+                        <label style="text-align:left; margin-left:12%; font-weight:bold">Địa chỉ (*)</label>
+                        <input type="text" class="form-control" id="txtAddress" placeholder="Nhập địa chỉ" />
+                    </div>*@
+            <div class="main_input_box">
+                <label style="text-align:left; margin-left:12%; font-weight:bold">Mật khẩu (*)</label>
+                <input type="text" class="form-control" id="txtPass" placeholder="Mật khẩu tối thiểu 6 ký tự bao gồm chữ và số" />
+                <button onclick="accounts.showPassRegister()" id="btnshowPass"><img src="https://i.stack.imgur.com/waw4z.png" id="EYE"></button>
+            </div>
+            @*<div class="main_input_box">
+                    <label style="text-align:left; margin-left:12%; font-weight:bold">Nhập lại mật khẩu (*)</label>
+                    <input type="password" class="form-control" id="txtRePass" placeholder="Nhập lại mật khẩu trên" />
+                </div>*@
+            <div class="social-auth-links text-center">
+                <p id="RegisterError" style="color:red;display:none;"></p>
+            </div>
+            <div class="main_input_box">
+                <br />
+                <a class="btn btn-primary" style=" display:inline-block; max-width:150px; text-transform:uppercase" onclick="accounts.confirmRegister()">Đăng Ký</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div style="text-align: center; position: relative; width: 100%;  padding: 0; margin: 0; float: left; margin-top: -30px;  color: #c3c3c3;">Hoặc đăng nhập bằng</div>
+        <div class="controls">
+            <div class="main_input_box">
+                <a onclick="accounts.loginFacebook();" class="btn btn-primary" style="width:25%"><i><img style="height:25px; padding-right:5px;" src="~/Content/img/facebook.png" /></i>Facebook</a>
+                <a onclick="accounts.loginGmail();" class="btn btn-primary" style="width:25%"><i><img style="height:25px; padding-right:5px;" src="~/Content/img/email.png" /></i>Gmail</a>
+                @*<a onclick="accounts.LoginZalo();" class="btn btn-primary" style="width:25%"><i><img style="height:25px; padding-right:5px;" src="~/Content/img/zalo.png" /></i>Zalo</a>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#txtFullName,#txtEmail,#txtPhone,#txtIdentity,#txtPass').on('keypress', function (e) {
+        if (e.which === 13) {
+            accounts.confirmRegister();
+        }
+    });
+</script>
+
+
+

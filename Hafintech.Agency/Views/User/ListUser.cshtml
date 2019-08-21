@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewBag.Title = "ListUser"; 
+}
+
+<div class="container-fluid">
+    <div class="row-fluid" id="list_user">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>DANH SÁCH NGƯỜI DÙNG HỆ THỐNG</h5>
+            </div>
+
+            <div class="widget-content">
+                <div class="row-fluid">
+
+                    <div class="span2">
+                        <label>Từ ngày</label>
+                        <input type="text" class="span12 dDate" value="" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" v-model="data.startCreatedDate">
+                    </div>
+                    <div class="span2">
+                        <label>Đến ngày</label>
+                        <input type="text" class="span12 dDate" value="" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" v-model="data.endCreatedDate">
+                    </div>
+
+                    <div class="span2">
+                        <label>Số điện thoại</label>
+                        <input type="text" class="span12" id="phone" v-model="data.phone"/>
+                    </div>
+
+                    <div class="span2">
+                        <label>Nhóm quyền</label>
+                        <select class="span12" id="roleUser" v-model="data.permitType">
+                            <option value="">--Chọn quyền--</option>
+                            <option value="1">Admin</option>
+                            <option value="2">Duyệt trình ký</option>
+                            <option value="3">Gửi trình ký</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Email tài khoản</label>
+                        <input type="text" id="email" class="span12" v-model="data.email"/>
+                    </div>
+                    <div class="span2">
+                        <label>Trạng thái</label>
+                        <select class="span12" id="status" v-model="data.status">
+                            <option value="">--Chọn trạng thái--</option>
+                            <option value="1">Hiệu lực</option>
+                            <option value="0">Hết hiệu lực</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+                            <a onclick="UserAgen.GetListUser();" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a> 
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div style="margin-top:25px;">
+                            <a onclick="UserAgen.PopCreateUser(0)" class="btn btn-warning"><i class="fa fa-plus-square"></i> Tạo người dùng</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách</h5>
+                </div>
+
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:70px">STT</th>
+                                <th class="text-center" style="min-width:70px">ID</th>
+                                <th class="text-center" style="min-width:100px">Họ tên</th>
+                                <th class="text-center" style="min-width:100px">Email</th>
+                                <th class="text-center">Số điện thoại</th>
+                                <th class="text-center">Nhóm quyền</th>
+                                <th class="text-center">Ngày tạo tài khoản</th> 
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list-content-table">
+                            <tr>
+                                <td colspan="12" style="text-align:center">
+                                    <img width="50" src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/loading.gif" />
+                                </td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container-fluid">
+    <ul class="pagination">
+        @*<li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>*@
+    </ul>
+</div>
+
+<script>
+    $('.dDate').datepicker({
+        //dateFormat: 'dd/mm/yyyy'
+    });
+    $(document).ready(function () {
+        var h1 = $(".dDate").offset().top + 30;
+        //var h2 = $(".datepicker").offset().top;
+        //var top = h1 - h2 - $(".datepicker").height();
+
+        $(".datepicker").css("margin-top", h1 + "px");
+
+        setTimeout(function () {
+            UserAgen.GetListUser();
+        }, 1000);
+    });
+
+</script>
+
+
+

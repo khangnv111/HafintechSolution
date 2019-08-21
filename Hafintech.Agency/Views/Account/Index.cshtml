@@ -1,0 +1,83 @@
+﻿<div style="padding: 0 20px 0 20px; margin: auto">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="span12" style="border-bottom: 1px solid #808080; margin-bottom: 5px">
+                <h4 style="text-transform: uppercase">Thiết lập thông số mặc định</h4>
+            </div>
+
+            <div class="row-fluid">
+                <h5 id="nameCompany"></h5>
+            </div>
+
+            <div class="row-fluid" style="margin-bottom: 20px">
+                <a href="javascript:;" class="btn btn-warning" style="padding: 8px 20px 8px 20px;"> Cài đạt VNACCS</a>
+                <a href="@Url.Action("SigNumber", "Account")" class="btn btn-default" style="padding: 8px 20px 8px 20px;"> Chữ ký số</a>
+            </div>
+
+            <div class="content-page-business-info">
+                <div class="widget-box">
+
+                    <div class="form-horizontal" style="padding:10px;">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; display: inline-block; float: left">Chi cục hải quan tiếp nhận: </label>
+
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        @*<input type="text" class="span12" id="codeBusiness" name="codeBusiness" style="width:100%;" placeholder="Mã doanh nghiệp"  />*@
+                                        <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3">
+                                        <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" onclick="DePop.PopCustom()" autocomplete="off" required="required" class="span7" aria-required="true"> 
+                                        <button type="button" onclick="DePop.PopCustom()" style="padding: 0px 10px;">...</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; display: inline-block; float: left">Bộ phận xử lý tờ khai nhập: </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="cusCodeImport" name="cusCodeImport" style="width:100%;" placeholder=""  />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="control-group1">
+                                    <label style="width: 15%; float: left; display: inline-block">Bộ phận xử lý tờ khai xuất: </label>
+                                    <div class="main_input_box" style="width: 30%; float: left">
+                                        <input type="text" class="span12" id="cusCodeExport" name="cusCodeExport" style="width:100%;" placeholder=""  />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    @*<div style="width: 95%; border-top: 1px solid #CDCDCD; margin: auto"></div>*@
+
+                    
+
+                    <div class="form-actions" style="">
+                        <input type="hidden" id="hdfTypeSubmit" />
+                        <button type="submit" id="btnSubmitProduct"></button>
+                        <a href="javascript:;" onclick="Vnacc.UpdateVnacc()" class="btn btn-success" style="padding: 7px 35px;">Lưu lại</a>
+                        @*<a href="javascript:;" onclick="accounts.ClosePopup();" class="btn btn-default" style="padding: 7px 35px;">Đóng</a>*@
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        Act.CheckActiveAcc();
+        Account.InfoAccLogin();
+    });
+</script>

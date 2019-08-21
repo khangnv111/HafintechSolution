@@ -1,0 +1,71 @@
+﻿
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Tìm kiếm</h5>
+            </div>
+            <div class="widget-content">
+            
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Mã doanh nghiệp</label>
+                        <input type="text" class="span12" id="codeBusinessSearch" name="txtDeclaration" placeholder="">
+                    </div>
+
+                    <div class="span2">
+                        <label>Tên doanh nghiệp</label>
+                        <input type="text" class="span12" id="nameBusinessSearch" name="txtDeclaration" placeholder="">
+                    </div>
+
+                    <div class="span4">
+                        <div style="margin-top:25px;">
+                            <a onclick="Customer.SearchListBusiness()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            <a onclick="Customer.ShowPopupBusiness()" class="btn btn-warning"><i class="fa fa-plus"></i> Thêm mới</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>DANH SÁCH KHÁCH HÀNG DOANH NGHIỆP</h5>
+                </div>
+                <div id="content-table">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width: 100px">STT</th>
+                                <th class="text-center">Mã doanh nghiệp</th>
+                                <th class="text-center">Tên doanh nghiệp</th>
+                                <th class="text-center">Điện thoại</th>
+                                <th class="text-center">Địa chỉ</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list-content-table">
+                            <tr >
+                                <td colspan="11" style="text-align:center">
+
+                                    <img width="50" src="~/Content/img/loading.gif" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            Customer.SearchListBusiness();
+        }, 500);
+    })
+</script>
