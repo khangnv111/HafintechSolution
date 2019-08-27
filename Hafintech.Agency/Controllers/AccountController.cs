@@ -29,6 +29,15 @@ namespace Hafintech.Agency.Controllers
             return View();
         }
 
+        public ActionResult InfoBusiness()
+        {
+            if (AccountSession.AccountID <= 0)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            return View();
+        }
+
         public ActionResult ChangePassword()
         {
             return PartialView();

@@ -1,0 +1,259 @@
+﻿@{
+    ViewBag.Title = "EDA_InsertUpdate";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+<div class="row-fluid" id="result-eda">
+    <div class="span12">
+        <h4>Kết quả xử lý tờ khai</h4>
+        <button v-on:click="viewDec(@ViewBag.decId, @ViewBag.tab)" class="btn" style="padding: 5px 70px;">Tờ khai</button>
+        <button class="btn btn-success" style="padding: 5px 70px">Kết quả xử lý</button>
+
+        <div class="widget-box">
+            <div style="clear:both"></div>
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Danh sách thông điệp tờ khai</h5>
+            </div>
+            <div style="padding: 15px;">
+                <button style="padding: 5px 50px"><i class="fa fa-print" style="color: #082da7"></i> In thông điệp trả về</button>
+                <button style="padding: 5px 50px"><i class="fa fa-arrows-alt" style="color: #119607"></i> Xem thông tin trả về HQ</button>
+            </div>
+            <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                <thead>
+                    <tr>
+                        <th style="min-width:50px">STT</th>
+                        <th>Loại tờ khai</th>
+                        <th>Tiêu đề</th>
+                        <th>Số Tờ khai</th>
+                        <th>Tên thông điệp</th>
+                        <th>Mã thông điệp</th>
+                        <th>Loại</th>
+                        <th>Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-show="showLoading">
+                        <td colspan="14" style="text-align:center">
+                            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                        </td>
+                    </tr>
+                    <tr v-for="(item, index) in lstMess">
+                        <td style="text-align: center">{{index + 1}}</td>
+                        <td>
+                            <span v-if="item.outputMsgCode != 'P'">{{item.serviceCode}}</span>
+                            <span v-if="item.outputMsgCode == 'P'"><a on:click="ViewMess(item)">{{item.serviceCode}}</a></span>
+                        </td>
+                        <td>
+                            {{item.subject}}
+                        </td>
+                        <td>{{item.dclNo}}</td>
+                        <td>{{item.outputMsgCode}}</td>
+                        <td>{{item.resultCode}}</td>
+                        <td>{{item.messageClass}}</td>
+                        <td>{{DateFormat(item.msgRecvDate).dateS}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="span8" style="margin:0">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Thông tin thuế của tờ khai</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="control-label">Số lần miễn thuế: </label>
+                            <div class="controls">
+                                <b style="line-height: 30px;" id="txtDeclaration"></b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="control-label"><b>Tỉ giá tính thuế</b></label>
+                            <div class="controls">
+                                <input type="text" class="span3" disabled />
+                                <input type="text" class="span2" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="control-label"><b>Thuế xuất nhập khẩu</b></label>
+                            <div class="controls">
+                                <input type="text" class="span5" disabled />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="control-label"><b>Tổng tiền thuế</b></label>
+                            <div class="controls">
+                                <input type="text" class="span5" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="control-label"><b>Tổng số tiền lệ phí</b></label>
+                            <div class="controls">
+                                <input type="text" class="span5" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="control-label"><b>Số tiền giảm thuế nhập khẩu</b></label>
+                            <div class="controls">
+                                <input type="text" class="span5" disabled />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="span4">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Các nghiệp vụ bổ xung</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal" style="padding: 15px">
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">Đăng ký bổ sung file đính kèm(MSB)</button>
+                    </div>
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">Đăng ký bổ sung thay đổi thuế  AMA</button>
+                    </div>
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">Khai báo danh sách container cho tờ khai</button>
+                    </div>
+                    <div class="row-fluid">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">Lấy danh sách Container của tờ khai</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>In thông tin tờ khai</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal" style="padding: 15px">
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">1. In đơn xin cho phép lấy hàng trước</button>
+                    </div>
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">2. In quyết định thông quan hàng hóa</button>
+                    </div>
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">3. In quyết định thông quan có điều kiện</button>
+                    </div>
+                    <div class="row-fluid">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">4. In chứng từ ghi số thuế phải thu</button>
+                    </div>
+                    <div class="row-fluid">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">5. In chứng từ ghi số lệ phí phải thu</button>
+                    </div>
+                    <div class="row-fluid">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">6. In thông báo yêu cầu kiểm tra hàng hóa (Nếu có)</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<input type="hidden" value="@ViewBag.decId" id="decId" />
+<input type="hidden" value="@ViewBag.dclNo" id="dclNo" />
+<script>
+    var reEda = new Vue({
+        el: '#result-eda',
+        data: {
+            data: {},
+            showLoading: true,
+            lstMess: [],
+        },
+        methods: {
+            loadMess: function (dclId) {
+                var token = $('#hdfToken').val();
+                $.ajax({
+                    type: 'POST',
+                    url: Config.API_Login + "tax/GetAttachmentMessage",
+                    data: JSON.stringify({
+                        //attachmentNo: attNo,
+                        dclId: dclId,
+                        count: 100,
+                        page: 0,
+                    }),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        reEda.showLoading = false;
+                        console.log("loadMess: ", data);
+                        if (data) {
+                            reEda.lstMess = data.Data.ListOutputCommonSegment;
+                        }
+                    },
+                    error: function (data) {
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        return;
+                    }
+                });
+            },
+            viewDec: function (id, tab) {
+                window.location.href = Config.Url_Root + "ExportDeclaration/EDA_InsertUpdate?decId=" + id + "&tab=" + tab + "&ishight=4";
+            },
+            ViewMess: function (item) {
+                var url = Config.Message + "MediationCustomsMessage/messages/print?messageId=" + item.messageId;
+                window.open(url, "_blank");
+            },
+            DateFormat: function (date) {
+                if (!date)
+                    return "";
+                var year = date.substring(0, 4);
+                var month = date.substring(4, 6);
+                var day = date.substring(6, 8);
+                var h = date.substring(8, 10);
+                var m = date.substring(10, date.length);
+                var dateS = year + "-" + month + "-" + day + " " + h + ":" + m;
+                return {
+                    year: year,
+                    month: month,
+                    day: day,
+                    h: h,
+                    m: m,
+                    dateS: dateS
+                }
+            },
+        },
+        mounted() {
+            var dclId = $("#decId").val();
+            if (dclId && dclId > 0) {
+                this.loadMess(dclId);
+            }
+            else {
+                this.showLoading = false;
+            }
+        },
+        computed: {
+        }
+    });
+</script>
+

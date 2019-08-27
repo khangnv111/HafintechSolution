@@ -1,0 +1,423 @@
+﻿
+<div class="container-fluid" id="lstOLA">
+    <div class="row-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Danh sách tờ khai vận chuyển</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Cục Hải Quan</label>
+                        <input id="hero-demo" autofocus type="text" name="q" placeholder="Mã hải quan" class="span12">
+                        <input id="cstOffice" type="hidden" class="span12" name="cstOffice"/>
+                        @*<select class="span12" id="combobox" v-model="data.cstOffice">
+                                <option value="">--Chọn cục HQ--</option>
+                                <option v-for="item in lstCustoms" :value="item.cstOfficeCd">{{item.cstOfficeCd}} || {{item.cstOfficeNm}}</option>
+                            </select>*@
+                    </div>
+                    <div class="span2">
+                        <label>Phương tiện vận chuyển</label>
+                        <select class="span12" v-model="data.meansOfTrsCd" id="dlMeanOfTrs">
+                            <option value="">-- Chọn Tất Cả--</option>
+                            <option value="6">6: Máy bay</option>
+                            <option value="11">11: Tàu thuỷ</option>
+                            <option value="16">16: Xà lan</option>
+                            <option value="25">25: Tàu hỏa</option>
+                            <option value="31">31: Ô tô</option>
+                            <option value="17">17: Khác</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Số hợp đồng vận chuyển</label>
+                        <input type="text" class="span12" v-model="data.transCtrctNo" placeholder="Số hợp đồng vận chuyển">
+                    </div>
+                    <div class="span2">
+                        <label>Từ ngày</label>
+                        <input type="date" class="span12 dDate" value="" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" v-model="data.startCreatedDate">
+                    </div>
+                    <div class="span2">
+                        <label>Đến ngày</label>
+                        <input type="date" class="span12 dDate" value="" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" v-model="data.endCreatedDate">
+                    </div>
+                    <div class="span2">
+                        <label>Loại hình vận chuyển</label>
+                        <select class="span12 SKB" id="slclsOrg" v-model="data.transType">
+                            <option value="">-- Chọn Tất Cả--</option>
+                            <option value="EA">EA: Vận tải chung (Trường hợp vận chuyển từ tàu có kiểm tra tại cảng dỡ hàng)</option>
+                            <option value="QU">QU: Vận chuyển qua trạm kiểm dịch</option>
+                            <option value="KR">KR: Vận chuyển hàng hóa quá cảnh / quá cảnh</option>
+                            <option value="KS">KS: Vận chuyển đơn giản</option>
+                            <option value="PT">PT: Port đến Port giao thông vận tải</option>
+                            <option value="CT">CT: Giao thông với nhiều phương tiện giao thông</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Số Tờ khai</label>
+                        <input type="text" class="span12" v-model="data.btDclNo" placeholder="Số Tờ khai">
+                    </div>
+                    <div class="span2">
+                        <label>Mục đích vận chuyển</label>
+                        <select class="span12" id="slinsClsCd" v-model="data.transPurposeCd">
+                            <option value="">-- Chọn Tất Cả--</option>
+                            <option value="ECD">ECD: Hàng hóa xuất khẩu vận chuyển&nbsp; từ cảng xuất khẩu thành lập trong nội địa đến cửa khẩu xuất;</option>
+                            <option value="EFS">EFS: Hàng hóa xuất khẩu vận chuyển từ địa điểm thu gom&nbsp; hàng lẻ đến cửa khẩu xuất;</option>
+                            <option value="ELS">ELS: Hàng hóa xuất khẩu từ kho hàng không kéo dài đến cửa khẩu xuất;</option>
+                            <option value="EBD">EBD: Hàng hóa xuất khẩu vận chuyển từ kho ngoại quan đến cửa khẩu xuất;</option>
+                            <option value="ETH">ETH: Hàng hóa xuất khẩu khác</option>
+                            <option value="CTR">CTR: Hàng hóa quá cảnh</option>
+                            <option value="CTH">CTH: Hàng hóa khác</option>
+                        </select>
+                    </div>
+                    <div class="span4">
+                        <div style="margin-top:25px;">
+                            <a v-on:click="getList(0)" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            <a class="btn btn-warning"><i class="icon icon-file"></i> Xuất Excel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách Tờ Khai nhập khẩu</h5>
+                </div>
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:100px">STT</th>
+                                <th class="text-center" style="min-width:100px">ID</th>
+                                <th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
+                                <th class="text-center" style="min-width:100px">Số tờ khai</th>
+                                <th class="text-center">Ngày đăng ký</th>
+                                <th class="text-center">Số hợp đồng vận chuyển</th>
+                                <th class="text-center">Mã hải quan</th>
+                                <th class="text-center">Phương tiện vận chuyển</th>
+                                <th class="text-center">Loại hình vận chuyển</th>
+                                <th class="text-center">Mục đích vận chuyển</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in lstDeclaration">
+                                <td>{{index+1}}</td>
+                                <td>
+                                    <a v-on:click="viewDeclaration(item.btDclId,item.status)">{{item.btDclId}}</a>
+                                </td>
+                                <td>{{item.statusCode}}</td>
+                                <td>{{item.btDclNo}}</td>
+                                <td>{{item.createdDate}}</td>
+                                <td>{{item.transCtrctNo}}</td>
+                                <td>{{item.cstOffice}}</td>
+                                <td>
+                                    <span v-show="item.meansOfTrsCd == 6">Máy bay</span>
+                                    <span v-show="item.meansOfTrsCd == 11">Tàu thuỷ</span>
+                                    <span v-show="item.meansOfTrsCd == 16">Xà lan</span>
+                                    <span v-show="item.meansOfTrsCd == 25">Tàu hỏa</span>
+                                    <span v-show="item.meansOfTrsCd == 31">Ô tô</span>
+                                    <span v-show="item.meansOfTrsCd == 17">Khác</span>
+                                    @*{{item.meansOfTrsCd}}*@
+                                </td>
+                                <td>{{item.transType}}</td>
+                                <td>{{item.transPurposeCd}}</td>
+                                <td>
+                                    <a class="btn btn-warning" v-on:click="viewDeclaration(item.btDclId,item.status)">Sửa</a>
+                                    <a class="btn btn-danger" v-on:click="removeDe(item)">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <ul class="pagination"></ul>
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="~/Content/js/vue.min.js"></script>
+<script src="~/Content/js/lib.js"></script>
+<link href="~/Scripts/autocomplete/jquery.auto-complete.css" rel="stylesheet" />
+<script src="~/Scripts/autocomplete/jquery.auto-complete.min.js"></script>
+<script type="text/javascript">
+    var calltable = 0;
+    var lstOLA = new Vue({
+        el: '#lstOLA',
+        data: {
+            data: {
+            },
+            lstOrganizationType: [],
+            lstGroupType: [],
+            lstCustoms: [],
+            lstDeclaration: [],
+            lstDataPop: [],
+            descriptionLimit: 60,
+            entries: [],
+            isLoading: false,
+            model: null,
+            search: null
+        },
+        methods: {
+            init: async function () {
+                var data = this.data;
+                data.cstOffice = ""
+                data.groupTypeId = "";
+                data.clsOrgCd = "";
+                data.insClsCd = "";
+                data.clearanStatus = 0;
+                data.status = 0;
+                data.statusCode = "";
+                data.type = 0;
+                data.startCreatedDate = "";
+                data.endCreatedDate = "";
+                data.btDclNo = "";
+                data.meansOfTrsCd = "";
+                data.transType = "";
+                data.transPurposeCd = "";
+                data.transCtrctNo = "";
+                utils.Loading();
+                this.lstCustoms = await Lib.getCustomsOffice();
+                utils.unLoading();
+
+            },
+            getList: async function (page, callback) {
+                try {
+                    var token = $('#hdfToken').val();
+                    var accountId;
+                    if (utils.getCookie("Type") == "1") {
+                        accountId = utils.getCookie("parentId");
+                    }
+                    else {
+                        accountId = $("#accIdLogin").val();
+                    }
+                    var dt = this.data;
+                    var cstOffice = "";
+                    if (page == undefined || page == null) page = 0;
+                    var cstOfficeInput = $('#hero-demo').val();
+                    console.log(cstOfficeInput);
+                    if (cstOfficeInput.length > 0) {
+                        cstOffice = $('#cstOffice').val();
+                    }
+                    const response = await axios.get(Config.API_Login + "TransportDeclaration/SearchOLA?meansOfTrsCd=" + dt.meansOfTrsCd + "&btDclNo=" + dt.btDclNo + "&cstOffice=" + cstOffice + "&transPurposeCd=" + dt.transPurposeCd +
+                        "&startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&transCtrctNo=" + dt.transCtrctNo + "&transType=" + dt.transType
+                        + "&page=" + page + "&count=10&accountId=" + accountId,
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0) {
+                        this.lstDeclaration = response.data.Data.ListOla;
+                        this.totalRow = response.data.Data.Total;
+                        this.showPage(page, this.totalRow);
+                        if (typeof callback != 'undefined' && typeof callback == 'function')
+                            callback()
+                    }
+                    else return null;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            viewDeclaration: function (id, status) {
+                switch (status) {
+                    case 501:
+                        window.location.href = Config.Url_Root + "TransportDeclaration/ola?olaid=" + id + "&ishight=7&tab=1"
+                        break;
+                    case 502:
+                        window.location.href = Config.Url_Root + "TransportDeclaration/ola?olaid=" + id + "&ishight=7&tab=1"
+                        break;
+                    case 503:
+                        window.location.href = Config.Url_Root + "TransportDeclaration/olc?olaid=" + id + "&ishight=7&tab=3"
+                        break;
+                    case 506:
+                        window.location.href = Config.Url_Root + "TransportDeclaration/olc?olaid=" + id + "&ishight=7&tab=3"
+                        break;
+                    case 505:
+                        window.location.href = Config.Url_Root + "TransportDeclaration/cot?olaid=" + id + "&ishight=7&tab=5"
+                        break;
+                    case 510:
+                        window.location.href = Config.Url_Root + "TransportDeclaration/itf?olaid=" + id + "&ishight=7&tab=8"
+                        break;
+
+                    default:
+                        window.location.href = Config.Url_Root + "TransportDeclaration/ola?olaid=" + id + "&ishight=7&tab=1"
+                        break;
+                }
+            },
+            formatDate: function (date) {
+                return moment(String(date)).format('DD/MM/YYYY hh:mm')
+            },
+            formatDate2: function (date) {
+                if (date == undefined || date == "" || date == null) {
+                    return "";
+                }
+                var d = date.substring(0, 2);
+                var m = date.substring(2, 4);
+                var y = date.substring(4, date.length);
+
+                var time = d + "/" + m + "/" + y;
+
+                return time;
+            },
+            removeDe: function (item) {
+                var self = this;
+                bootbox.confirm("Bạn có chắc xóa tờ khai này!", function (resultCon) {
+                    if (resultCon) {
+                        var token = $('#hdfToken').val();
+                        $.ajax({
+                            type: 'GET',
+                            url: Config.API_Login + "TransportDeclaration/DeleteOLA",
+                            data: {
+                                btDclId: item.btDclId
+                            },
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                //console.log(data);
+                                debugger;
+                                utils.unLoading();
+                                if (data != null && data != '' && data != undefined) {
+                                    if (data.ResponseCode > 0) {
+                                        self.getList();
+                                    }
+                                    else {
+                                        utils.Message(data.Description);
+                                    }
+                                }
+                                else {
+                                    utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                }
+
+                            },
+                            error: function (data) {
+                                utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                return;
+                            }
+                        });
+                    }
+                });
+
+            },
+            showPage: function (page, total) {
+
+                var totalPage = 0;
+                if (total % 10 == 0) {
+                    totalPage = total / 10;
+                }
+                else {
+                    var du = total % 10;
+                    total = total - du;
+                    totalPage = total / 10 + 1;
+                }
+                var CurPage = page + 1;
+
+                var htmlP = '';
+
+                if (totalPage > 1) {
+                    htmlP += '<li><a href="javascript:;" onclick="lstOLA.paging(0)"><i class="fa fa-angle-double-left"></i></a></li>';
+                    htmlP += '<li><a href="javascript:;" onclick="lstOLA.paging(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
+
+                    for (var i = CurPage - 3; i < CurPage + 3; i++) {
+                        if (i > 0 && i <= totalPage) {
+                            if (CurPage == i) {
+                                htmlP += '<li class="active"><a href="javascript:;" onclick="lstOLA.paging(' + (i - 1) + ')" >' + i + '</a></li>';
+                            }
+                            else {
+                                htmlP += '<li><a href="javascript:;" onclick="lstOLA.paging(' + (i - 1) + ')" >' + i + '</a></li>';
+                            }
+                        }
+                    }
+                    htmlP += '<li><a href="javascript:;" onclick="lstOLA.paging(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
+                    htmlP += '<li><a href="javascript:;" onclick="lstOLA.paging(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
+
+                }
+
+                $(".pagination").html(htmlP);
+
+            },
+            paging: function (page) {
+                this.getList(page);
+            },
+
+        },
+        watch: {
+           
+        },
+        mounted() {
+            this.init();
+            this.getList(0);
+
+            var a = $("li[class='treeview act']");
+            if (a.length > 1) {
+                a[1].removeAttribute("class", "act");
+            }
+        },
+    });
+
+</script>
+<script>
+    $(function () {
+        var choices = [];
+        var suggestions = [];
+        $('#hero-demo').autoComplete({
+            minChars: 1,
+            delay: 150,
+            cache: 1,
+            source: function (term, suggest) {
+                term = term.toLowerCase();
+                var urlSearch = Config.API_Login + "tax/GetCustomsOffice";
+                var dataSearch = {
+                    cstOfficeCd: term,
+                    cstOfficeNm: "",
+                }
+                var token = $('#hdfToken').val();
+                $.ajax({
+                    type: 'GET',
+                    url: urlSearch,
+                    data: dataSearch,
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        console.log(data.Data);
+                        if (data) {
+                            choices = data.Data;
+                            if (choices.length > 0) {
+                                if (suggestions.length > 0)
+                                    suggestions = [];
+                                for (i = 0; i < choices.length; i++)
+                                    if (~choices[i].cstOfficeCd.toLowerCase().indexOf(term)) suggestions.push(choices[i].cstOfficeCd + " || " + choices[i].cstOfficeNm);
+                                suggest(suggestions);
+                            }
+                        }
+                    },
+                    error: function (data) {
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        return;
+                    }
+                });
+            },
+            onSelect: function (e, term, item) {
+                var cstOffice = term.split(" || ");
+                $('#cstOffice').val(cstOffice[0]);
+            }
+
+        });
+    });
+</script>
+

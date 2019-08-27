@@ -61,7 +61,8 @@ namespace Hafintech.Agency.Controllers
 
         public ActionResult MenuHeader()
         {
-            ViewBag.AccountID = AccountSession.AccountID;
+            ViewBag.AccountID = AccountSession.AccountID; 
+
             return PartialView();
         }
         #endregion
@@ -94,5 +95,13 @@ namespace Hafintech.Agency.Controllers
             }
         }
 
+        #region reset password
+        public ActionResult ResetPassword(string key = "")
+        {
+            ViewBag.key = key;
+
+            return PartialView();
+        }
+        #endregion
     }
 }

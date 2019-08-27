@@ -6,9 +6,43 @@
             <td>Mã</td>
             <td>Nội dung</td>
             <td>Giải pháp</td>
+            <td>Mã Chỉ tiêu</td>
+            <td>Tên trường</td>
         </tr>
     </thead>
     <tbody id="giai-phap-submit">
-        <tr></tr>
+        <tr v-for="item in lstMess">
+            <td>{{item.ErrorCode}}</td>
+            <td>{{item.Description}}</td>
+            <td>{{item.Disposition}}</td>
+            <td>{{item.Field}}</td>
+            <td>{{item.Name}}</td>
+        </tr>
     </tbody>
 </table>
+<script>
+    var mess_GP = new Vue({
+		el: '#giai-phap-submit',
+        data: {
+            data: {}, 
+            lstMess: [],
+        },
+		methods: { 
+			forcusMess: function () {
+				if (Array.isArray(this.lstMess) == false) {
+					this.lstMess = [];
+				} 
+
+				for (var i = 0; i < this.lstMess.length; i++) {
+					$("." + this.lstMess[i].Field).addClass("error");
+				}
+				if (this.lstMess.length > 0 && $("." + this.lstMess[0].Field)[0]) {
+					var scrH = $("." + this.lstMess[0].Field).offset().top;
+					$('body,html').animate({ scrollTop: scrH }, 800);
+				}
+			},
+        },
+		mounted() {
+		},  
+    });
+</script>

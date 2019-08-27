@@ -1,0 +1,115 @@
+﻿
+
+<div id="loginbox" style="width: 100%">
+	<div id="pop_scan">
+		<div class="control-group normal_text" style="width: 100%">
+			<b style="font-size:18px; text-transform: uppercase">MÃ HÓA ĐƠN: 412563789</b>
+			<b v-on:click="ClosePop()" class="icClose">X</b>
+		</div>
+		<div class="container-fluid">
+			<div class="row-fluid" style="margin-top: 15px; margin-bottom: 15px">
+				<div class="span6">
+					<div class="row-fluid">
+						<div class="span4">ĐƠN VỊ: </div>
+						<div class="span8"><b style="color: #051887">{{infoPay.name}}</b></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Mã số thuế: </div>
+						<div class="span8">{{infoPay.taxIdNumber}}</div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Địa chỉ: </div>
+						<div class="span8">{{infoPay.address}}</div>
+					</div>
+				</div>
+				<div class="span6" style="margin-left: 0; width: 50%; padding-left: 20px; border-left: 1px solid #000000">
+					<div class="row-fluid">
+						<div class="span4">Mã hóa đơn</div>
+						<div class="span8"><b>{{infoPay.invDetailsCd}}</b></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Mã kiểm tra </div>
+						<div class="span8"><b>{{infoPay.verifyCode}}</b></div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Ngày soi chiếu </div>
+						<div class="span8">{{infoPay.scanDateTime}}</div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Trạng thái kiểm tra</div>
+						<div class="span8">{{infoPay.vStatusName}}</div>
+					</div>
+					<div class="row-fluid">
+						<div class="span4">Trạng thái thanh toán</div>
+						<div class="span8">{{infoPay.payStatusName}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<h4>CHI TIẾT PHÍ SOI CHIẾU</h4>
+				<div class="row-fluid">
+
+					<table class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+						<thead>
+							<tr>
+								<th class="text-center" style="min-width:70px">STT</th>
+								<th class="text-center">Tên phí</th>
+								<th class="text-center">Đơn vị</th>
+								<th class="text-center">Số lượng</th>
+								<th class="text-center">Đơn giá (VND)</th>
+								<th class="text-center">Thành tiền (VND)</th>
+							</tr>
+						</thead>
+						<tbody class="content-search-table">
+							<tr>
+								<td>1</td>
+								<td>Phí cân hàng hóa</td>
+								<td>KG</td>
+								<td>{{infoPay.sumWeigh}}</td>
+								<td>30.000</td>
+								<td>{{numberWithCommas(infoPay.sumWeigh * 30000)}}</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+			<div class="row-fluid" style="margin: 20px 0">
+				<div class="span6">
+					<div class="span4">
+						Thuế suất GTGT
+					</div>
+					<div class="span7">
+						10%
+					</div>
+				</div>
+				<div class="span6">
+					<div class="row-fluid">
+						<div class="span6">
+							CỘNG TIỀN:
+						</div>
+						<div class="span6">
+							{{numberWithCommas(infoPay.sumWeigh * 30000)}} <b>VNĐ</b>
+						</div>
+					</div>
+					<div class="row-fluid">
+						<div class="span6">
+							TIỀN THUẾ GTGT:
+						</div>
+						<div class="span6">
+							{{numberWithCommas(infoPay.sumWeigh * 30000 * 0.1)}} VNĐ
+						</div>
+					</div>
+					<div class="row-fluid">
+						<div class="span6">
+							<b>TỔNG TIỀN THANH TOÁN:</b>
+						</div>
+						<div class="span6">
+							<b style="color: blue">{{numberWithCommas(infoPay.sumWeigh * 30000 * 1.1)}} VNĐ</b>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 

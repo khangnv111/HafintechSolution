@@ -1,0 +1,103 @@
+﻿@{
+    /**/
+
+    ViewBag.Title = "Declaration_Update";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div id="ola" name="form-input-file" :disabled="data.status==510">
+    <div class="row-fluid">
+        <div class="span12" id="divBtn">
+            <h4>Khai báo thông tin tờ khai vận chuyển</h4>
+            <a class="btn btn-warning" id="btnTab1" onclick="NextTabDecla(1)">Thông tin chung</a>
+            <a class="btn btn-success" id="btnTab2" onclick="NextTabDecla(2)">Danh sách hàng</a>
+            <a class="btn btn-success" id="btnTab3" href="javascript:;" v-on:click="ViewResult(@ViewBag.tab)">Kết quả xử lý tờ khai</a>
+
+            <div class="row-fluid" style="margin-top: 20px">
+                <div class="span12">
+                    <div v-show="data.btDclNo">
+                        <div class="span4">
+                            <label class="control-label span3" style="font-weight:bold;">Số tờ khai:</label>
+                            <div class="controls">
+                                <span style="color: blue"> {{data.btDclNo}}</span>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <label class="control-label span3">Phân luồng:</label>
+
+                            <div class="controls">
+                                {{stream}}
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <label class="control-label span3" style="font-weight:bold;">Kết quả xử lý: </label>
+                            <div class="controls" v-if="data.ClearanceStatus===-1">
+                                <span style="color:blue">Chưa cấp phép</span>
+                            </div>
+                            <div class="controls" v-else-if="data.ClearanceStatus===1">
+                                <span style="color:blue">Đã cấp phép</span>
+                            </div>
+                            <div class="controls" v-else>
+                                <span style="color:blue">Đang đợi cấp phép</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Tab1">
+                @Html.Action("ITF_Change", "TransportDeclaration", new { Id = ViewBag.decId })
+            </div>
+            <div id="Tab2" class="noneTab">
+                @Html.Action("ITF_Product", "TransportDeclaration", new { Id = ViewBag.decId })
+            </div>
+            <div id="Tab3" class="noneTab">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" class="span5" id="dclId" name="dclId" value="@ViewBag.decId" />
+<script src="~/Content/js/ola-onload.trinhky.js"></script>
+<script src="~/Content/js/ola.js"></script>
+<script>
+    function NextTabDecla(t) {
+        utils.Loading();
+        setTimeout(function () {
+            if (t == 1) {
+                $('#btnTab1').addClass("btn-warning").removeClass("btn-success");
+                $('#btnTab2').addClass("btn-success").removeClass("btn-warning");
+                $('#btnTab3').addClass("btn-success").removeClass("btn-warning");
+                $('#Tab1').removeClass("noneTab");
+                $('#Tab2').addClass("noneTab");
+                $('#Tab3').addClass("noneTab");
+            } else if (t == 2) {
+                $('#btnTab1').addClass("btn-success").removeClass("btn-warning");
+                $('#btnTab2').addClass("btn-warning").removeClass("btn-success");
+                $('#btnTab3').addClass("btn-success").removeClass("btn-warning");
+                $('#Tab1').addClass("noneTab");
+                $('#Tab2').removeClass("noneTab");
+                $('#Tab3').addClass("noneTab");
+            } else if (t == 3) {
+                $('#btnTab1').addClass("btn-success").removeClass("btn-warning");
+                $('#btnTab2').addClass("btn-success").removeClass("btn-warning");
+                $('#btnTab3').addClass("btn-warning").removeClass("btn-success");
+                $('#Tab1').addClass("noneTab");
+                $('#Tab2').addClass("noneTab");
+                $('#Tab3').removeClass("noneTab");
+            }
+            $('body,html').animate({ scrollTop: 0 }, 800);
+            utils.unLoading();
+        }, 200);
+    }
+</script>
+<style>
+    .dropdown-input, .dropdown-content, .dropdown-item {
+        font-size: 1em !important;
+    }
+
+    .dropdown-input {
+        width: 350px;
+    }
+</style>

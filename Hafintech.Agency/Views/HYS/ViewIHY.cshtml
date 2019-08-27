@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "ViewIHY";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div id="ihy">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Xem file đính kèm</h4>
+
+            <a class="btn  btn-success" style="padding: 5px 60px"> Tờ khai </a>
+            <a v-on:click="viewResult()" class="btn" style="padding: 5px 60px">Kết quả xử lý tờ khai</a> 
+
+            <div class="widget-box"> 
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Số tờ khai:<span class="error">(*)</span> </label>
+                                <div class="controls">
+                                    <input type="text" class="span9" v-model="data.attachmentNo"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Phân loại thủ tục khai báo </label>
+                                <div class="controls">
+                                    <input type="text" class="span3" v-model="data.appProType"/>
+                                    <select class="span6" v-model="data.appProType">
+                                        <option value="">--Chọn--</option>
+                                        <option v-for="item in txtappProType" v-bind:value="item.appProType">{{item.appProType}} || {{item.appProName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Cơ quan HQ</label>
+                                <div class="controls">
+                                    <input type="text" class="span9" v-model="data.cstOffice"/> 
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <label class="control-label">Nhóm xử lý hồ sơ</label>
+                                <div class="controls">
+                                    <input type="text" class="span8" v-model="data.cstSubSection" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Ngày khai báo</label>
+                                <div class="controls">
+                                    <input type="text" class="span9" v-model="data.appDate"/>
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Trạng thái khai báo</label>
+                                <div class="controls">
+                                    <input type="text" class="span9" v-model="data.appStatus" />
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <label class="control-label">Ngày sửa cuối cùng</label>
+                                <div class="controls">
+                                    <input type="text" class="span8" v-model="data.lastUpdateDate" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Tên người khai báo</label>
+                                <div class="controls">
+                                    <input type="text" class="span9" v-model="data.appName" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span10">
+                                <label class="control-label">Địa chỉ người khai báo</label>
+                                <div class="controls"> 
+                                    <textarea class="span12" v-model="data.appAddress" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Số điện thoại người khai báo</label>
+                                <div class="controls">
+                                    <input type="text" class="span9" v-model="data.appPhoneNo" />
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Số để lấy tệp đính kèm</label>
+                                <div class="controls">
+                                    <input type="text" class="span9" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Số quản lý nội bộ doanh nghiệp</label>
+                                <div class="controls">
+                                    <input type="text" class="span9" v-model="data.eiControlNo"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span10">
+                                <label class="control-label">Ghi chú</label>
+                                <div class="controls">
+                                    <textarea class="span12" v-model="data.remarks" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="control-label">Ngày hoàn thành kiểm tra</label>
+                                <div class="controls">
+                                    <input type="text" class="span9" v-model="data.dateCmplInsp" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span10">
+                                <label class="control-label">Ghi chú (Hải quan)</label>
+                                <div class="controls">
+                                    <textarea class="span12" v-model="data.remarksCustom" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<input type="hidden" value="@ViewBag.attNo" id="attNo" />
+<input type="hidden" value="@ViewBag.decId" id="decId" />
+<script src="~/Content/js/hys-decla/ihy-decla.js"></script>

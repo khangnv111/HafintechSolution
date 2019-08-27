@@ -112,7 +112,7 @@ namespace Hafintech.Agency.Controllers
             }
         }
 
-        public ActionResult CustomerPersonalInfo(int personalId = 0)
+        public ActionResult CustomerPersonalInfo(long personalId = 0)
         {
             if (AccountSession.AccountID <= 0)
             {
@@ -124,13 +124,13 @@ namespace Hafintech.Agency.Controllers
             return View();
         }
 
-        public ActionResult CustomerPersonalDeclaration()
+        public ActionResult CustomerPersonalDeclaration(long personalId = 0)
         {
             if (AccountSession.AccountID <= 0)
             {
                 return RedirectToAction("Login", "Home");
             }
-
+            ViewBag.personalId = personalId;
             return View();
         }
         #endregion

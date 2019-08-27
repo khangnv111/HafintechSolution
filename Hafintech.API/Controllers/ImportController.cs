@@ -33,12 +33,13 @@ namespace Hafintech.API.Controllers
 
         [HttpGet]
         [Route("GetDeclarationDetail")]
-        public async Task<IHttpActionResult> GetDeclarationDetail(int dclId = 0)
+        public async Task<IHttpActionResult> GetDeclarationDetail(int dclId = 0, long? dclNo = 0)
         {
             try
             {
+                if (dclId > 0) dclNo = 0;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "declaration/view";
-                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = dclId });
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = dclId, dclNo = dclNo });
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message));
                 return Ok(new Response(res.results.Declarations));
@@ -56,7 +57,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                data.accountId = (int)AccountSession.AccountID;
+                data.accountId = AccountSession.AccountID;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "product/create";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, data);
                 if (res == null || res.code < 0)
@@ -76,7 +77,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                data.accountId = (int)AccountSession.AccountID;
+                data.accountId = AccountSession.AccountID;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "product/update";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, data);
                 if (res == null || res.code < 0)

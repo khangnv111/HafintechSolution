@@ -76,8 +76,8 @@ window.Customer = {
             url: Config.API_Login + "Business/SearchBusiness",
             data: JSON.stringify({
                 parentId: parentId,
-                businessId: null,
-                taxIdNumber: taxIdNumber,
+				businessId: null,
+				taxIdNumber: taxIdNumber.trim(),
                 name: name,
                 status: 1,
             }),
@@ -97,8 +97,8 @@ window.Customer = {
                         html += '<td>' + (i + 1) + '</td>';
                         html += '<td><a href="' + Config.Url_Root + 'Customer/CustomerBusinessInfo?businessId=' + item.businessId + '">' + item.taxIdNumber + '</td>';
                         html += '<td>' + item.name + '</td>';
-                        html += '<td>' + item.phoneNumber + '</td>';
-                        html += '<td>' + item.address + '</td>';
+						html += '<td>' + item.phoneNumber + '</td>';
+						html += '<td>' + (item.address == null ? "" : item.address) + '</td>';
                         html += '<td><a href="javascript:;" onclick="Customer.ViewEditBusiness(' + item.businessId + ')" class="btn btn-warning">Sửa</a>';
                         html += '<a href="javascript:;" onclick="Customer.DeleteBusiness(' + item.businessId + ')" class="btn btn-danger">Xóa</a></td>';
                         html += '</tr>';
@@ -126,7 +126,9 @@ window.Customer = {
 
         CusInfo.businessId = businessId;
 
-        Customer.GetPopInsertBusiness();
+        Customer.GetPopInsertBusiness(function () {
+            $("#loginbox #title_pop").text('THÔNG TIN KHÁCH HÀNG DOANH NGHIỆP');
+        });
 
         var parentId;
         if (utils.getCookie("Type") == 1) {
@@ -138,7 +140,8 @@ window.Customer = {
         var token = $('#hdfToken').val();
         utils.Loading();
 
-        setTimeout(function () {
+        setTimeout(function () { 
+
             $.ajax({
                 type: 'POST',
                 url: Config.API_Login + "Business/SearchBusiness",
@@ -156,7 +159,8 @@ window.Customer = {
                     utils.unLoading();
                     if (data.ResponseCode > 0 && data.Data != null && data.Data.length > 0 && data.Data[0] != undefined && data.Data[0] != "" && data.Data[0] != null) {
                         var item = data.Data[0];
-                        $("#codeBusiness").val(item.taxIdNumber);
+						$("#codeBusiness").val(item.taxIdNumber);
+						document.getElementById("codeBusiness").disabled = true;
                         $("#nameBusiness").val(item.name);
                         $("#adressBusiness").val(item.address);
                         $("#phoneBusiness").val(item.phoneNumber);
@@ -173,7 +177,7 @@ window.Customer = {
                         if (item.signMethod == 3) {
                             document.getElementById("signMethod_1").checked = true;
                         }
-                        else {
+						else if (item.signMethod == 21){
                             document.getElementById("signMethod_2").checked = true;
                         }
                     }
@@ -249,7 +253,7 @@ window.Customer = {
         Customer.GetPopInsertBusiness();
     },
 
-    GetPopInsertBusiness: function () {
+    GetPopInsertBusiness: function (callback) {
         utils.Loading();
 
         $.ajax({
@@ -263,6 +267,9 @@ window.Customer = {
 
                 var html = "<div id=\"PopupInsert\">" + data + "</div>";
                 $("BODY").append(html);
+
+                if (typeof callback != 'undefined' && typeof callback == 'function')
+                    callback();
             }
         });
 
@@ -288,14 +295,28 @@ window.Customer = {
         var taxIdNumber = $("#codeBusiness").val();
         if (taxIdNumber == undefined || taxIdNumber == "") {
             $("#LogError").html("Bạn chưa điền mã doanh nghiệp");
-            $("#LogError").show();
+			$("#LogError").show();
+
+			$("#codeBusiness").focus();
+			$("#codeBusiness").addClass("error");
+			setTimeout(function () {
+				$("#codeBusiness").removeClass("error");
+			}, 5000);
+
             return;
-        }
+		}
+		taxIdNumber = taxIdNumber.trim();
 
         var name = $("#nameBusiness").val();
         if (name == undefined || name == "") {
             $("#LogError").html("Bạn chưa điền tên doanh nghiệp");
-            $("#LogError").show();
+			$("#LogError").show();
+
+			$("#nameBusiness").focus();
+			$("#nameBusiness").addClass("error");
+			setTimeout(function () {
+				$("#nameBusiness").removeClass("error");
+			}, 5000);
             return;
         }
 
@@ -303,9 +324,27 @@ window.Customer = {
         var phoneNumber = $("#phoneBusiness").val();
         if (phoneNumber == undefined || phoneNumber == "") {
             $("#LogError").html("Bạn chưa điền số điện thoại doanh nghiệp");
-            $("#LogError").show();
+			$("#LogError").show();
+
+			$("#phoneBusiness").focus();
+			$("#phoneBusiness").addClass("error");
+			setTimeout(function () {
+				$("#phoneBusiness").removeClass("error");
+			}, 5000);
             return;
-        }
+		}
+		if (!Vali.CheckPhone(phoneNumber)) {
+			$("#LogError").html("Số điện thoại không đúng");
+			$("#LogError").show();
+
+			$("#phoneBusiness").focus();
+			$("#phoneBusiness").addClass("error");
+			setTimeout(function () {
+				$("#phoneBusiness").removeClass("error");
+			}, 5000);
+
+			return;
+		}
 
         var fax = $("#faxBusiness").val();
         var website = $("#webBusiness").val();
@@ -315,13 +354,37 @@ window.Customer = {
         var cusTerminalId = $("#codeTerminalVnaccs").val();
         var cusAccessKey = $("#terminalKeyVnaccs").val();
         var email = $("#emailBusiness").val();
-        if (taxIdNumber == null || taxIdNumber == "") {
-            $("#LogError").html("Bạn chưa nhập mã doanh nghiệp");
-            $("#LogError").show();
-            return;
-        }
+		if (email == null || email == "") {
+            $("#LogError").html("Bạn chưa nhập Email doanh nghiệp");
+			$("#LogError").show();
+			$("#emailBusiness").focus();
+			$("#emailBusiness").addClass("error");
 
-        var signMethod = $('input[name=setSignature]:checked').val();
+			$("#emailBusiness").focus();
+			$("#emailBusiness").addClass("error");
+			setTimeout(function () {
+				$("#emailBusiness").removeClass("error");
+			}, 5000);
+            return;
+		}
+		if (!Vali.validateEmail(email)) {
+			$("#LogError").html("Email không đúng");
+			$("#LogError").show();
+
+			$("#emailBusiness").focus();
+			$("#emailBusiness").addClass("error");
+			setTimeout(function () {
+				$("#emailBusiness").removeClass("error");
+			}, 5000);
+			return;
+		}
+
+		var signMethod = $('input[name=setSignature]:checked').val();
+		if (!signMethod) {
+			$("#LogError").html("Bạn chưa chọn thiết lập chữ ký số");
+			$("#LogError").show();
+			return;
+		}
 
         var parentId;
         if (utils.getCookie("Type") == 1) {
@@ -385,10 +448,57 @@ window.Customer = {
 
         var token = $('#hdfToken').val();
 
-        var taxIdNumber = $("#codeBusiness").val();
-        var name = $("#nameBusiness").val();
+		var taxIdNumber = $("#codeBusiness").val(); 
+		if (taxIdNumber == undefined || taxIdNumber == "") {
+			$("#LogError").html("Bạn chưa điền mã doanh nghiệp");
+			$("#LogError").show();
+
+			$("#codeBusiness").focus();
+			$("#codeBusiness").addClass("error");
+			setTimeout(function () {
+				$("#codeBusiness").removeClass("error");
+			}, 5000);
+			return;
+		}
+		taxIdNumber = taxIdNumber.trim();
+
+		var name = $("#nameBusiness").val();
+		if (name == undefined || name == "") {
+			$("#LogError").html("Bạn chưa điền tên doanh nghiệp");
+			$("#LogError").show(); 
+
+			$("#nameBusiness").focus();
+			$("#nameBusiness").addClass("error");
+			setTimeout(function () {
+				$("#nameBusiness").removeClass("error");
+			}, 5000);
+			return;
+		}
+
         var address = $("#adressBusiness").val();
-        var phoneNumber = $("#phoneBusiness").val();
+		var phoneNumber = $("#phoneBusiness").val();
+		if (phoneNumber == undefined || phoneNumber == "") {
+			$("#LogError").html("Bạn chưa điền số điện thoại doanh nghiệp");
+			$("#LogError").show();
+
+			$("#phoneBusiness").focus();
+			$("#phoneBusiness").addClass("error");
+			setTimeout(function () {
+				$("#phoneBusiness").removeClass("error");
+			}, 5000);
+			return;
+		}
+		if (!Vali.CheckPhone(phoneNumber)) {
+			$("#LogError").html("Số điện thoại không đúng");
+			$("#LogError").show();
+
+			$("#phoneBusiness").focus();
+			$("#phoneBusiness").addClass("error");
+			setTimeout(function () {
+				$("#phoneBusiness").removeClass("error");
+			}, 5000);
+			return;
+		}
         var fax = $("#faxBusiness").val();
         var website = $("#webBusiness").val();
         var cusUrl = $("#urlBusinessVnaccs").val();
@@ -396,12 +506,36 @@ window.Customer = {
         var cusPassword = $("#passVnaccs").val();
         var cusTerminalId = $("#codeTerminalVnaccs").val();
         var cusAccessKey = $("#terminalKeyVnaccs").val();
-        var email = $("#emailBusiness").val();
-        if (taxIdNumber == null || taxIdNumber == "") {
-            $("#LogError").html("Bạn chưa nhập mã doanh nghiệp");
-            $("#LogError").show();
-            return;
-        }
+		var email = $("#emailBusiness").val();
+		if (email == null || email == "") {
+			$("#LogError").html("Bạn chưa nhập Email doanh nghiệp");
+			$("#LogError").show();
+
+			$("#emailBusiness").focus();
+			$("#emailBusiness").addClass("error");
+			setTimeout(function () {
+				$("#emailBusiness").removeClass("error");
+			}, 5000);
+			return;
+		}
+		if (!Vali.validateEmail(email)) {
+			$("#LogError").html("Email không đúng");
+			$("#LogError").show();
+
+			$("#emailBusiness").focus();
+			$("#emailBusiness").addClass("error");
+			setTimeout(function () {
+				$("#emailBusiness").removeClass("error");
+			}, 5000);
+			return;
+		}
+
+		var signMethod = $('input[name=setSignature]:checked').val();
+		if (!signMethod) {
+			$("#LogError").html("Bạn chưa chọn thiết lập chữ ký số");
+			$("#LogError").show();
+			return;
+		}
 
         var parentId;
         if (utils.getCookie("Type") == 1) {
@@ -429,7 +563,8 @@ window.Customer = {
                 cusTerminalId: cusTerminalId,
                 cusAccessKey: cusAccessKey,
                 parentId: parentId,
-                email: email,
+				email: email,
+				signMethod: signMethod,
             }),
             headers: {
                 "Authorization": "Bearer " + token
@@ -673,7 +808,8 @@ window.Customer = {
     SearchListPersonal: function () {
         var token = $('#hdfToken').val();
         var name = $("#fullnameSearch").val();
-        var identity = $("#identitySerch").val();
+		var identity = $("#identitySerch").val();
+		if (identity) identity = identity.trim();
 
         //var parentId = $("#accIdLogin").val();
         var parentId;
@@ -765,10 +901,12 @@ window.Customer = {
                         if (data.Data[0] != undefined && data.Data[0] != "") {
                             var item = data.Data[0];
 
-                            $("#fullnamePersonal").val(item.name);
-                            $("#dateOfBirth").val(Ctrl.GetDay(item.birthday));
-                            $("#monthOfBirth").val(Ctrl.GetMoth(item.birthday));
-                            $("#yearOfBirth").val(Ctrl.GetYear(item.birthday));
+							$("#fullnamePersonal").val(item.name);
+							var birthday = item.birthday.split(' ')[0];
+							birthday = birthday.split('-')
+							$("#dateOfBirth").val(birthday[0]);
+							$("#monthOfBirth").val(birthday[1]);
+							$("#yearOfBirth").val(birthday[2]);
 
                             if (item.gender == 1) {
                                 $("#sex-male").prop("checked", true);
@@ -784,8 +922,9 @@ window.Customer = {
                             $("#imgPassShow").attr("src", item.passportImage);
 
                             //CMND
-                            $("#identityNumber").val(item.identity);
-                            $("#identityDateCreate").val(Ctrl.formatDateTime(item.identityDate, 2));
+							$("#identityNumber").val(item.identity);
+							var dateIden = Ctrl.convertDate(item.identityDate).date;
+							$("#identityDateCreate").val(Ctrl.formatDateTime(dateIden, 4));
                             $("#identityPlace").val(item.identityPlace);
 
                             $("#urlImgId1").val(item.idImgFront);
@@ -847,8 +986,8 @@ window.Customer = {
                             var item = data.Data[0];
 
                             $("#fullname").html(item.name);
-                            $("#fullnamePersonal").html(item.name);
-                            $("#birthDay").html(Ctrl.formatDateTime(item.birthday, 2));
+							$("#fullnamePersonal").html(item.name);
+							$("#birthDay").html(item.birthday.split(' ')[0]);
 
                             if (item.gender == 1) {
                                 $("#gender").html("Nam");
@@ -861,8 +1000,8 @@ window.Customer = {
                             //$("#urlImgPass").val(item.passportImage);
                             //$("#imgPassShow").attr("src", item.passportImage);
 
-                            //CMND 
-                            $("#identityCard").html(item.identity + " - Ngày " + Ctrl.formatDateTime(item.identityDate, 2));
+							//CMND 
+							$("#identityCard").html(item.identity + " - Ngày " + item.identityDate.split(' ')[0]);
                             $("#identityPlace").html(item.identityPlace);
                             $("#idImgFront").html('<img src="' + item.idImgFront + '" style="max-width: 150px;" />');
                             $("#idImgBack").html('<img src="' + item.idImgBack + '" style="max-width: 150px;" />');
@@ -877,7 +1016,7 @@ window.Customer = {
                             //    $("#districtAddress").val(item.district);
                             //}, 500);
 
-                            $("#detailAdress").val(item.address);
+							$("#detailAdress").html(item.address);
                         }
                     }
 
@@ -907,8 +1046,7 @@ window.Customer = {
     },
 
     InsertPersonal: function () {
-        var token = $('#hdfToken').val();
-        utils.Loading();
+        var token = $('#hdfToken').val(); 
 
         //var parentId = $("#accIdLogin").val();
         var parentId;
@@ -919,25 +1057,81 @@ window.Customer = {
             parentId = $("#accIdLogin").val();
         }
 
-        var name = $("#fullnamePersonal").val();
+		var name = $("#fullnamePersonal").val();
+		if (!name) {
+			bootbox.alert("Bạn chưa nhập Họ và tên");
+			return;
+		}
 
         var dateOfBirth = $("#dateOfBirth").val();
         var monthOfBirth = $("#monthOfBirth").val();
-        var yearOfBirth = $("#yearOfBirth").val();
-        var birthday = monthOfBirth + "/" + dateOfBirth + "/" + yearOfBirth;
+		var yearOfBirth = $("#yearOfBirth").val();
+		if (!dateOfBirth || !monthOfBirth || !yearOfBirth) {
+			bootbox.alert("Bạn chưa nhập đủ thông tin ngày sinh");
+			return;
+		}
+		var birthday = monthOfBirth + "/" + dateOfBirth + "/" + yearOfBirth;
+		if (!Vali.CheckDate(birthday)) {
+			bootbox.alert("Ngày sinh/ Năm sinh không hợp lệ");
+			return;
+		}
+
+		var dateBir = new Date(birthday);
+		var curDate = new Date();
+		if (dateBir > curDate) {
+			bootbox.alert("Ngày sinh không được lớn hơn ngày hiện tại");
+			return;
+		}
 
         var gender = 1;
         if (document.getElementById('sex-female').checked) gender = 2;
 
         var passport = $("#passportNumber").val();
 
-        var identity = $("#identityNumber").val();
-        var identityDate = $("#identityDateCreate").val();
+		var identity = $("#identityNumber").val();
+		if (!identity) {
+			bootbox.alert("Bạn chưa nhập Số CMND");
+			return;
+		} 
+		var identityDate = $("#identityDateCreate").val();
+		if (!identityDate) {
+			bootbox.alert("Bạn chưa nhập Ngày đăng ký CMND");
+			return;
+		}
+		var curDate = new Date();
+		var idenDate = new Date(identityDate);
+		if (idenDate > curDate) {
+			bootbox.alert("Ngày đăng ký CMND không thể lớn hơn ngày hiện tại");
+			return;
+		}
+		identityDate = Ctrl.formatDateTime(identityDate, 2);
 
-        var email = $("#emailPersonal").val();
-        var phoneNumber = $("#phonePersonal").val();
+		var email = $("#emailPersonal").val();
+		if (!email) {
+			bootbox.alert("Bạn chưa nhập email");
+			return;
+		}
+		if (!Vali.validateEmail(email)) {
+			bootbox.alert("Email bạn nhập không đúng");
+			return;
+		}
 
-        var identityPlace = $("#identityPlace").val();
+		var phoneNumber = $("#phonePersonal").val();
+		if (!phoneNumber) {
+			bootbox.alert("Bạn chưa nhập SĐT");
+			return;
+		}
+		if (!Vali.CheckPhone(phoneNumber)) {
+			bootbox.alert("SĐT bạn nhập không đúng");
+			return;
+		}
+
+		var identityPlace = $("#identityPlace").val();
+		if (!identityPlace) {
+			bootbox.alert("Bạn chưa nhập Nơi cấp CMND");
+			return;
+		}
+
         var province = $("#cityAdress").val();
         var district = $("#districtAddress").val();
         var address = $("#detailAdress").val();
@@ -958,7 +1152,7 @@ window.Customer = {
                 utils.unLoading();
                 return;
             }
-
+			utils.Loading();
             $.ajax({
                 type: 'POST',
                 url: Config.API_Login + "Agency/CreatePersonal",
@@ -1022,25 +1216,78 @@ window.Customer = {
             parentId = $("#accIdLogin").val();
         }
 
-        var name = $("#fullnamePersonal").val();
+		var name = $("#fullnamePersonal").val();
+		if (!name) {
+			bootbox.alert("Bạn chưa nhập Họ và tên");
+			return;
+		}
 
         var dateOfBirth = $("#dateOfBirth").val();
         var monthOfBirth = $("#monthOfBirth").val();
-        var yearOfBirth = $("#yearOfBirth").val();
-        var birthday = monthOfBirth + "/" + dateOfBirth + "/" + yearOfBirth;
+		var yearOfBirth = $("#yearOfBirth").val();
+		if (!dateOfBirth || !monthOfBirth || !yearOfBirth) {
+			bootbox.alert("Bạn chưa nhập đủ thông tin ngày sinh");
+			return;
+		}
+		var birthday = monthOfBirth + "/" + dateOfBirth + "/" + yearOfBirth;
+		if (!Vali.CheckDate(birthday)) {
+			bootbox.alert("Ngày sinh/ Năm sinh không hợp lệ");
+			return;
+		}
+		var dateBir = new Date(birthday);
+		var curDate = new Date();
+		if (dateBir > curDate) {
+			bootbox.alert("Ngày sinh không được lớn hơn ngày hiện tại");
+			return;
+		}
 
         var gender = 1;
         if (document.getElementById('sex-female').checked) gender = 2;
 
         var passport = $("#passportNumber").val();
 
-        var identity = $("#identityNumber").val();
-        var identityDate = $("#identityDateCreate").val();
+		var identity = $("#identityNumber").val();
+		if (!identity) {
+			bootbox.alert("Bạn chưa nhập Số CMND");
+			return;
+		} 
+		var identityDate = $("#identityDateCreate").val();
+		if (!identityDate) {
+			bootbox.alert("Bạn chưa nhập Ngày đăng ký CMND");
+			return;
+		}
+		var curDate = new Date();
+		var idenDate = new Date(identityDate);
+		if (idenDate > curDate) {
+			bootbox.alert("Ngày đăng ký CMND không thể lớn hơn ngày hiện tại");
+			return;
+		}
+		identityDate = Ctrl.formatDateTime(identityDate, 2);
 
-        var email = $("#emailPersonal").val();
-        var phoneNumber = $("#phonePersonal").val();
+		var email = $("#emailPersonal").val();
+		if (!email) {
+			bootbox.alert("Bạn chưa nhập email");
+			return;
+		}
+		if (!Vali.validateEmail(email)) {
+			bootbox.alert("Email bạn nhập không đúng");
+			return;
+		}
+		var phoneNumber = $("#phonePersonal").val();
+		if (!phoneNumber) {
+			bootbox.alert("Bạn chưa nhập SĐT");
+			return;
+		}
+		if (!Vali.CheckPhone(phoneNumber)) {
+			bootbox.alert("SĐT bạn nhập không đúng");
+			return;
+		}
 
-        var identityPlace = $("#identityPlace").val();
+		var identityPlace = $("#identityPlace").val();
+		if (!identityPlace) {
+			bootbox.alert("Bạn chưa nhập Nơi cấp CMND");
+			return;
+		}
         var province = $("#cityAdress").val();
         var district = $("#districtAddress").val();
         var address = $("#detailAdress").val();
@@ -1278,31 +1525,29 @@ window.Act = {
         });
     },
 
-    CheckActiveAcc: function () {
-        var verify = utils.getCookie("verifyAcc");
-        verify = verify.split(":");
-        var verifyEmail = verify[1];
+    CheckActiveAcc: function () { 
+		var verifyEmail = utils.getCookie("vrfEmailStatus");
 
         if (verifyEmail === "0") {
-
-            bootbox.confirm({
-                title: "Thông báo",
-                message: "Tài khoản của bạn chưa được kích hoạt. Bạn vui lòng vào email đăng ký lấy mã OTP để kích hoạt tài khoản",
-                buttons: {
-                    cancel: {
-                        label: '<i class="fa fa-times"></i> Cancel'
-                    },
-                    confirm: {
-                        label: '<i class="fa fa-check"></i> Confirm'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        Act.ShowOTP();
-                        //window.location.href = Config.Url_Root + "Account/AccInfo";
-                    }
-                }
-            });
+			Act.ShowOTP();
+            //bootbox.confirm({
+            //    title: "Thông báo",
+            //    message: "Tài khoản của bạn chưa được kích hoạt. Bạn vui lòng vào email đăng ký lấy mã OTP để kích hoạt tài khoản",
+            //    buttons: {
+            //        cancel: {
+            //            label: '<i class="fa fa-times"></i> Cancel'
+            //        },
+            //        confirm: {
+            //            label: '<i class="fa fa-check"></i> Confirm'
+            //        }
+            //    },
+            //    callback: function (result) {
+            //        if (result) {
+            //            Act.ShowOTP();
+            //            //window.location.href = Config.Url_Root + "Account/AccInfo";
+            //        }
+            //    }
+            //});
         }
     },
 
@@ -1354,9 +1599,7 @@ window.Act = {
                 utils.unLoading();
 
                 if (data.ResponseCode > 0) {
-                    bootbox.alert("Bạn vui lòng vào Email đã đăng ký trên hệ thống để lấy mã OTP kích hoạt tài khoản", function () {
-                        Act.ShowOTP();
-                    });
+					Act.ShowOTP();
                 }
                 else
                     utils.Message(data.Description);;
@@ -1393,9 +1636,8 @@ window.Act = {
                     if (data.ResponseCode > 0) {
                         utils.closeAll();
                         utils.Message("Xác thực tài khoản thành công!");
-
-                        var verify = "VerifyEmailStatus:1";
-                        utils.setCookie("verifyAcc", verify, 0.5);
+						 
+						utils.setCookie("vrfEmailStatus", 1, 0.5);
 
                         setTimeout(function () {
                             location.reload();
@@ -1420,6 +1662,8 @@ window.Account = {
         //utils.Loading();
         var id = $("#accIdLogin").val();
         var token = $('#hdfToken').val();
+        var type = utils.getCookie("Type");
+
         $.ajax({
             type: 'GET',
             url: Config.API_Login + "account/GetInfoByAccountID",
@@ -1436,10 +1680,74 @@ window.Account = {
                 //utils.unLoading();
                 if (data.ResponseCode > 0 && data.Data.Accounts) {
                     var item = data.Data.Accounts;
+                    var bu = data.Data.Business;
+                    
+                    //-------------------
+                    if (type == 1) {
+                        var per = data.Data.Personal;
+                        utils.setCookie("permitGroup", data.Data.Personal.permitGroup, 1);
+                        utils.setCookie("parentId", per.parentId, 1);
+                    } 
 
-                    //$("#dateReg").html(Ctrl.formatDateTime(item.createdDate, 1));
-                    $("#emailInfo").html(item.userName);
-                    $("#phoneInfo").html(item.mobile);
+                    utils.setCookie("businessIdAcc", bu.businessId, 1);
+                    utils.setCookie("accountIdBuss", bu.accountId, 1);
+                    utils.setCookie("taxIdNumberAcc", bu.taxIdNumber, 1); 
+                    utils.setCookie("isAgency", bu.isAgency, 1); //1: doanh nghiệp - 2: đại lý 
+					utils.setCookie("signMethod", bu.signMethod, 1); 
+					utils.setCookie("submitMethod", bu.submitMethod, 1); //0: submit Usb 1: TT null: all
+
+					var isExpress = bu.isExpress == null ? "" : bu.isExpress;
+					utils.setCookie("isExpress", isExpress, 1);
+					if (bu.isExpress == 1)
+						$("#isExpress").show();
+
+					var cusCode = bu.cusCode == null ? "" : bu.cusCode;
+					utils.setCookie("cusCode", cusCode, 1);
+					var cusCodeExport = bu.cusCodeExport == null ? "" : bu.cusCodeExport;
+					utils.setCookie("cusCodeExport", cusCodeExport, 1);
+					var cusCodeImport = bu.cusCodeImport == null ? "" : bu.cusCodeImport;
+					utils.setCookie("cusCodeImport", cusCodeImport, 1);
+
+                    $("#nameBusiness").val(bu.name);
+                    $("#address").val(bu.address);
+                    $("#legalRepre").val(bu.legalRepre);
+                    $("#codeBc").val(bu.zipCode);
+
+                    $("#phoneBusiness").val(bu.phoneNumber);
+                    $("#fax").val(bu.fax);
+                    $("#emailBusiness").val(bu.email);
+                    $("#website").val(bu.website);
+
+					if (type == 2) {
+						$("#txtcstOffice").val(bu.cusCode);
+						$("#cusCodeImport").val(bu.cusCodeImport);
+						$("#cusCodeExport").val(bu.cusCodeExport);
+
+                        var signMethod = bu.submitMethod;
+						if (signMethod >= 0) {
+                            $("#signMethod").val(signMethod);
+                            if (signMethod == 0 || signMethod == null) {
+								$("#uniform-useSigComputer span").addClass("checked");
+							}
+							else if (signMethod == 1) {
+								$("#uniform-sendFileSig span").addClass("checked");
+							}
+							//else if (signMethod == 20) {
+							//	$("#uniform-useOptionSig span").addClass("checked");
+							//	$("#uniform-option1 span").addClass("checked");
+							//}
+							//else if (signMethod == 21) {
+							//	$("#uniform-useOptionSig span").addClass("checked");
+							//	$("#uniform-option2 span").addClass("checked");
+							//}
+						}
+					}  
+
+					$("#dateReg").html(item.createdDate);  
+
+                    //-------------------
+					$("#emailInfo").html(item.userName);
+					$("#phoneInfo").val(item.mobile);
 
                     if (data.Data.Business && data.Data.Personal && data.Data.Business.isAgency == 2) {
                         utils.setCookie("agency", 1, 1);
@@ -1455,7 +1763,7 @@ window.Account = {
 
                     //Tờ khai
                     if (isDe != undefined && isDe != null && isDe == 1) {
-                        if (data.Data.VerifyEmailStatus == 0) {
+                        if (data.Data.Accounts.vrfEmailStatus == 0) {
 
                             bootbox.alert("Bạn chưa xác thực tài khoản nên không thể thực hiện chức năng này.<br> Mời bạn xác thực tài khoản", function () {
                                 window.location.href = Config.Url_Root + "Account/AccInfo";
@@ -1533,7 +1841,7 @@ window.Account = {
                     }
                 },
                 error: function (err) {
-                    accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                    utils.Message("Hệ thống bận, vui lòng quay lại sau!");
                     utils.unLoading();
                 }
             });
@@ -1632,13 +1940,14 @@ window.Account = {
             success: function (data) {
                 console.log("InfoAccLogin: ", data);
                 //utils.unLoading();
-                if (data.ResponseCode > 0 && data.Data != null && data.Data != "") {
+                if (data.ResponseCode > 0 && data.Data != null && data.Data != "" && data.Data.length > 0) {
 
                     utils.setCookie("businessIdAcc", data.Data[0].businessId, 1);
                     utils.setCookie("taxIdNumberAcc", data.Data[0].taxIdNumber, 1);
                     utils.setCookie("permitGroup", data.Data[0].permitGroup, 1);
                     utils.setCookie("isAgency", data.Data[0].isAgency, 1); //1: doanh nghiệp - 2: đại lý
                     utils.setCookie("parentId", data.Data[0].parentId, 1);
+                    utils.setCookie("signMethod", data.Data[0].signMethod, 1);
 
                     $("#nameBusiness").val(data.Data[0].name);
                     $("#address").val(data.Data[0].address);
@@ -1657,6 +1966,24 @@ window.Account = {
                     $("#dateReg").html(Ctrl.formatDateTime(data.Data[0].createdDate, 1));
                     //$("#emailInfo").html(data.Data[0].email);
                     //$("#phoneInfo").html(data.Data[0].phoneNumber);
+                    var signMethod = data.Data[0].signMethod;
+                    if (signMethod) {
+                        $("#signMethod").val(signMethod);
+                        if (signMethod == 0) { 
+                            $("#uniform-useSigComputer span").addClass("checked");
+                        }
+                        else if (signMethod == 1) { 
+                            $("#uniform-sendFileSig span").addClass("checked");
+                        }
+                        else if (signMethod == 20) {
+                            $("#uniform-useOptionSig span").addClass("checked");
+                            $("#uniform-option1 span").addClass("checked");
+                        }
+                        else if (signMethod == 21) {
+                            $("#uniform-useOptionSig span").addClass("checked");
+                            $("#uniform-option2 span").addClass("checked");
+                        }
+                    }
                 }
 
             },
@@ -1665,7 +1992,63 @@ window.Account = {
                 return;
             }
         });
-    },
+	},
+
+	GetInfoAgency: function () {
+		//utils.Loading();
+		var id = utils.getCookie("accountIdBuss");
+		var token = $('#hdfToken').val(); 
+
+		$.ajax({
+			type: 'GET',
+			url: Config.API_Login + "account/GetInfoByAccountID",
+			data: {
+				accountID: id,
+			},
+			headers: {
+				"Authorization": "Bearer " + token
+			},
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (data) {
+				console.log("GetInfoAgency: ", data);
+				//utils.unLoading();
+				if (data.ResponseCode > 0 && data.Data.Accounts) {
+					var item = data.Data.Accounts;
+					var bu = data.Data.Business; 
+
+					$("#txtcstOffice").val(bu.cusCode);
+					$("#cusCodeImport").val(bu.cusCodeImport);
+					$("#cusCodeExport").val(bu.cusCodeExport);
+					  
+					var signMethod = bu.signMethod;
+					if (signMethod >= 0) {
+						$("#signMethod").val(signMethod);
+						if (signMethod == 0) {
+							$("#uniform-useSigComputer span").addClass("checked");
+						}
+						else if (signMethod == 1) {
+							$("#uniform-sendFileSig span").addClass("checked");
+						}
+						else if (signMethod == 20) {
+							$("#uniform-useOptionSig span").addClass("checked");
+							$("#uniform-option1 span").addClass("checked");
+						}
+						else if (signMethod == 21) {
+							$("#uniform-useOptionSig span").addClass("checked");
+							$("#uniform-option2 span").addClass("checked");
+						}
+					} 
+ 
+				}
+
+			},
+			error: function (data) {
+				bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+				utils.unLoading();
+			}
+		});
+	},
 };
 
 window.Decla = {
@@ -1823,13 +2206,13 @@ window.Decla = {
         //$('#hdfdataFileDocsInput3').val($('#fileinputdocs3').val());
 
         if ($('#slfreightDemarCd').val() != "" && $('#slfreightCurCd').val() != "" && $('#txtfreight').val() == "") {
-            accounts.Message("Bạn chưa nhập phí vận chuyển!");
+            utils.Message("Bạn chưa nhập phí vận chuyển!");
             location.href = "#txtfreight";
             return;
         }
 
         if ($('#slinsDemarCd').val() != "" && $('#slinsCurCd').val() != "" && $('#txtinsAmt').val() == "") {
-            accounts.Message("Bạn chưa nhập phí bảo hiểm!");
+            utils.Message("Bạn chưa nhập phí bảo hiểm!");
             location.href = "#txtinsAmt";
             return;
         }
@@ -1857,17 +2240,17 @@ window.Decla = {
                         }, 1000);
                     }
                     else {
-                        accounts.Message(data.Description);
+                        utils.Message(data.Description);
                     }
                 }
                 else {
-                    accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                    utils.Message("Hệ thống bận, vui lòng quay lại sau!");
                 }
 
             },
             error: function (data) {
                 utils.unLoading();
-                accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                utils.Message("Hệ thống bận, vui lòng quay lại sau!");
             }
         });
     },
@@ -2270,7 +2653,7 @@ window.Decla = {
             success: function (data) {
                 utils.unLoading();
                 utils.ShowOverLay();
-                $("BODY").append('<div id="popupwrap" style="z-index: 111;left: 50%;margin-left: -508.5px;"></div>');
+				$("BODY").append('<div id="popupwrap" style="z-index: 111;left: 50%;top: 50%; position: fixed; transform: translate(-50%, -50%);overflow-y: auto;     max-height: 90%; width: 85%"></div>');
                 $("#popupwrap").html(data);
 
             },
@@ -2993,6 +3376,13 @@ window.Decla = {
         str = str.replace('Ỗ', 'O');
         str = str.replace('Ổ', 'O');
 
+        str = str.replace('Ơ', 'O');
+        str = str.replace('Ớ', 'O');
+        str = str.replace('Ờ', 'O');
+        str = str.replace('Ợ', 'O');
+        str = str.replace('Ỡ', 'O');
+        str = str.replace('Ỏ', 'O');
+
         str = str.replace('Ù', 'U');
         str = str.replace('Ù', 'U');
         str = str.replace('Ụ', 'U');
@@ -3023,7 +3413,13 @@ window.Img = {
         if (file == undefined) {
             $("#" + idBase).val("");
             return;
-        }
+		}
+		if (file.type != 'image/jpeg' && file.type != 'image/png' && file.type != 'image/gif') {
+			bootbox.alert("File bạn tải lên không phải là file ảnh");
+			$("#" + idImg).val("");
+			return;
+		}
+
         var reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = function () {
@@ -3051,3 +3447,49 @@ window.Img = {
         return false;
     },
 };
+
+window.Err = {
+
+    showError: function (jobCode, errorCode, isFocus) {
+        $.ajax({
+            type: 'POST',
+            url: Config.API_Login + "tax/GetGuideInformation?jobCode=" + jobCode + "&id=" + errorCode,
+            data: {
+            },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //console.log(data);
+                if (data.ResponseCode > 0 && data.Data && data.Data.length > 0) {
+                    var text = data.Data[0].text;
+                    text = text.replace(/\n/g, "<br>");
+                    $("#mess_error p").html(text);
+                }
+
+                //scroll and focus
+				if (isFocus !== undefined && isFocus == 1 && $("." + errorCode)[0]) {
+                    var scrH = $("." + errorCode).offset().top;
+                    $('body,html').animate({ scrollTop: scrH }, 800);
+
+                    $("." + errorCode).addClass("error");
+                    setTimeout(function () {
+                        $("." + errorCode).removeClass("error");
+                    }, 5000);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    },
+};
+
+window.IHY = {
+    ViewIHY: function (id, attNo) {
+        bootbox.prompt("Mời bạn nhập số tờ khai đính kèm điện tử", function (res) {
+            if (res) {
+                window.location.href = Config.Url_Root + "HYS/ViewIHY?attNo=" + attNo + "&ishight=5&tab=3";
+            }
+        });
+    },
+}

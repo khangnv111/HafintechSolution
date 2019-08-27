@@ -20,8 +20,9 @@ namespace Hafintech.API.Models
         /// </summary>
        // public int SourceID { get; set; }
 
-        public string FullName { get; set; }
-        public string Identity { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Identity { get; set; } = string.Empty;
+        public string Info { get; set; } = "info";
 
         //public bool IsOTP { get; set; } = false;
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
@@ -30,7 +31,7 @@ namespace Hafintech.API.Models
             {
                 // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
                 var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
-                //userIdentity.AddClaim(new Claim("NickName", NickName));
+                userIdentity.AddClaim(new Claim("Info", Info));
                 //userIdentity.AddClaim(new Claim("AccessToken", AccessToken));
                 // Add custom user claims here
                 return userIdentity;
@@ -40,6 +41,11 @@ namespace Hafintech.API.Models
                 NLogManager.PublishException(ex);
                 return null;
             }
+        }
+
+        internal Task<ClaimsIdentity> GenerateUserIdentityAsync(object userManager, string v)
+        {
+            throw new NotImplementedException();
         }
     }
 

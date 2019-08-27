@@ -1,0 +1,408 @@
+﻿
+<div style="padding: 0 20px 0 20px; margin: auto" id="vnacs-setting">
+	<div class="row-fluid">
+		<div class="span12">
+			<div>
+				<div class="span12" style="border-bottom: 1px solid #808080; margin-bottom: 5px">
+					<h4 style="text-transform: uppercase">Thiết lập thông số mặc định</h4>
+				</div>
+
+				<div class="row-fluid">
+					<h5 id="nameCompany"></h5>
+				</div>
+
+				<div class="row-fluid" style="margin-bottom: 20px">
+					<a href="javascript:;" class="btn btn-warning" style="padding: 8px 20px 8px 20px;"> Cài đặt VNACCS</a>
+					<a href="@Url.Action("Signature", "System")" class="btn btn-default" style="padding: 8px 20px 8px 20px;"> Chữ ký số</a>
+				</div>
+			</div>
+
+			<div class="content-page-business-info">
+				<div class="widget-box">
+					<div class="widget-content">
+						<div class="form-horizontal" style="padding:10px;">
+							<div>
+								<div class="row-fluid">
+									<div class="span12">
+										<div class="control-group1">
+											<label style="width: 15%; display: inline-block; float: left">Chi cục hải quan tiếp nhận: </label>
+
+											<div class="main_input_box" style="width: 30%; float: left">
+												<input type="text" id="txtcstOffice" name="txtcstOffice" class="span3" v-model="data.cstOffice">
+												<input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" v-model="data.cstOfficeNm" onclick="DePop.PopCustom()" class="span7">
+												<button type="button" onclick="DePop.PopCustom()" style="padding: 0px 10px;">...</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row-fluid">
+									<div class="span12">
+										<div class="control-group1">
+											<label style="width: 15%; display: inline-block; float: left">Bộ phận xử lý tờ khai nhập: </label>
+											<div class="main_input_box" style="width: 30%; float: left">
+												<input type="text" class="span12" id="cusCodeImport" name="cusCodeImport" v-model="cusCodeImport" style="width:100%;" placeholder="" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row-fluid">
+									<div class="span12">
+										<div class="control-group1">
+											<label style="width: 15%; float: left; display: inline-block">Bộ phận xử lý tờ khai xuất: </label>
+											<div class="main_input_box" style="width: 30%; float: left">
+												<input type="text" class="span12" id="cusCodeExport" name="cusCodeExport" v-model="cusCodeExport" style="width:100%;" placeholder="" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row-fluid" style="margin-top: 25px">
+								<div style="width: 95%; border-top: 1px solid #CDCDCD; margin: auto;"></div>
+
+								<div class="form-horizontal" style="padding:10px;">
+									<h5 style="text-transform: uppercase"> Kết nối Hải quan VNACCS</h5>
+
+									<div class="row-fluid">
+										<div class="span12">
+											<div class="control-group1">
+												<label style="width: 15%; float: left; display: inline-block">Địa chỉ URL Hải quan VNACCS:</label>
+												<div class="main_input_box" style="width: 30%; float: left">
+													<input type="url" class="span12" id="cusUrl" name="cusUrl" v-model="vnacc.cusUrl" style="width:100%;" placeholder="" />
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row-fluid">
+										<div class="span12">
+											<div class="control-group1">
+												<label style="width: 15%; float: left; display: inline-block">Mã người sử dụng (User ID): </label>
+												<div class="main_input_box" style="width: 30%; float: left">
+													<input type="text" class="span12" id="userId" name="userId" v-model="vnacc.userId" style="width:100%;" placeholder="" maxlength="8" />
+												</div>
+											</div>
+										</div>
+
+									</div>
+									<div class="row-fluid">
+										<div class="span12">
+											<div class="control-group1">
+												<label style="width: 15%; float: left; display: inline-block">Mật khẩu (Password): </label>
+												<div class="main_input_box" style="width: 30%; float: left">
+													<input type="password" class="span12" v-model="vnacc.password" style="width:100%;" placeholder="" />
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row-fluid">
+										<div class="span12">
+											<div class="control-group1">
+												<label style="width: 15%; float: left; display: inline-block">Mã thiết bị đầu cuối (Teminal ID): </label>
+												<div class="main_input_box" style="width: 30%; float: left">
+													<input type="text" class="span12" id="terminalId" name="terminalId" v-model="vnacc.terminalId" style="width:100%;" placeholder="" />
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+									<div class="row-fluid">
+										<div class="span12">
+											<div class="control-group1">
+												<label style="width: 15%; float: left; display: inline-block">Khóa truy cập (Teminal access key):</label>
+												<div class="main_input_box" style="width: 30%; float: left">
+													<input type="text" class="span12" id="accessKey" name="accessKey" v-model="vnacc.accessKey" style="width:100%;" placeholder="" />
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+
+								<div class="form-horizontal" style="padding:10px;">
+									<label>
+										Lưu ý: Thông tin người sử dụng sẽ được Hải quan cấp cho Doanh nghiệp sau khi Doanh nghiệp đăng ký thông tin khai báo Hải quan qua hệ thống VNACCS.
+									</label>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div>
+			<a href="javascript:;" v-on:click="Save()" class="btn btn-success" style="padding: 7px 35px;">Lưu lại</a>
+		</div>
+	</div>
+</div>
+
+<script>
+	var app = new Vue({
+		el: '#vnacs-setting',
+		data: {
+			data: {
+				cstOffice: "",
+				cstOfficeNm: "",
+			},
+			signatureId: null, //Sign Id
+			cusCodeImport: "",
+			cusCodeExport: "",
+			vnacc: {
+				cusUrl: "https://ediconn.vnaccs.custom.gov.vn",
+				userId: "",
+				password: "",
+				terminalId: "",
+				accessKey: ""
+			},
+		},
+		methods: {
+			init: async function () {
+				var self = this;
+
+				this.getInfo();
+			},
+			getInfo: function () {
+				var self = this;
+
+				var id = $("#accIdLogin").val();
+				//var type = utils.getCookie("Type");//1: nhân viên 2: DN
+
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "account/GetInfoByAccountID",
+					data: {
+						accountID: id,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) {
+						if (data.ResponseCode > 0 && data.Data.Accounts) {
+							var item = data.Data.Accounts;
+                            var bu = data.Data.Business;
+							//Lấy thông tin Vnaccs
+							self.GetInfoSignalture(bu.accountId);
+
+							utils.setCookie("Type", item.type, 0.5); 
+							if (item.type == 1) {
+								var per = data.Data.Personal;
+								utils.setCookie("permitGroup", data.Data.Personal.permitGroup, 1);
+								utils.setCookie("parentId", per.parentId, 1);
+
+								//Nếu là Nhân viên DN thì show thông tin của ĐL
+								self.GetInfoAgency(bu.accountId);
+							}
+
+							utils.setCookie("vrfEmailStatus", item.vrfEmailStatus, 0.5);
+							utils.setCookie("vrfMobiStatus", item.vrfMobiStatus, 0.5);
+
+							utils.setCookie("businessIdAcc", bu.businessId, 1);
+							utils.setCookie("accountIdBuss", bu.accountId, 1);
+							utils.setCookie("taxIdNumberAcc", bu.taxIdNumber, 1);
+							utils.setCookie("isAgency", bu.isAgency, 1); //1: doanh nghiệp - 2: đại lý
+							utils.setCookie("signMethod", bu.signMethod, 1);
+							utils.setCookie("submitMethod", bu.submitMethod, 1); //0: submit Usb 1: TT null: all
+
+							var isExpress = bu.isExpress == null ? "" : bu.isExpress;
+							utils.setCookie("isExpress", isExpress, 1);
+							if (bu.isExpress == 1)
+								$("#isExpress").show();
+
+							var cusCode = bu.cusCode == null ? "" : bu.cusCode;
+							utils.setCookie("cusCode", cusCode, 1);
+							var cusCodeExport = bu.cusCodeExport == null ? "" : bu.cusCodeExport;
+							utils.setCookie("cusCodeExport", cusCodeExport, 1);
+							var cusCodeImport = bu.cusCodeImport == null ? "" : bu.cusCodeImport;
+							utils.setCookie("cusCodeImport", cusCodeImport, 1);
+
+							if (item.type == 2) {
+								self.data.cstOffice = bu.cusCode;
+								self.cusCodeImport = bu.cusCodeImport;
+								self.cusCodeExport = bu.cusCodeExport;
+							}
+
+							//-------------------
+							if (data.Data.Business && data.Data.Personal && data.Data.Business.isAgency == 2) {
+								utils.setCookie("agency", 1, 1);
+							}
+						}
+
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+					}
+				});
+			},
+			//get SignatureId
+			GetInfoSignalture: function (accountId) {
+                //var accountId = utils.getCookie("accountIdBuss");
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "Agency/GetSignature?accountId=" + accountId,
+					data: {
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						///utils.unLoading();
+						if (data.ResponseCode > 0 && data.Data && data.Data.length > 0) {
+							var item = data.Data[0];
+							self.signatureId = item.signatureId;
+
+							self.vnacc.cusUrl = item.cusUrl != undefined && item.cusUrl != null ? item.cusUrl : "";
+							self.vnacc.userId = item.userId;
+							self.vnacc.password = item.password;
+							self.vnacc.terminalId = item.terminalId;
+							self.vnacc.accessKey = item.accessKey;
+							self.$forceUpdate();
+						}
+
+					},
+					error: function (data) {
+						//utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			//Nếu là Nhân viên DN thì show thông tin của ĐL
+            GetInfoAgency: function (id) {
+				var self = this;
+				//var id = utils.getCookie("accountIdBuss");
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "account/GetInfoByAccountID",
+					data: {
+						accountID: id,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) {
+						if (data.ResponseCode > 0 && data.Data.Accounts) {
+							var item = data.Data.Accounts;
+							var bu = data.Data.Business;
+
+							self.data.cstOffice = bu.cusCode;
+							self.cusCodeImport = bu.cusCodeImport;
+							self.cusCodeExport = bu.cusCodeExport;
+							self.$forceUpdate();
+						}
+
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						utils.unLoading();
+					}
+				});
+			},
+			//============
+            Save: function () {
+				var self = this;
+				var businessId = utils.getCookie("businessIdAcc");
+
+				var cusCode = this.data.cstOffice;
+				var cusCodeImport = this.cusCodeImport;
+				var cusCodeExport = this.cusCodeExport;
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "Agency/updateBusinessVNACCS",
+					data: JSON.stringify({
+						businessId: businessId,
+						cusCode: cusCode,
+						cusCodeImport: cusCodeImport,
+						cusCodeExport: cusCodeExport
+					}),
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) {
+						if (data.ResponseCode > 0) {
+							self.SaveVnacc();
+						}
+						else {
+							utils.unLoading();
+							bootbox.alert(data.Description);
+						}
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+					}
+				});
+			},
+            SaveVnacc: function () {
+                var self = this;
+
+                var accountId = utils.getCookie("accountIdBuss");
+				if (!this.signatureId) this.signatureId = null;
+
+				var jsonData = { "cusUrl": self.vnacc.cusUrl, "terminalId": self.vnacc.terminalId, "userId": self.vnacc.userId, "password": self.vnacc.password, "accessKey": self.vnacc.accessKey, "signatureId": self.signatureId, "accountId": accountId, "status": 1 };
+
+				var formData = new FormData();
+				formData.append("jsonData", JSON.stringify(jsonData));
+
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "Agency/CreateSignature",
+					data: formData,
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						utils.unLoading();
+						if (data.ResponseCode > 0) {
+							if (data.Data != null && data.Data != "") {
+								bootbox.alert("Thành công", function () {
+									location.reload();
+								});
+							}
+						}
+						else {
+							bootbox.alert(data.Description);
+						}
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+		},
+		mounted() {
+			this.init();
+
+			Act.CheckActiveAcc();
+		},
+	});
+</script>

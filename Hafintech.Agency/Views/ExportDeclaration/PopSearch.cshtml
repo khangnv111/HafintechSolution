@@ -1,0 +1,110 @@
+﻿<div id="loginbox" style="width: 800px">
+    <div class="control-group normal_text" style="width: 100%">
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 1">Danh sách cơ quan HQ</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 2 || typeSearch == 16">Danh sách mã nước</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 3 || typeSearch == 13">Danh sách địa điểm lưu kho hàng</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 4 || typeSearch == 14">Danh sách Địa điểm nhận hàng cuối cùng</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 5 || typeSearch == 15">Danh sách Địa điểm xếp hàng</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 6">Danh mục đơn vị Kiện</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 7">Danh mục trọng lượng hàng</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 8">Danh mục Phương tiện vận chuyển</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 9 || typeSearch == 10">Danh mục ngân hàng</b>
+        <b style="font-size:18px; text-transform: uppercase" id="namePop" v-show="typeSearch == 11 || typeSearch == 12">Danh sách Mã loại hình</b>
+        <b v-on:click="ClosePop()" class="icClose">X</b>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="widget-box">
+                <div class="widget-content">
+                    <div class="row-fluid">
+						<div class="span3">
+							<label v-show="typeSearch == 1">Mã chi cục</label>
+							<label v-show="typeSearch == 2 || typeSearch == 16">Mã nước</label>
+							<label v-show="typeSearch == 3 || typeSearch == 13 ">Mã địa điểm</label>
+							<label v-show="typeSearch == 4 || typeSearch == 14">Mã địa điểm</label>
+							<label v-show="typeSearch == 5 || typeSearch == 15">Mã địa điểm</label>
+
+							<input type="text" class="span11" value="" v-model="txtCodePop">
+						</div>
+						<div class="span3">
+							<label v-show="typeSearch == 1">Tên chi cục</label>
+							<label v-show="typeSearch == 2 || typeSearch == 16">Tên nước</label>
+							<label v-show="typeSearch == 3 || typeSearch == 13">Tên công ty</label>
+							<label v-show="typeSearch == 4 || typeSearch == 14">Tên thành phố</label>
+							<label v-show="typeSearch == 5 || typeSearch == 15">Tên thành phố/tỉnh</label>
+
+							<input type="text" class="span11" value="" v-model="txtNamePop">
+						</div>
+                        <div class="span3">
+                            <div style="margin-top:25px;">
+                                <a class="btn btn-success" v-on:click="SearchPop()"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-body" id="dvContent">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon"><i class="icon-align-justify"></i></span>
+                        <h5>Danh sách tìm kiếm</h5>
+                    </div>
+                    <div class="widget-content nopadding fix_hgt_tbl_add" id="divUpdate">
+                        <table class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">STT</th>
+                                    <th class="text-center" style="width: 90px">Mã</th>
+                                    <th class="text-center">Tên</th>
+                                    <th class="text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-show="showLoading">
+                                    <td colspan="14" style="text-align:center">
+                                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                    </td>
+                                </tr>
+                                <tr v-for="(item, index) in lstDataPop">
+                                    <td>{{index + 1}}</td>
+                                    <td>
+                                        <span v-if="typeSearch == 1">{{item.cstOfficeCd}}</span>
+                                        <span v-else-if="typeSearch == 2 || typeSearch == 16">{{item.countryCode}}</span>
+                                        <span v-else-if="typeSearch == 3 || typeSearch == 13">{{item.cstWrhCd}}</span>
+                                        <span v-else-if="typeSearch == 4 || typeSearch == 14">{{item.loadLocCd}}</span>
+                                        <span v-else-if="typeSearch == 5 || typeSearch == 15">{{item.unloadPortCd}}</span>
+                                        <span v-else-if="typeSearch == 6">{{item.quanUnitCd}}</span>
+                                        <span v-else-if="typeSearch == 7">{{item.weigUnitCd}}</span>
+                                        <span v-else-if="typeSearch == 8">{{item.loadVesselCd}}</span>
+                                        <span v-else-if="typeSearch == 9 || typeSearch == 10">{{item.bankCode}}</span>
+                                        <span v-else-if="typeSearch == 11">{{item.dclKindCd}}</span>
+                                        <span v-else-if="typeSearch == 12">{{item.code}}</span>
+                                    </td>
+                                    <td>
+                                        <span v-if="typeSearch == 1">{{item.cstOfficeNm}}</span>
+                                        <span v-else-if="typeSearch == 2 || typeSearch == 16">{{item.countryName}}</span>
+                                        <span v-else-if="typeSearch == 3 || typeSearch == 13">{{item.cstWrhNm}}</span>
+                                        <span v-else-if="typeSearch == 4 || typeSearch == 14">{{item.loadLocNm}}</span>
+                                        <span v-else-if="typeSearch == 5 || typeSearch == 15">{{item.unloadPortNm}}</span>
+                                        <span v-else-if="typeSearch == 6">{{item.quanUnitNm}}</span>
+                                        <span v-else-if="typeSearch == 7">{{item.weigUnitNm}}</span>
+                                        <span v-else-if="typeSearch == 8">{{item.loadVesselNm}}</span>
+                                        <span v-else-if="typeSearch == 9 || typeSearch == 10">{{item.bankName}}</span>
+                                        <span v-else-if="typeSearch == 11">{{item.dclKindNm}}</span>
+                                        <span v-else-if="typeSearch == 12">{{item.name}}</span>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <button class="btn btn-warning" v-on:click="SelectPop(item)">Chọn</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

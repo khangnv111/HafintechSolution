@@ -1,0 +1,67 @@
+﻿
+<div class="row-fluid">
+	<div class="span12">
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"> <i class="icon-align-justify"></i> </span>
+				<h5>Địa điểm xếp hàng lên xe chở hàng</h5>
+			</div>
+			<div class="widget-content nopadding">
+				<div class="form-horizontal">
+					<div class="row-fluid">
+
+						<div class="control-group span12">
+							<label class="control-label">Mã </label>
+							<div class="controls">
+								<input type="text" v-for="(value, index) in data.lsVanPlcCd" style="margin-right: 10px" class="span2 VC_" v-on:click="getIntroMess('EDA','VC_')"
+									   v-model="value.vanPlcCd" maxlength="7" />
+							</div>
+						</div>
+
+						<div class="control-group span12">
+							<label class="control-label">Tên </label>
+							<div class="controls">
+								<textarea rows="1" class="span10 VN" v-model="data.vanPlcNm" maxlength="70" v-on:click="getIntroMess('EDA','VN')"></textarea>
+							</div>
+						</div>
+
+						<div class="control-group span12">
+							<label class="control-label">Địa chỉ </label>
+							<div class="controls">
+								<textarea rows="3" class="span10 VA" v-model="data.vanPlcAddress" maxlength="300" v-on:click="getIntroMess('EDA','VA')"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"> <i class="icon-align-justify"></i> </span>
+				<h5>Số container</h5>
+			</div>
+			<div class="widget-content nopadding">
+				<div class="form-horizontal">
+					<div class="row-fluid" style="margin-top: 20px;">
+						<div v-for="(value, index) in data.lsContainerNo">
+
+							<div class="span2" style="margin-left: 30px; margin-bottom: 20px">
+								<span><t v-if="(index + 1) < 10">0</t>{{index+1}}</span>
+								<input type="text" class="span10 C__" v-model="value.containerNo" v-on:click="getIntroMess('EDA','C__')" />
+							</div>
+							<div class="clearfix" v-if="(index + 1) % 5 == 0"></div>
+						</div> 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="span12">
+			<a class="btn btn-success" onclick="Export.ShowTab(1)">QUAY LẠI</a>
+			@*<a class="btn btn-success" onclick="Export.ShowTab(3)">BƯỚC TIẾP THEO</a>*@
+		</div>
+	</div>
+</div>

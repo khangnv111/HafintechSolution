@@ -1,0 +1,257 @@
+﻿
+@{
+    ViewBag.Title = "ListInfoPayment";
+}
+
+<div class="container-fluid" id="list-payment">
+	<div class="row-fluid">
+		<div class="span6">
+			<h4>THÔNG TIN THANH TOÁN</h4>
+		</div>
+		 
+	</div>
+
+	<div class="row-fluid">
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"><i class="icon-align-justify"></i></span>
+				<h5>Tìm kiếm</h5>
+			</div>
+			<div class="widget-content">
+				<div class="row-fluid">
+
+					<div class="span2">
+						<label>Mã kiểm tra</label>
+						<input type="text" class="span12" v-model="data.verifyCode">
+					</div>
+					 
+					<div class="span2">
+						<label>Trạng thái thanh toán</label>
+						<select class="span12" v-model="data.payStatus">
+							<option value="">&nbsp; Tất cả</option> 
+							<option v-for="(item, index) in lstPayStatus" v-bind:value="item.value">&nbsp; {{item.value}} | {{item.name}}</option>
+						</select>
+					</div>
+
+					<div class="span2">
+						<label>Phiếu thanh toán</label>
+						<input type="text" class="span12" v-model="data.invSummaryCode">
+					</div>
+					  
+				</div>
+				<div class="row-fluid">
+					<div class="span2">
+						<label>Mã hóa đơn</label>
+						<input type="text" class="span12" v-model="data.invDetailsCode" >
+					</div>
+
+					<div class="span2">
+						<label>Ngày soi chiếu thực tế</label>
+						<input type="date" class="span12" v-model="data.fromScanDateTime">
+					</div>
+
+					<div class="span2">
+						<label>Đến ngày</label>
+						<input type="date" class="span12" v-model="data.toScanDateTime">
+					</div>
+					  
+					<div class="span2">
+						<button class="span10" style="padding: 5px;margin-top: 23px;" v-on:click="getList(0)">Tìm kiếm</button>
+					</div>
+
+				</div> 
+			</div>
+		</div>
+
+		<div class="box-body">
+			<table class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+				<thead>
+					<tr>
+						<th class="text-center" style="min-width:70px">STT</th>
+						<th class="text-center">Mã kiểm tra</th>
+						<th class="text-center">Mã hóa đơn</th>
+						<th class="text-center">Phiếu thanh toán</th>
+						<th class="text-center">Ngày giờ soi chiếu</th>
+						<th class="text-center">Trạng thái thanh toán</th>
+						<th class="text-center">Số tiền thanh toán (VND)</th>
+						<th class="text-center">Xem thêm thông tin</th> 
+					</tr>
+				</thead>
+				<tbody class="content-search-table">
+					<tr v-show="showLoading">
+						<td colspan="14" style="text-align:center">
+							<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+						</td>
+					</tr>
+					 
+					<tr v-for="(item, index) in lstPayment">
+						<td style="text-align: center">{{index + 1}}</td>
+						<td>
+							<a href="javascript:;" v-on:click="ViewDetail(item)">
+								{{item.verifyCode}}
+							</a>
+						</td>
+						<td>{{item.invDetailsCd}}</td>
+						<td>{{item.invSummaryCd == null && item.invSummaryCd == "null" ? "" : item.invSummaryCd}}</td>
+						<td>{{item.scanDateTime}}</td>
+						<td>{{getNamePayStatus(item.payStatus)}}</td>
+						<td>{{item.amount}}</td>
+						<td style="text-align: center">
+							<a href="javascript:;" v-on:click="ViewMoreInfo(item)">
+								<i class="fa fa-info-circle fa-2x"></i>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+	<div class="row-fluid">
+		<ul class="pagination"></ul>
+	</div>
+
+	<div v-show="showPop" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+	<div v-show="showPop"  style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 60%; display: none">
+		@Html.Action("PopInfoPayment", "Scanner")
+	</div>
+
+</div>
+
+<script>
+	var app = new Vue({
+		el: '#list-payment',
+		data: {
+			data: {},
+			lstPayment: [], 
+			lstPayStatus: [], 
+			showLoading: true,
+
+			showPop: false,
+			infoPay: {}, 
+		},
+		methods: {
+			init: async function (callback) {
+				var data = this.data;
+				data.firstResult = 0;
+				data.maxResult = 10;  
+				data.verifyCode = "";
+				data.payStatus = 2;
+				data.invDetailsCode = "";
+				data.invSummaryCode = "";
+				data.fromScanDateTime = "";
+				data.toScanDateTime = "";  
+
+				this.lstPayStatus = await Lib.ListScannerDictionary('PAY_STATUS');  
+
+				if (callback != 'undefined' && typeof callback == 'function')
+					callback();
+
+			},
+			getList: function (page, callback) {
+				this.data.firstResult = page * this.data.maxResult; 
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetListPaymentInfo",
+					data: {
+						businessId: utils.getCookie("accountIdBuss"),
+						verifyCode: self.data.verifyCode,
+						payStatus: self.data.payStatus, 
+						invSummaryCode: self.data.invSummaryCode,  
+						fromScanDateTime: self.data.fromScanDateTime,
+						toScanDateTime: self.data.toScanDateTime, 
+						invDetailsCode: self.data.invDetailsCode, 
+						firstResult: self.data.firstResult,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					}, 
+					success: function (data) {
+						self.showLoading = false;
+						console.log(data);
+						if (data.ResponseCode >= 0) {
+							self.lstPayment = data.Data.data; 
+							self.loadPages(page, data.Data.pages);
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						self.showLoading = false;
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			loadPages: function (page, totalPage) {
+				var self = this;
+
+				var htmlP = '';
+				var CurPage = page + 1;
+				//debugger;
+				if (totalPage > 1) {
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(0)"><i class="fa fa-angle-double-left"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
+
+					for (var i = CurPage - 3; i < CurPage + 3; i++) {
+						if (i > 0 && i <= totalPage) {
+							if (CurPage == i) {
+								htmlP += '<li class="active"><a href="javascript:;" onclick="app.getList(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+							else {
+								htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+						}
+					}
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
+				}
+
+				$(".pagination").html(htmlP);
+			},
+			getNamePayStatus: function (status) {
+				if (!status && status != 0)
+					return "";
+				var name = "";
+				for (var i = 0; i < this.lstPayStatus.length; i++) {
+					if (status == this.lstPayStatus[i].value) {
+						name = this.lstPayStatus[i].name;
+						break;
+					}
+				}
+				return name;
+			}, 
+			//Libs
+			numberWithCommas: function (x) {
+				if (!x)
+					return "0";
+				x = Ctrl.numFormat(x, 1);
+				return x;
+			},
+			//Pop
+			ClosePop: function () {
+				this.showPop = false;
+			},
+			ViewDetail: function (item) {  
+				this.infoPay = item; 
+				this.showPop = true;
+			},
+			ViewMoreInfo: function (item) {
+				window.location.href = Config.Url_Root + "Scanner/VerifyCodeInfo?tranId=" + item.id;
+			},
+		},
+		mounted() {
+			var self = this;
+			this.init(function () {
+				self.getList(0);
+			});
+		},
+
+	});
+
+</script>

@@ -3,7 +3,7 @@
     ViewBag.Title = "CustomerPersonal";
 }
 
-<div class="container-fluid">
+<div class="container-fluid" id="list_personal">
     <div class="row-fluid">
         <div class="widget-box">
             <div class="widget-title">
@@ -58,7 +58,7 @@
                             </tr>
                         </thead>
                         <tbody class="list-content-table">
-                            <tr>
+                            <tr v-show="showLoading">
                                 <td colspan="11" style="text-align:center">
                                     <img width="50" src="~/Content/img/loading.gif" />
                                 </td>
@@ -76,6 +76,6 @@
         setTimeout(function () {
 
             Customer.SearchListPersonal();
-        }, 1500);
-    });
+        }, 500);
+	}); 
 </script>

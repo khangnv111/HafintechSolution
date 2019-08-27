@@ -1,0 +1,313 @@
+﻿
+@{
+    ViewBag.Title = "BillPaymentDetail";
+}
+
+<div class="container-fluid" id="list-data">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="span12" style="border-bottom: 1px solid #808080; margin-bottom: 5px">
+				<a href="@Url.Action("ListBillPayment", "Scanner")">Danh sách phiếu thanh toán</a>   &nbsp;&nbsp;&nbsp;>>&nbsp;&nbsp;&nbsp;
+				<b>Chi tiết phiếu thanh toán</b>
+			</div>
+		</div>
+	</div>
+
+	<h4>CHI TIẾT PHIẾU THANH TOÁN</h4>
+	 
+	<div class="row-fluid">
+		<div style="margin: 20px 0; border-top: 1px solid #6d6969; padding: 20px 0;">
+			<div class="row-fluid">
+
+				<div class="span4">
+					<label>Mã phiếu TT</label>
+					<input type="text" class="span7" v-model="billDetail.invSummaryCode" disabled>
+				</div>
+
+				<div class="span4">
+					<label>Ngày lập phiếu</label>
+					<input type="text" class="span7" v-model="billDetail.createdDate" disabled>
+				</div>
+
+				<div class="span4">
+					<label>Trạng thái phiếu</label>
+					<input type="text" class="span7" v-model="billDetail.invStatus" disabled>
+				</div>
+
+			</div>
+
+			<div class="row-fluid">
+
+				<div class="span4">
+					<label>Đơn vị CPN</label>
+					<input type="text" class="span7" v-model="billDetail.businessName" disabled>
+				</div>
+
+				<div class="span4">
+					<label>Người nộp tiền</label>
+					<input type="text" class="span7" v-model="billDetail.payer" disabled>
+				</div>
+
+				<div class="span4">
+					<label>Người lập phiếu TT</label>
+					<input type="text" class="span7" v-model="billDetail.createdBy" disabled>
+				</div>
+
+			</div>
+
+			<div class="row-fluid">
+
+				<div class="span4">
+					<label>Mã số thuế</label>
+					<input type="text" class="span7" v-model="billDetail.taxIdNumber" disabled>
+				</div>
+				<div class="span4">
+					<label>Địa chỉ</label>
+					<input type="text" class="span12" v-model="billDetail.address" disabled>
+				</div>
+
+				<div class="span4">
+					<label>Phương thức thanh toán</label>
+					<select class="span7" disabled>
+						<option selected="" value="">&nbsp;Bằng tiền mặt (api chua có thông tin)</option>
+						<option value="">&nbsp;Chuyển khoản</option>
+						<option value="">&nbsp;Bằng tiền trả trước</option>
+					</select>
+				</div>
+
+			</div>
+		</div>
+		<div class="row" style="">
+			<div class="span2"><b>Nội dung phiếu thanh toán</b></div>
+			<div class="span10" style="border-bottom: 1px solid #6d6969;margin-bottom: 25px"></div>
+		</div>
+
+		<div class="box-body">
+			<table class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+				<thead>
+					<tr>
+						<th class="text-center" style="min-width:70px">STT</th>
+						<th class="text-center">Tên phí</th>
+						<th class="text-center">Đơn vị</th>
+						<th class="text-center">Số lượng</th>
+						<th class="text-center">Đơn giá (VND)</th>
+						<th class="text-center">Thành tiền (VND)</th>
+					</tr>
+				</thead>
+				<tbody class="content-search-table">
+					@*<tr v-show="showLoading">
+							<td colspan="14" style="text-align:center">
+								<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+							</td>
+						</tr>*@
+					<tr>
+						<td class="text-center"></td>
+						<td class="text-center">Tổng Phí cân hàng hóa</td>
+						<td class="text-center">KG</td>
+						<td class="text-center">{{total_amount}}</td>
+						<td class="text-center">30,000</td>
+						<td class="text-center">{{totalMoney}}</td>
+					</tr>
+					<tr v-for="(item, index) in billContent">
+						<td>
+							{{index + 1}}
+						</td>
+						<td>
+							{{item.invDetailsCode}}
+						</td>
+						<td></td>
+						<td>{{formatNumber(item.quantity)}}</td>
+						<td></td>
+						<td>{{formatNumber(item.quantity*30000)}}</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="span2">Thuế suất GTGT:</div>
+				<div class="span2">10%</div>
+			</div>
+			<div class="span6">
+				<div class="row-fluid">
+					<div class="span3">
+						CỘNG TIỀN:
+					</div>
+					<div class="span7">
+						<b>{{total}} VND</b>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span3">
+						TIỀN THUẾ GTGT:
+					</div>
+					<div class="span7">
+						{{ThueGTGT}} VND
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span3">
+						TỔNG TIỀN THANH TOÁN:
+					</div>
+					<div class="span7">
+						{{tongTien}} VND
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<script>
+    var invTransCode = "@ViewBag.TransCode";
+	var app = new Vue({
+		el: '#list-data',
+		data: {
+            data: {
+                 
+            },
+            showLoading: true,
+			showPop: false,
+			lstPayStatus: [],//Danh sách trạng thái TT
+            billDetail: [],
+			billContent: [],
+
+			total_amount: 0,
+			totalMoney: 0,
+			total: '0',
+            ThueGTGT: '0',
+            tongTien: '0',
+		},
+		methods: {
+			init: async function (callback) {
+				 
+                var data = this.data;
+                data.firstResult = 0;
+                data.maxResult = 10;
+                data.invTransCode = invTransCode;
+                data.payStatus = 2;
+                data.fromCreatedDate = "";
+                data.toCreatedDate = ""; 
+
+                var TransCode = invTransCode;
+                this.getDetail(TransCode,0,"");
+
+				if (callback != 'undefined' && typeof callback == 'function')
+					callback();
+
+            },
+            getTotal: function () { 
+                var _this = this;
+                var totals = 0;
+                for (var i = 0; i < _this.billContent.length; i++) {
+					totals += _this.billContent[i].quantity;
+                    //Do something
+                } 
+
+				this.total_amount = this.formatNumber(totals);
+				this.totalMoney = this.formatNumber(totals * 30000);
+
+				this.total = this.formatNumber(totals * 30000);//Ctrl.numFormat(totals * 30000, 2);
+				this.ThueGTGT = this.formatNumber(totals * 30000 * 0.1, 2);
+				var tongTien = totals * 30000 * 0.1 + totals * 30000;
+				this.tongTien = this.formatNumber(tongTien, 2);
+            },
+            formatNumber: function(nStr) {
+                nStr += '';
+                x = nStr.split('.');
+                x1 = x[0];
+                x2 = x.length > 1 ? '.' + x[1] : '';
+                var rgx = /(\d+)(\d{3})/;
+                while (rgx.test(x1)) {
+                    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+                }
+                return x1 + x2;
+            },
+            getDetail: function (TransCode, page, callback) {
+                 
+				this.data.firstResult = page * this.data.maxResult;
+				//$('#pagination').html('');
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetListInvoice",
+					data: {
+						businessId: utils.getCookie("accountIdBuss"),
+						fromCreatedDate: self.data.fromCreatedDate,
+						toCreatedDate: self.data.toCreatedDate,
+						payStatus: self.data.payStatus,
+                        invTransCode: TransCode,
+						firstResult: self.data.firstResult,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						self.showLoading = false;
+						if (data.ResponseCode >= 0) {
+                            self.billDetail = data.Data.data[0];
+                            console.log("self.billDetail");
+                            console.log(self.billDetail);
+                            self.getBillContent(self.billDetail.id);
+                            
+							//self.loadPages(page, data.Data.pages);
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+            },
+            getBillContent: function (invsId, callback) {
+
+                  
+                var self = this;
+                var token = $('#hdfToken').val();
+                $.ajax({
+                    type: 'GET',
+                    url: Config.API_Login + "agency/GetInvoiceDetailContent",
+                    data: {
+                        invsId: invsId, 
+                    },
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    success: function (data) {
+                        self.showLoading = false;
+                        if (data.ResponseCode >= 0) {
+                            self.billContent = data.Data.data;
+                            console.log("self.billContent");
+                            console.log(self.billContent);
+                            self.getTotal(); 
+                        }
+
+                        if (callback != 'undefined' && typeof callback == 'function')
+                            callback();
+                    },
+                    error: function (data) {
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        return;
+                    }
+                });
+            }, 
+            viewDetail: function (number) {
+                window.location.href = Config.Url_Root + "Scanner/BillPaymentDetail?number=" + number;
+            },
+		},
+		mounted() {
+			var self = this;
+			this.init();
+		},
+
+	});
+
+</script>

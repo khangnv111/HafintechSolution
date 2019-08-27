@@ -1,0 +1,71 @@
+﻿
+<div id="loginbox" style="">
+    <div class="control-group normal_text" style="width: 100%;">
+        <b style="font-size:18px; text-transform: uppercase">quản lý chứng từ hồ sơ hải quan</b>
+        <b onclick="Voucher.ClosePop();" class="icClose">X</b>
+    </div>
+
+    <form enctype="multipart/form-data" id="form-input" name="form-input">
+
+        <div class="form-horizontal" style="padding:10px;">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <input type="checkbox" id="vantaidoncheck" style="" />
+                        <input type="text" class="span11" id="vantai-don" name="" placeholder="Vận tải đơn" onclick="window.location.href=Config.Url_Root+'electronic/cargo?idDec=@ViewBag.idDec&dclNo=@ViewBag.dclNo&type=@ViewBag.Type&IsHight=@ViewBag.IsHight'" />
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <input type="checkbox" id="cocheck" style="" />
+                        <input type="text" class="span11" id="co" name="" placeholder="CO" onclick="window.location.href=Config.Url_Root+'electronic/co?idDec=@ViewBag.idDec&dclNo=@ViewBag.dclNo&type=@ViewBag.Type&IsHight=@ViewBag.IsHight'" />
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <input type="checkbox" id="giayphepcheck" style="" />
+                        <input type="text" class="span11" id="giay-phep" name="" placeholder="Giấy phép" onclick="window.location.href=Config.Url_Root+'electronic/license?idDec=@ViewBag.idDec&dclNo=@ViewBag.dclNo&type=@ViewBag.Type&IsHight=@ViewBag.IsHight'" />
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <input type="checkbox" id="hopdongcheck" style="" />
+                        <input type="text" class="span11" id="hop-dong" name="" placeholder="Hợp đồng" onclick="window.location.href=Config.Url_Root+'electronic/contract?idDec=@ViewBag.idDec&dclNo=@ViewBag.dclNo&type=@ViewBag.Type&IsHight=@ViewBag.IsHight'" />
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <input type="checkbox" id="hoadoncheck" style="" />
+                        <input type="text" class="span11" id="hopdon-thuongmai" name="" placeholder="Hóa đơn thương mại" onclick="window.location.href=Config.Url_Root+'electronic/invoice?idDec=@ViewBag.idDec&dclNo=@ViewBag.dclNo&type=@ViewBag.Type&IsHight=@ViewBag.IsHight'" />
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <input type="checkbox" id="containercheck" style="" />
+                        <input type="text" class="span11" id="container" name="" placeholder="Container" onclick="window.location.href=Config.Url_Root+'electronic/container?idDec=@ViewBag.idDec&dclNo=@ViewBag.dclNo&type=@ViewBag.Type&IsHight=@ViewBag.IsHight'" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group1">
+                        <input type="checkbox" id="chungtukhackcheck" style="" />
+                        <input type="text" class="span11" id="chungtu-khac" name="" placeholder="Chứng từ khác" onclick="window.location.href=Config.Url_Root+'electronic/other?idDec=@ViewBag.idDec&dclNo=@ViewBag.dclNo&type=@ViewBag.Type&IsHight=@ViewBag.IsHight'" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>

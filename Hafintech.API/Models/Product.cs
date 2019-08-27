@@ -15,6 +15,7 @@ namespace Hafintech.API.Models
         public string curCdAbsDuty { get; set; }
         public string itemName { get; set; }
         public string placeOriginCd { get; set; }
+        public string oriPlaceNm { get; set; }
         public string importTaxClfCd { get; set; }
         public string tariffQuotaClf { get; set; }
         public string perUnitTaxCd { get; set; }

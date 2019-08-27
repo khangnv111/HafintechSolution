@@ -5,6 +5,7 @@ namespace Hafintech.API.Models
 {
     public class HighValue
     {
+     
         public string houseAwbNo { get; set; }
         public long dclId { get; set; }
         public int accountId { get; set; }
@@ -98,7 +99,7 @@ namespace Hafintech.API.Models
         public string issuedYear { get; set; }
         public string secBankSign { get; set; }
         public string secNo { get; set; }
-        public string clsAttachment { get; set; }
+        public List<Attachment> clsAttachment { get; set; }
         public int attachmentNo { get; set; }
         public object permitWrhDate { get; set; }
         public object strDateTrs { get; set; }
@@ -185,17 +186,19 @@ namespace Hafintech.API.Models
     }
     public class IDAProductRequest
     {
-        public int accountId { get; set; }
-        public int dclId { get; set; }
+        public long accountId { get; set; }
+        public long dclId { get; set; }
         public IDAProduct[] listProducts { get; set; }
     }
     public class IDAProduct
     {
-        public int productId { get; set; }
-        public int accountId { get; set; }
-        public int declarationId { get; set; }
+        public long productId { get; set; }
+        public long accountId { get; set; }
+        public long declarationId { get; set; }
+
         public string hSCd { get; set; }
         public string materialCd { get; set; }
+
         public string dutyRate { get; set; }
         public string absTariffRate { get; set; }
         public string absDutyUnitCd { get; set; }
@@ -215,7 +218,10 @@ namespace Hafintech.API.Models
         public string priceQttUnit { get; set; }
         public string cstValueCurCd { get; set; }
         public string cstValue { get; set; }
-        public string valuationNo { get; set; }
+        public string valuationNo { get; set; } 
+
+        public valuaNo[] lsValuationNo { get; set; }
+
         public string tenDclLineNo { get; set; }
         public string taxExpLsNo { get; set; }
         public string taxExpLsLineNo { get; set; }
@@ -233,4 +239,10 @@ namespace Hafintech.API.Models
         public string oTaxRdcCd { get; set; }
         public string oTaxRdcAmt { get; set; }
     }
+
+    public class valuaNo
+    {
+       public string valuationNo { get; set; }
+    }
+    
 }

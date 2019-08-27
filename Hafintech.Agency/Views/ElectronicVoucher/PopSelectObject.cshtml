@@ -1,0 +1,92 @@
+﻿
+
+<div id="loginbox" style="width: 800px;">
+    <div class="control-group normal_text" style="width: 100%">
+        <b style="font-size:18px; text-transform: uppercase" id="namePop">chọn đối tượng khai</b>
+        <b v-on:click="closeObj()" class="icClose">X</b>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="widget-box">
+                <div class="row-fluid">
+                    <div class="span3">
+                        <input type="radio" v-on:click="selectTabObj(1)" name="selectObject" checked value="1" v-if="showRadio" id="chkBox1" />
+                        <label for="chkBox1" style="padding: 3px 0px 0px 10px;display: inline-block;position: absolute;">Cá nhân</label>
+                    </div>
+                    <div class="span3">
+                        <input type="radio" v-on:click="selectTabObj(2)" name="selectObject" value="2" v-if="showRadio" id="chkBox2" />
+                        <label for="chkBox2" style="padding: 3px 0px 0px 10px;display: inline-block;position: absolute;">Doanh nghiệp</label>
+                    </div>
+                </div>
+            </div>
+            <div class="widget-box">
+                <div class="widget-content">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <label id="title-code-search-pop" v-if="tabObj == 1">Số CMT</label>
+                            <label id="title-code-search-pop" v-if="tabObj == 2">Mã số thuế</label>
+                            <input type="text" class="span11" v-model="textSearchObj" id="txtSearchPop" name="txtSearchPop" value="">
+                        </div>
+                        <div class="span3">
+                            <div style="margin-top:25px;">
+                                <a id="actSearchObject" class="btn btn-success" v-on:click="searchObject()"><i class="icon icon-search"></i> Tìm kiếm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-body" id="dvContent">
+                <div class="widget-box">
+                    <div class="widget-content nopadding fix_hgt_tbl_add" id="divUpdate">
+                        <table class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">STT</th>
+                                    <th v-if="tabObj == 1" class="text-center" style="width: 90px">Số CMND</th>
+                                    <th v-if="tabObj == 1" class="text-center">Họ và tên</th>
+
+                                    <th v-if="tabObj == 2" class="text-center">Mã doanh nghiệp</th>
+                                    <th v-if="tabObj == 2" class="text-center">Tên doanh nghiệp</th>
+                                    <th class="text-center">Điện thoại</th>
+                                    <th class="text-center">Địa chỉ</th>
+                                    <th class="text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-show="loadingObj">
+                                    <td colspan="14" style="text-align:center">
+                                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                    </td>
+                                </tr>
+                                <tr v-show="!loadingObj" v-for="(item, index) in lstDataObj">
+                                    <td>{{index + 1}}</td>
+                                    <td v-if="tabObj == 1">{{item.identity}}</td>
+                                    <td v-if="tabObj == 1">{{item.name}}</td>
+
+                                    <td v-if="tabObj == 2">{{item.taxIdNumber}}</td>
+                                    <td v-if="tabObj == 2">{{item.name}}</td>
+
+                                    <td>{{item.phoneNumber}}</td>
+                                    <td>{{item.address}}</td>
+                                    <td>
+                                        <a class="btn btn-warning" v-on:click="pickObj(item)">Chọn</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="" id="isHightDe" />
+</div>
+
+<style>
+    .chkbox {
+        padding: 3px 0px 0px 10px;
+        display: inline-block;
+        position: absolute;
+    }
+</style>

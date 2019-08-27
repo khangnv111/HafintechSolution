@@ -1,0 +1,199 @@
+﻿
+<div class="container-fluid" id="lstExport">
+    <div class="row-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Tìm kiếm tờ khai</h5>
+            </div>
+            <div class="widget-content">
+                <div class="row-fluid">
+
+                    <div class="span2">
+                        <label>Cục Hải Quan</label>
+                        <select class="span12" id="customSearch" v-model="data.idCustom" v-on:change="getListCustomSearch()">
+                            <option value="">--Chọn cục HQ--</option>
+                            <option v-for="item in lstCustomsDepartment" v-bind:value="item.id">{{item.id}} || {{item.name}}</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Chi cục HQ</label>
+                        <select class="span12" id="customChild" v-model="data.cstOffice">
+                            <option value="">--Chi cục HQ--</option>
+                            <option v-for="item in lstCustoms" v-bind:value="item.cstOfficeCd">{{item.cstOfficeCd}} || {{item.cstOfficeNm}}</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Loại tờ khai</label>
+                        <select class="span12" id="slType" v-model="data.type">
+                            <option value="0">--Tất cả--</option>
+                            <option value="3">Tờ khai xuất khẩu giá trị thấp</option>
+                            <option value="4">Tờ khai xuất khẩu giá trị cao</option>
+                        </select>
+                    </div>
+                    <div class="span2">
+                        <label>Loại hình HH</label>
+                        <select class="span12" id="grType" v-model="data.groupTypeId">
+                            <option value="">--Chọn loại hình--</option>
+                            <option v-for="item in lstGroupType" v-bind:value="item.groupTypeCode"> {{item.groupTypeName}}</option>
+                        </select>
+                    </div>
+                    
+                </div>
+
+				<div class="row-fluid">
+					<div class="span2">
+						<label>Số Tờ khai hải quan</label>
+						<input type="text" class="span12" id="txtDclNo" name="txtDclNo" v-model="data.dclNo" placeholder="Số Tờ khai">
+					</div>
+					<div class="span2">
+						<label>Phân luồng</label>
+						<select class="span12" id="slinsClsCd" v-model="data.insClsCd">
+							<option value="">--Chưa phân luồng--</option>
+							<option value="1">Luồng Xanh</option>
+							<option value="3">Luồng Đỏ</option>
+							<option value="2">Luồng Vàng</option>
+						</select>
+					</div>
+					<div class="span2">
+						<label>Thông quan</label>
+						<select class="span12" id="slclearanStatus" v-model="data.clearanStatus">
+							<option value="0">--Tất cả--</option>
+							<option value="-1">Chưa thông quan</option>
+							<option value="1">Thông quan</option>
+							<option value="2">Đợi thông quan</option>
+						</select>
+					</div>
+					<div class="span2">
+						<label>Số vận đơn</label>
+						<input type="text" class="span12" v-model="data.houseAwbNo" placeholder="">
+					</div>
+				</div>
+
+				<div class="row-fluid">
+					<div class="span2">
+						<label>Từ ngày</label>
+						<input type="date" class="span12 dDate" placeholder="Từ ngày" v-model="data.startCreatedDate">
+					</div>
+					<div class="span2">
+						<label>Đến ngày</label>
+						<input type="date" class="span12 dDate" placeholder="Đến ngày" v-model="data.endCreatedDate">
+					</div>
+					<div class="span2">
+						<label>Trạng thái tờ khai</label>
+						<select class="span12" id="slstatus" v-model="data.status">
+							<option value="0">--Tất cả--</option>
+							<option value="-1">Hủy tờ khai</option>
+							<option value="1">Tờ khai tạm</option>
+							<option value="2">Tờ khai chính thức</option>
+							<option value="3">Tờ khai sửa</option>
+						</select>
+					</div>
+					<div class="span2">
+						<label>Mã nghiệp vụ</label>
+						<select class="span12" id="slstatusCode" v-model="data.statusCode">
+							<option value="">--Tất cả--</option>
+							<option value="CEA">CEA</option>
+							<option value="EDA">EDA</option>
+							<option value="EDB">EDB</option>
+							<option value="EDC">EDC</option>
+							<option value="EDD">EDD</option>
+							<option value="MEC">MEC</option>
+							<option value="MED">MED</option>
+							<option value="IEX">IEX</option>
+						</select>
+					</div>
+					<div class="span2">
+						<div style="margin-top:25px;">
+							<a v-on:click="getList(0)" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+
+		<div class="row-fluid">
+			<select class="span2" v-model="pageSize" v-on:change="getList(0)">
+				<option value="10">Hiện 10 dòng</option>
+				<option value="25">Hiện 25 dòng</option>
+				<option value="50">Hiện 50 dòng</option>
+			</select>
+			<span style="margin-left: 20px">{{totalRow}} bản ghi</span>
+		</div>
+
+        <div class="box-body" id="dvContent">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-align-justify"></i></span>
+                    <h5>Danh sách Tờ Khai xuất khẩu</h5>
+                </div>
+                <div id="divUpdate">
+                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="min-width:100px">STT</th>
+                                <th class="text-center" style="min-width:100px">ID</th>
+                                <th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
+                                <th class="text-center" style="min-width:100px">Số tờ khai</th>
+                                <th class="text-center">Ngày đăng ký</th>
+                                <th class="text-center">Ủy thác nhập khẩu</th>
+                                <th class="text-center">Loại hình</th>
+                                <th class="text-center">Phân luồng</th>
+                                <th class="text-center">Thông quan</th>
+                                <th class="text-center">CQ Hải quan</th>
+                                <th class="text-center">Ngày thông quan</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-show="showLoading">
+                                <td colspan="14" style="text-align:center">
+                                    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                </td>
+                            </tr>
+
+                            <tr v-for="(item, index) in lstDeclaration">
+                                <td>{{index+1}}</td>
+                                <td>
+                                    <a v-on:click="viewDeclaration(item.declarationId, item.type,item.status)">{{item.declarationId}}</a>
+                                </td>
+                                <td>{{item.statusCode}}</td>
+                                <td>
+                                    <a v-on:click="viewDeclaration(item.declarationId, item.type,item.status)">{{item.dclNo}}</a>
+                                </td>
+                                <td>{{item.createdDate}}</td>
+                                <td>{{item.expCtrCd}}</td>
+                                <td>{{item.dclKindCd}}</td>
+                                <td>
+                                    @*{{item.insClsCd}}*@
+                                    <span v-show="item.insClsCd == 1">Xanh</span>
+                                    <span v-show="item.insClsCd == 2">Vàng</span>
+                                    <span v-show="item.insClsCd == 3">Đỏ</span>
+                                    @*<span v-show="item.insClsCd == 3d">3d</span>
+                                    <span v-show="item.insClsCd == 3x">3x</span>*@
+                                </td>
+                                <td>
+                                    <span v-show="item.clearanStatus == -1">Chưa thông quan</span>
+                                    <span v-show="item.clearanStatus == 1">Thông quan</span>
+                                    <span v-show="item.clearanStatus == 2">Đợi thông quan</span>
+                                </td>
+                                <td>{{item.cstOffice}}</td>
+                                <td>{{formatDate2(item.dateOfPermit)}}</td>
+                                <td>
+                                    <a class="btn btn-warning" v-on:click="viewEdit(item.declarationId, item.type)">Sửa</a>
+                                    <a class="btn btn-danger" v-on:click="removeDe(item.declarationId)">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <ul class="pagination"></ul>
+</div>
+<script src="~/Content/js/export-decla/list-export-declaration.js"></script>
+

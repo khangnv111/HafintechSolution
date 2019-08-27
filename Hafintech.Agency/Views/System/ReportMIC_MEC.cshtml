@@ -1,0 +1,374 @@
+﻿
+<div class="row-fluid" id="report_mic_mec">
+	<div class="widget-box">
+		<div class="widget-title">
+			<span class="icon"><i class="icon-align-justify"></i></span>
+			<h5>Tìm kiếm</h5>
+		</div>
+		<div class="widget-content">
+			<div class="row-fluid">
+
+				<div class="span4">
+					<label>Cục Hải Quan</label>
+					<select class="span12" v-model="data.cstDepartment" v-on:change="getListCustom()">
+						<option value="">--Chọn cục HQ--</option>
+						<option v-for="item in lstCustomsDepartment" v-bind:value="item.name">{{item.name}}</option>
+					</select>
+				</div>
+
+				<div class="span4">
+					<label>Chi cục HQ</label>
+					<select class="span12" id="customChild" v-model="data.cstOffice">
+						<option value="">--Chi cục HQ--</option>
+						<option v-for="item in lstCustoms" :value="item.cstOfficeCd">{{item.cstOfficeCd}} || {{item.cstOfficeNm}}</option>
+					</select>
+				</div>
+
+				<div class="span4">
+					<label>Loại tờ khai</label>
+					<select class="span12" v-model="data.dclType" v-on:change="updateChange()"> 
+						<option value="10">Tờ khai nhập khẩu giá trị thấp (MIC)</option>
+						<option value="20">Tờ khai xuất khẩu giá trị thấp (MEC)</option>
+					</select>
+				</div>  
+			</div>
+
+			<div class="row-fluid"> 
+
+				<div class="span4">
+					<label>Số Tờ khai</label>
+					<input type="text" class="span12" placeholder="Số Tờ khai" v-model="data.dclNo">
+				</div>
+
+				<div class="span4">
+					<label>Phân luồng</label>
+					<select class="span12" v-model="data.insClsCd">
+						<option value="">--Chưa phân luồng--</option>
+						<option value="1">Luồng Xanh</option>
+						<option value="3">Luồng Đỏ</option>
+						<option value="2">Luồng Vàng</option>
+					</select>
+				</div>
+
+				<div class="span4">
+					<label>Thông quan</label>
+					<select class="span12" v-model="data.clearanStatus">
+						<option value="">--Tất cả--</option>
+						<option value="-1">Chưa thông quan</option>
+						<option value="1">Thông quan</option>
+						<option value="2">Đợi thông quan</option>
+					</select>
+				</div> 
+
+			</div>
+			<div class="row-fluid"> 
+				<div class="span2">
+					<label>Từ ngày</label>
+					<input type="date" class="span12" v-model="startCreatedDate">
+				</div>
+				<div class="span2">
+					<label>Đến ngày</label>
+					<input type="date" class="span12" v-model="endCreatedDate" v-bind:min="startCreatedDate">
+				</div>
+
+				<div class="span4">
+					<label>Số vận đơn</label>
+					<input type="text" class="span12" placeholder="" v-model="data.houseAwbNo">
+				</div>
+
+				<div class="span4">
+					<label>Trạng thái tờ khai</label>
+					<select class="span12" v-model="data.status">
+						<option value="">--Tất cả--</option>
+						<option value="-1">Hủy tờ khai</option>
+						<option value="1">Tờ khai tạm</option>
+						<option value="2">Tờ khai chính thức</option>
+						<option value="3">Tờ khai sửa</option>
+					</select>
+				</div> 
+			</div>
+
+			<div class="row-fluid"> 
+
+				<div class="span4">
+					<label>Đối tượng</label>
+					<select class="span12" v-model="data.customerType">
+						<option value="">--Chọn nghiệp vụ--</option>
+						<option value="1">Khách hàng cá nhân</option>
+						<option value="2">Khách hàng doanh nghiệp</option> 
+					</select>
+				</div>
+
+				<div class="span4">
+					<label>Mã nghiệp vụ</label>
+					<select class="span12" v-model="data.statusCode">
+						<option value="">--Chọn nghiệp vụ--</option>
+						<option v-if="data.dclType == 10" value="MIC">MIC</option>
+						<option v-if="data.dclType == 10" value="MIE">MIE</option>
+						<option v-if="data.dclType == 20" value="MEC">MEC</option>
+						<option v-if="data.dclType == 20" value="MEE">MEE</option>
+					</select>
+				</div>
+				<div class="span4">
+					<button style="padding: 5px 25px;margin-top: 22px;" v-on:click="GetList()">Tìm kiếm</button>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+	<div class="row-fluid" style="background-color: #fff">
+		<h4>KẾT QUẢ BÁO CÁO</h4>
+		<div class="row-fluid">
+
+			<button style="padding: 5px 30px" v-on:click="ExportELS()"><i class="fa fa-file-excel-o" style="color: #00ff21"></i> Xuất file Excel</button>
+			<button style="padding: 5px 30px"><i class="fa fa-print" style="color: #0a1c70"></i> In</button>
+
+			<select class="span2" v-model="data.count" v-on:change="GetList()" style="margin-left: 25px; margin-top: 10px">
+				<option value="10">10 dòng</option>
+				<option value="25">25 dòng</option>
+				<option value="50">50 dòng</option>
+			</select>
+
+			{{total}} bản ghi
+		</div>
+
+		<div class="row-fluid">
+
+			<table class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+				<thead>
+					<tr>
+						<td style="min-width: 50px; text-align: center;background-color: #efefef;">
+							<input v-if="showCheckbox" type="checkbox" v-on:click="SelectAll()" v-model="allSelected" />
+						</td>
+						<th class="text-center" style="min-width:70px">STT</th>
+						<th class="text-center" style="min-width:100px">Số tờ khai</th>
+						<th class="text-center">Số vận đơn</th>
+						<th class="text-center">Tên hàng</th>
+						<th class="text-center">Số kiện</th>
+						<th class="text-center">Trọng lượng <br /> (KGM) </th>
+						<th class="text-center">Ghi chú</th>
+					</tr>
+				</thead>
+				<tbody>
+
+					<tr v-show="showLoading">
+						<td colspan="14" style="text-align:center">
+							<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+						</td>
+					</tr>
+					<tr v-show="!showLoading" v-for="(item, index) in listData">
+						<td style="text-align: center">
+							<input v-if="showCheckbox" type="checkbox" v-bind:value="data.page*data.count + index" v-model="lstChecked" v-on:click="select()" />
+						</td>
+						<td style="text-align: center; background-color: #fff;">{{data.page*data.count +index + 1}}</td>
+						<td style="background-color: #fff;">{{item.dclNo}}</td>
+						<td style="background-color: #fff;">{{item.houseAwbNo}}</td>
+						<td style="background-color: #fff;">{{item.itemName}}</td>
+						<td style="background-color: #fff;">{{item.cargoPiece}}</td>
+						<td style="background-color: #fff;">{{item.cargoWeigGrs}}</td>
+						<td style="background-color: #fff;">{{item.notes}}</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<template>
+			<paginate :page-count="totalPage"
+					  :click-handler="Paging"
+					  :prev-text="'Prev'"
+					  :next-text="'Next'"
+					  :container-class="'pagination'"
+					  :page-class="'page-item'">
+			</paginate>
+		</template>
+	</div>
+</div>
+
+<script>
+	Vue.component('paginate', VuejsPaginate)
+
+    var rep1 = new Vue({
+		el: '#report_mic_mec',
+        data: {
+			data: {}, 
+			lstCustomsDepartment: [], //Danh sách cục HQ
+			lstCustoms: [], //Danh sách chi cục HQ
+			//lstGroupType: [], //Danh sách loại hình
+			 
+			startCreatedDate: "",
+			endCreatedDate: "",
+			showLoading: true,
+
+			listData: [], //Danh sách dữ liệu tìm kiếm
+			total: 0,//Danh sách row
+
+			showCheckbox: false,
+			allSelected: false,
+			lstChecked: [], //Danh sách lựa chọn 
+			totalPage: 0, //Tổng page
+			lstItem: [], //Danh sách item được lựa chọn
+        },
+		methods: {
+			init: async function () {
+				this.data.cstDepartment = ""; // Tên Cục HQ (ví dụ: Hà Nội)
+				this.data.cstOffice = "";
+				this.data.dclType = 10;
+				this.data.insClsCd = "";
+				this.data.clearanStatus = "";
+				this.data.status = "";
+				this.data.statusCode = "";
+				this.data.customerType = "";
+				this.data.dclKindCd = "";
+				this.data.page = 0;
+				this.data.count = 10;
+
+				//this.lstGroupType = await Lib.getDeclarationKind();
+				this.lstCustomsDepartment = await Lib.GetCustomsDepartment();
+				this.GetList();
+				this.showCheckbox = true;
+			},
+			getListCustom: async function () {
+				if (!this.data.cstDepartment) {
+					this.lstCustoms = [];
+					this.data.cstDepartment = "";
+					return;
+				}
+				//this.data.cstDepartment = $("#cstDepartmentId option:selected").text();
+				this.lstCustoms = await Lib.getCustomsOffice('', '', this.data.cstDepartment);
+				this.$forceUpdate(); 
+			}, 
+			convertDate: function (date) {
+				if (!date)
+					return null;
+				return moment(String(date)).format('DD-MM-YYYY HH:mm:ss');
+			},
+			updateChange: function () {
+				this.GetList();
+				this.$forceUpdate();
+			},
+			//----------
+			GetList: function (page) {
+				if (!page) page = 0; 
+
+				this.allSelected = false;
+				this.lstChecked = []; 
+
+				this.data.page = page; 
+				this.data.fromDate = this.convertDate(this.startCreatedDate);
+				var endCreatedDate = this.endCreatedDate ? this.endCreatedDate + " 23:59:59" : "";
+				this.data.toDate = this.convertDate(endCreatedDate);
+
+				var token = $('#hdfToken').val();
+				var self = this; 
+				this.showLoading = true;
+				$.ajax({
+					url: Config.API_Login + "agency/searchMicMecReport",
+					type: 'POST',
+					data: JSON.stringify(this.data),
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: "application/json; charset=utf-8",
+					processData: false,
+					success: function (data) {
+						self.showLoading = false;
+						if (data.ResponseCode > 0) {
+							self.listData = data.Data.ListResult;
+							self.total = data.Data.Total;
+							self.countTotalPage(data.Data.Total);
+						}
+					},
+					error: function (data) {
+						self.showLoading = false;
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+					}
+				});
+			},
+			countTotalPage: function (total) {
+				var totalPage = 0;
+				if (total % this.data.count == 0) {
+					totalPage = total / this.data.count;
+				}
+				else {
+					var du = total % this.data.count;
+					total = total - du;
+					totalPage = total / this.data.count + 1;
+				}
+				this.totalPage = totalPage;
+			},
+			Paging: function (pageNum) { 
+				this.GetList(pageNum - 1);
+			},
+			//------------
+			SelectAll: function () {
+				this.lstChecked = []; 
+
+				if (!this.allSelected) { 
+					for (var i = 0; i < this.listData.length; i++) {
+						this.lstChecked.push(this.data.page * this.data.count + i);
+					}
+				}
+			},
+			select: function (item) {
+				this.allSelected = false;
+			},
+			//----------
+			ExportELS: function () {
+				if (this.lstChecked.length == 0) {
+					bootbox.alert("Bạn chưa chọn tờ khai nào");
+					return;
+				}
+
+				this.lstItem = [];
+				for (var i = 0; i < this.lstChecked.length; i++) {
+					var t = this.lstChecked[i]; 
+					this.lstItem.push({
+						dclNo: this.listData[t].dclNo,
+						houseAwbNo: this.listData[t].houseAwbNo,
+						itemName: this.listData[t].itemName,
+						cargoPiece: this.listData[t].cargoPiece,
+						cargoWeigGrs: this.listData[t].cargoWeigGrs,
+						notes: this.listData[t].notes,
+						addressAccount: app.infoAccount.Business.address,
+					});
+				}
+
+				utils.Loading();
+				$.ajax({
+					type: 'POST',
+					url: Config.Url_Root + "system/ExportXLSMIC?type=" + this.data.dclType,
+					data: JSON.stringify(this.lstItem),
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					processData: true,
+					crossDomain: true,
+					xhrFields: { withCredentials: true },
+					cache: false,
+					success: function (data) {
+						utils.unLoading();
+						//data = JSON.parse(data);
+						if (data.Response > 0)
+							window.location.href = data.linkDown;
+						else
+							bootbox.alert(data.msg);
+
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+					}
+				});
+			},
+			
+        },
+		mounted() {
+			this.init();
+		},
+    });
+</script>

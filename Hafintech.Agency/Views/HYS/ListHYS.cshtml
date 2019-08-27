@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "ListHYS"; 
+}
+
+<div class="container-fluid">
+	<div class="row-fluid" id="list-hys">
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"><i class="icon-align-justify"></i></span>
+				<h5>Tìm kiếm tờ khai đính kèm điện tử HYS</h5>
+			</div>
+			<div class="widget-content">
+				<div class="row-fluid">
+
+					<div class="span2">
+						<label>Phân loại thủ tục khai báo</label>
+						<select class="span12" v-model="data.appProType">
+							<option value="">--Chọn--</option>
+							<option v-for="item in txtappProType" v-bind:value="item.appProType">{{item.appProType}} || {{item.appProName}}</option>
+						</select>
+					</div>
+					<div class="span2">
+						<label>Đơn vị HQ</label>
+						<select class="span12" id="slCustoms" v-model="data.cstOffice">
+							<option value="">--Tất cả--</option>
+							<option v-for="item in lstCustom" v-bind:value="item.cstOfficeCd">{{item.cstOfficeCd}} || {{item.cstOfficeNm}}</option>
+						</select>
+					</div>
+					<div class="span2">
+						<label>Từ ngày</label>
+						<input type="date" class="span11" value="" placeholder="Từ ngày" required="" v-model="fromdate">
+					</div>
+					<div class="span2">
+						<label>Đến ngày</label>
+						<div class="input-group date span12">
+							<input type="date" class="span11" value="" placeholder="Đến ngày" required="" v-model="todate">
+						</div>
+					</div>
+					<div class="span2">
+						<div style="margin-top:25px;">
+							<a v-on:click="getList()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span2">
+				<select class="span10" v-model="pageSize" v-on:change="getList()">
+					<option value="10"> Hiện 10 dòng</option>
+					<option value="25"> Hiện 25 dòng</option>
+					<option value="50"> Hiện 50 dòng</option>
+				</select>
+			</div>
+			<span>{{total}} bản ghi</span>
+		</div>
+		<div class="box-body" id="dvContent">
+			<div class="widget-box">
+				<div id="divUpdate">
+					<table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+						<thead>
+							<tr>
+								<th class="text-center" style="min-width:100px">STT</th>
+								<th class="text-center" style="min-width:70px">ID</th>
+								<th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
+								<th class="text-center" style="min-width:100px">Số tờ khai đính kèm</th>
+								<th class="text-center">Ngày đăng ký</th>
+								<th class="text-center">Mã phân loại thủ tục khai báo</th>
+								<th class="text-center">Trạng thái</th>
+								<th class="text-center">Trạng thái ký</th>
+								<th class="text-center">Thao tác</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-show="showLoading">
+								<td colspan="14" style="text-align:center">
+									<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+								</td>
+							</tr>
+
+							<tr v-for="(item, index) in listHYS">
+								<td style="text-align: center">{{index + 1}}</td>
+								<td style="text-align: center">
+									<a v-on:click="view(item.id, item.attachmentNo)">{{item.id}}</a>
+								</td>
+								<td>{{item.statusCode}}</td>
+								<td style="text-align: center">
+									<a v-on:click="view(item.id, item.attachmentNo)">{{item.attachmentNo}}</a>
+								</td>
+								<td style="text-align: center">{{item.createdDate}}</td>
+								<td style="text-align: center">{{item.appProType}}</td>
+								<td style="text-align: center">{{item.appStatus}}</td>
+								<td style="text-align: center">
+									<span v-show="item.approvalStatus == -1">Từ chối</span>
+									<span v-show="item.approvalStatus == 0">Chưa xác định</span>
+									<span v-show="item.approvalStatus == 1">Chờ ký (sau khi gửi trình ký)</span>
+									<span v-show="item.approvalStatus == 2">Đã ký</span>
+								</td>
+								<td style="text-align: center">
+									<a href="javascript:;" v-show="!item.attachmentNo" v-on:click="view(item.id, item.attachmentNo)" title="Sửa">
+										<i class="fa fa-edit fa-2x" style="color: #ff6a00"></i>
+									</a>&nbsp;&nbsp;
+									<a href="javascript:;" v-show="!item.attachmentNo" title="Xóa" v-on:click="delHys(item)">
+										<i class="fa fa-remove fa-2x" style="color: #ff0000"></i>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+    <ul class="pagination"> 
+    </ul>
+</div>
+<script src="~/Content/js/hys-decla/lst-hys.js"></script>
+
+

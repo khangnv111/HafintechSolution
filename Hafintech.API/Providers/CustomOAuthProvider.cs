@@ -6,14 +6,17 @@ using Hafintech.API.Models;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IdentityModel.Tokens;
+using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ZaloCSharpSDK;
-using static App.Utils.Enums.Enums;
 
 namespace Hafintech.API.Providers
 {
@@ -60,7 +63,7 @@ namespace Hafintech.API.Providers
                         }
                         if (res != null && res.code >= 0)
                         {
-                            var info = res.results.Accounts;
+                            var info = res.results.Accounts;  
                             accountInfo = new AccountInfo
                             {
                                 AccountID = info.accountId,
@@ -93,7 +96,6 @@ namespace Hafintech.API.Providers
                                 Type = info.type
                             };
                         }
-
                     }
                     else
                     {
@@ -200,6 +202,50 @@ namespace Hafintech.API.Providers
                         description = "Tài khoản chưa gắn kết với email";
                     }
                     break;
+
+                case 4:
+                    var urlToken = "http://10.1.17.3:9999/eim/oauth/token";
+                    var dict = new Dictionary<string, string>();
+                    dict.Add("username", context.UserName);
+                    dict.Add("password", context.Password);
+                    dict.Add("client_id", "swagger");
+                    dict.Add("grant_type", "password");
+                    dict.Add("scope", "test");
+                    dict.Add("client_secret", "123");
+                    var client = new HttpClient();
+                    var req = new HttpRequestMessage(HttpMethod.Post, urlToken) { Content = new FormUrlEncodedContent(dict) };
+                    var result = await client.SendAsync(req);
+                    string resultContent = await result.Content.ReadAsStringAsync();
+                    var resToken = JsonConvert.DeserializeObject<dynamic>(resultContent);
+                    if (resToken == null || !string.IsNullOrWhiteSpace(Convert.ToString(resToken.error)))
+                    {
+                        context.SetError("403", "Tên đăng nhập hoặc mật khẩu chưa đúng");
+                        return;
+                    }
+                    if (resToken != null && !string.IsNullOrWhiteSpace(Convert.ToString(resToken.access_token)))
+                    {
+
+                        var handler = new JwtSecurityTokenHandler();
+                        JwtSecurityToken jsonToken = handler.ReadToken(Convert.ToString(resToken.access_token)) as JwtSecurityToken;
+                        var response1 = new
+                        {
+                            AccountID = 1,
+                            AccountName = jsonToken.Claims.First(claim => claim.Type == "user_name").Value,
+                            FullName = jsonToken.Claims.First(claim => claim.Type == "full_name").Value,
+                        };
+                        var props1 = new AuthenticationProperties(response1.ConvertToDictionary());
+                        applicationUser.Info = resToken.access_token;
+                        NLogManager.LogMessage(applicationUser.Info);
+                        applicationUser.UserID = 1;
+                        applicationUser.UserName = response1.AccountName;
+                        applicationUser.Id = "1";
+                        applicationUser.Identity = "";
+                        applicationUser.FullName = response1.FullName;
+                        ClaimsIdentity oAuthIdentity1 = await applicationUser.GenerateUserIdentityAsync(userManager, "JWT");
+                        var ticket1 = new AuthenticationTicket(oAuthIdentity1, props1);
+                        context.Validated(ticket1);
+                    }
+                    return;
 
                 default:
                     break;

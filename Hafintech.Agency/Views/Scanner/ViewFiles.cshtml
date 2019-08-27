@@ -1,0 +1,123 @@
+﻿
+@{
+    ViewBag.Title = "ViewFiles"; 
+}
+
+<div id="loginbox" style="width: 100%">
+	<div>
+		<div class="control-group normal_text" style="width: 100%">
+			<b style="font-size:18px; text-transform: uppercase">
+				Danh sách hàng hóa đăng ký soi chiếu
+			</b>
+			<b v-on:click="ClosePop()" class="icClose">X</b>
+		</div>
+		<div class="container-fluid" style="margin-top: 20px"> 
+
+			<div class="row-fluid"> 
+				<div class="row-fluid" style="max-height: 700px; overflow-y: auto">
+					<table class="table table-bordered data-table table-striped with-check" style="width: 100%" role="grid" aria-describedby="example1_info">
+						<thead>
+							<tr>
+								<th class="text-center">STT</th>
+								<th class="text-center">Lô</th>
+								<th class="text-center">Số vận đơn *</th>
+								<th class="text-center">Số barcode *</th>
+								<th class="text-center">
+									Số tờ khai
+								</th>
+								<th class="text-center">
+									Luồng tờ khai
+								</th>
+								<th class="text-center">
+									CMND
+								</th>
+								<th class="text-center">
+									Họ và tên
+								</th>
+								<th class="text-center">
+									Điện thoại
+								</th>
+								<th class="text-center">
+									Địa chỉ
+								</th>
+								<th class="text-center">
+									Mô tả hàng hóa
+								</th>
+								<th class="text-center">
+									Mã số hàng hóa
+								</th>
+								<th class="text-center">
+									Xuất xứ
+								</th>
+								<th class="text-center">
+									Số lượng
+								</th>
+								<th class="text-center">
+									Đơn vị tính
+								</th>
+								<th class="text-center">
+									Đơn giá nguyên tệ
+								</th>
+								<th class="text-center">
+									Trị giá ngoại tệ
+								</th>
+								<th class="text-center">
+									Tỷ giá tính thuế
+								</th>
+								<th class="text-center">
+									Đồng tiền TT
+								</th>
+								<th class="text-center">
+									Số kiện
+								</th>
+								<th class="text-center">
+									Trọng lượng (KG)
+								</th>
+								<th class="text-center">
+									Ghi chú
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							@*<tr v-show="showLoading">
+								<td colspan="18" style="text-align:center">
+									<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+								</td>
+							</tr>*@
+
+							<tr v-for="(item, index) in lstDataExcel">
+								<td>{{index + 1}}</td>
+								<td>{{item.name}}</td>
+								<td>{{item.cargoNo}}</td>
+								<td>{{item.barCode}}</td>
+								<td>{{getDclNo(item.dclNo)}}</td>
+								<td>
+									<span v-if="item.insClsCd == 1">Xanh</span>
+									<span v-if="item.insClsCd == 2">Vàng</span>
+									<span v-if="item.insClsCd == 3">Đỏ</span>
+								</td>
+								<td>{{item.identityNo}}</td>
+								<td>{{item.fullName}}</td>
+								<td>{{item.mobile}}</td>
+								<td>{{item.address}}</td>
+								<td>{{item.itemName}}</td>
+								<td>{{item.hSCd}}</td>
+								<td>{{item.placeOriginCd}}</td>
+								<td>{{item.qtt1}}</td>
+								<td>{{item.qttUnitCd1}}</td>
+								<td>{{item.invValue}}</td>
+								<td>{{item.cstValue}}</td>
+								<td>{{item.dutyRate}}</td>
+								<td>{{item.invCurCd}}</td>
+								<td>{{item.cargoPiece}}</td>
+								<td>{{item.cargoWeigGrs}}</td>
+								<td>{{item.notes}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div> 
+		</div>
+	</div>
+</div>
+

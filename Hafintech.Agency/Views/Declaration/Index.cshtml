@@ -1,132 +1,156 @@
 ﻿
 
-<div class="container-fluid" id="lstDeImport">
+<div class="container-fluid" id="app">
     <div class="row-fluid">
         <div class="widget-box">
             <div class="widget-title">
                 <span class="icon"><i class="icon-align-justify"></i></span>
                 <h5>Tìm kiếm tờ khai</h5>
             </div>
-            <div class="widget-content">
-                <div class="row-fluid">
+			<div class="widget-content">
+				<div class="row-fluid">
 
-                    <div class="span2">
-                        <label>Cục Hải Quan</label>
-                        <select class="span12" id="customSearch" v-model="data.id" v-on:change="getListCustomSearch()">
-                            <option value="">--Chọn cục HQ--</option>
-                            <option v-for="item in lstCustomsDepartment" :value="item.id">{{item.id}} || {{item.name}}</option>
-                        </select>
-                    </div>
+					<div class="span2">
+						<label>Cục Hải Quan</label>
+						<select class="span12" id="customSearch" v-model="data.nameCustom" v-on:change="getListCustomSearch()">
+							<option value="">--Chọn cục HQ--</option>
+							<option v-for="item in lstCustomsDepartment" v-bind:value="item.name">{{item.name}}</option>
+						</select>
+					</div>
 
-                    <div class="span2">
-                        <label>Chi cục HQ</label>
-                        <select class="span12" id="customChild" v-model="data.cstOffice">
-                            <option value="">--Chi cục HQ--</option>
-                            <option v-for="item in lstCustoms" :value="item.cstOfficeCd">{{item.cstOfficeCd}} || {{item.cstOfficeNm}}</option>
-                        </select>
-                    </div>
+					<div class="span2">
+						<label>Chi cục HQ</label>
+						<select class="span12" id="customChild" v-model="data.cstOffice">
+							<option value="">--Chi cục HQ--</option>
+							<option v-for="item in lstCustoms" :value="item.cstOfficeCd">{{item.cstOfficeCd}} || {{item.cstOfficeNm}}</option>
+						</select>
+					</div>
 
-                    <div class="span2">
-                        <label>Loại tờ khai</label>
-                        <select class="span12" id="slType" v-model="data.type">
-                            <option value="0">--Tất cả--</option>
-                            <option value="1">Tờ khai nhập khẩu giá trị thấp</option>
-                            <option value="2">Tờ khai nhập khẩu giá trị cao</option>
-                        </select>
-                    </div>
+					<div class="span2">
+						<label>Loại tờ khai</label>
+						<select class="span12" id="slType" v-model="data.type" v-on:change="getList()">
+							<option value="0">--Tất cả--</option>
+							<option value="1">Tờ khai nhập khẩu giá trị thấp</option>
+							<option value="2">Tờ khai nhập khẩu</option>
+						</select>
+					</div>
 
-                    <div class="span2">
-                        <label>Loại hình HH</label>
-                        <select class="span12" id="grTypeSearch" v-model="data.groupTypeId">
-                            <option value="">--Chọn loại hình--</option>
-                            <option v-for="item in lstGroupType" :value="item.groupTypeCode"> {{item.groupTypeName}}</option>
-                        </select>
-                    </div>
+					<div class="span2">
+						<label>Mã Loại hình</label>
+						<select class="span12" id="grTypeSearch" v-model="data.dclKindCd">
+							<option value="">--Chọn loại hình--</option>
+							<option v-for="item in lstGroupType" v-bind:value="item.dclKindCd"> {{item.dclKindCd}}</option>
+						</select>
+					</div>
 
-                    <div class="span2">
-                        <label>Đối tượng</label>
-                        <select class="span12" id="slclsOrgSearch" v-model="data.clsOrgCd">
-                            <option value="0">--Tất cả--</option>
-                            <option v-for="item in lstOrganizationType" :value="item.clsOrgCd">{{item.clsOrgCd}} || {{item.clsOrgNm}}</option>
-                        </select>
-                    </div> 
+					<div class="span2">
+						<label>Đối tượng</label>
+						<select class="span12">
+							<option value="">--Tất cả--</option>
+							<option value="1">Khách hàng cá nhân</option>
+							<option value="2">Khách hàng doanh nghiệp</option>
+						</select>
+					</div>
 
-                </div>
-                <div class="row-fluid">
-                    <div class="span2">
-                        <label>Số Tờ khai</label>
-                        <input type="text" class="span12" id="txtDeclaration" name="txtDeclaration" placeholder="Số Tờ khai" v-model="data.dclNo">
-                    </div>
+					<div class="span2" v-show="advanSearch">
+						<label>Số CMT</label>
+						<input type="text" class="span12">
+					</div>
 
-                    <div class="span2">
-                        <label>Phân luồng</label>
-                        <select class="span12" id="slinsClsCd" v-model="data.insClsCd">
-                            <option value="">--Chưa phân luồng--</option>
-                            <option value="1">Luồng Xanh</option>
-                            <option value="3">Luồng Đỏ</option>
-                            <option value="2">Luồng Vàng</option>
-                        </select>
-                    </div>
+				</div>
+				<div class="row-fluid">
+					<div class="span2">
+						<label>Số Tờ khai</label>
+						<input type="text" class="span12" placeholder="Số Tờ khai" v-model="data.dclNo">
+					</div>
+					<div class="span2">
+						<label>Phân luồng</label>
+						<select class="span12" v-model="data.insClsCd">
+							<option value="">--Tất cả--</option>
+							<option value="1">Luồng Xanh</option>
+							<option value="3">Luồng Đỏ</option>
+							<option value="2">Luồng Vàng</option>
+							<option value="">Chưa phân luồng</option>
+						</select>
+					</div>
+					<div class="span2">
+						<label>Thông quan</label>
+						<select class="span12" v-model="data.clearanStatus">
+							<option value="0">--Tất cả--</option>
+							<option value="-1">Chưa thông quan</option>
+							<option value="1">Thông quan</option>
+							<option value="2">Đợi thông quan</option>
+						</select>
+					</div>
+					<div class="span2">
+						<label>Mã nghiệp vụ</label>
+						<select class="span12" v-model="data.statusCode">
+							<option value="">--Chọn nghiệp vụ--</option>
+							<option value="IDA">IDA</option>
+							<option value="IDB">IDB</option>
+							<option value="IDC">IDC</option>
+							<option value="IDD">IDD</option>
+							<option value="IDA01">IDA01</option>
+							<option value="IDE">IDE</option>
+							<option value="MIC">MIC</option>
+							<option value="MID">MID</option>
+							<option value="MIE">MIE</option>
+							<option value="CEA">CEA</option>
+						</select>
+					</div>
+					<div class="span2">
+						<label>Số vận đơn</label>
+						<input type="text" class="span12" placeholder="" v-model="data.houseAwbNo">
+					</div>
 
-                    <div class="span2">
-                        <label>Thông quan</label>
-                        <select class="span12" id="slclearanStatus" v-model="data.clearanStatus">
-                            <option value="0">--Tất cả--</option>
-                            <option value="-1">Chưa thông quan</option>
-                            <option value="1">Thông quan</option>
-                            <option value="2">Đợi thông quan</option>
-                        </select>
-                    </div>
-                     
-                </div>
-                <div class="row-fluid">
-                    <div class="span2">
-                        <label>Từ ngày</label>
-                        <input type="date" class="span12" value="" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" v-model="data.startCreatedDate">
-                    </div>
-                    <div class="span2">
-                        <label>Đến ngày</label>
-                        <input type="date" class="span12" value="" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" v-model="data.endCreatedDate">
-                    </div> 
+					<div class="span2" v-show="advanSearch">
+						<label>Mã số thuế</label>
+						<input type="text" class="span12">
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span2">
+						<label>Từ ngày</label>
+						<input type="date" class="span12" v-model="startCreatedDate">
+					</div>
+					<div class="span2">
+						<label>Đến ngày</label>
+						<input type="date" class="span12" v-model="endCreatedDate">
+					</div>
 
-                    <div class="span2">
-                        <label>Trạng thái tờ khai</label>
-                        <select class="span12" id="slstatus" v-model="data.status">
-                            <option value="0">--Tất cả--</option>
-                            <option value="-1">Hủy tờ khai</option>
-                            <option value="1">Tờ khai tạm</option>
-                            <option value="2">Tờ khai chính thức</option>
-                            <option value="3">Tờ khai sửa</option>
-                        </select>
-                    </div>
+					<div class="span2">
+						<label>Trạng thái tờ khai</label>
+						<select class="span12" id="slstatus" v-model="data.status">
+							<option value="0">--Tất cả--</option>
+							<option value="-1">Hủy tờ khai</option>
+							<option value="1">Tờ khai tạm</option>
+							<option value="2">Tờ khai chính thức</option>
+							<option value="3">Tờ khai sửa</option>
+						</select>
+					</div>
 
-                    <div class="span2">
-                        <label>Mã nghiệp vụ</label>
-                        <select class="span12" id="slstatusCode">
-                            <option value="0">--Chọn nghiệp vụ--</option>
-                            <option value="2">IDA</option>
-                            <option value="3">IDB</option>
-                            <option value="4">IDC</option>
-                            <option value="6">IDD</option> 
-                            <option value="5">IDA01</option>
-                            <option value="7">IDE</option> 
-                            <option value="8">MIC</option>
-                            <option value="9">MID</option>
-                            <option value="10">MIE</option>
-                            <option value="0">CEA</option>
-                        </select>
-                    </div>
-
-                    <div class="span4">
-                        <div style="margin-top:25px;">
-                            <a v-on:click="getList(0)" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
-                            @*<a onclick="hq.getListDeclaration()" class="btn btn-warning"><i class="icon icon-file"></i> Xuất Excel</a>*@
-                        </div>
-                    </div>
-                </div>
-            </div>
+					<div class="span2">
+						<div style="margin-top:25px;">
+							<a v-on:click="getList(0)" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+						</div>
+					</div>
+					<div class="span2">
+						<div style="margin-top:25px;">
+							<button style="padding: 4px 10px" v-on:click="SearchAdvanced()">{{advanSearchName}}</button>
+						</div>
+					</div>
+				</div> 
+			</div>
         </div>
+		<div class="row-fluid">
+			<select class="span2" v-model="pageSize" v-on:change="getList()">
+				<option value="10">Hiện 10 dòng</option>
+				<option value="25">Hiện 25 dòng</option>
+				<option value="50">Hiện 50 dòng</option>
+			</select>
 
+			<span style="margin-left: 20px">{{totalRow}} bản ghi</span>
+		</div>
         <div class="box-body" id="dvContent">
             <div class="widget-box">
                 <div class="widget-title">
@@ -141,11 +165,11 @@
                                 <th class="text-center" style="min-width:70px">STT</th>
                                 <th class="text-center" style="min-width:70px">ID</th>
                                 <th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
-                                <th class="text-center" style="min-width:100px">Số tờ khai</th>
+                                <th class="text-center" style="width:100px">Số tờ khai</th>
                                 <th class="text-center">Ngày đăng ký</th>
                                 <th class="text-center">Ủy thác nhập khẩu</th>
                                 <th class="text-center">Người nhập khẩu</th>
-                                <th class="text-center">Loại hình</th>
+                                <th class="text-center" style="max-width:200px">Loại hình</th>
                                 <th class="text-center">Phân luồng</th>
                                 <th class="text-center">Thông quan</th>
                                 <th class="text-center">CQ Hải quan</th>
@@ -153,43 +177,44 @@
                                 <th class="text-center">Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody class="content-search-table">
+						<tbody class="content-search-table">
+							<tr v-show="showLoading">
+								<td colspan="14" style="text-align:center">
+									<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+								</td>
+							</tr>
 
-                            <tr v-for="(item, index) in lstDeclaration">
-                                <td>{{index+1}}</td>
-                                <td>
-                                    <a v-on:click="viewDeclaration(item.dclId, item.type)">{{item.dclId}}</a>
-                                </td>
-                                <td>{{item.statusCode}}</td>
-                                <td>{{item.dclNo}}</td>
-                                <td>{{item.createdDate}}</td>
-                                <td>{{item.impCtrNm}}</td>
-                                <td>{{item.imperNm}}</td>
-                                <td>
-                                    <span v-if="item.dclKindCd == 1">Kinh doanh, đầu tư</span>
-                                    <span v-if="item.dclKindCd == 2">Sản xuất, xuất khẩu</span>
-                                    <span v-if="item.dclKindCd == 3">Gia công</span>
-                                    <span v-if="item.dclKindCd == 4">Chế xuất</span>
-                                </td>
-                                <td>
-                                    <span v-if="item.insClsCd == 1">Xanh</span>
-                                    <span v-if="item.insClsCd == 2">Vàng</span>
-                                    <span v-if="item.insClsCd == 3">Đỏ</span>
-                                </td>
-                                <td>
-                                    <span v-if="item.clearanStatus == -1">Chưa thông quan</span>
-                                    <span v-if="item.clearanStatus == 1"> Thông quan</span>
-                                    <span v-if="item.clearanStatus == 2">Đợi thông quan</span>
-                                </td>
-                                <td>{{item.cstOfficeNm}}</td> 
-                                <td>{{item.dateOfPermit}}</td> 
-                                <td>
-                                    <a class="btn btn-warning" v-on:click="viewEdit(item.dclId, item.type)">Sửa</a>
-                                    <a class="btn btn-danger" v-on:click="removeDe(item.dclId)">Xóa</a>
-                                </td>
-                            </tr>
+							<tr v-for="(item, index) in lstDeclaration">
+								<td>{{currentPage*pageSize + index+1}}</td>
+								<td>
+									<a v-on:click="viewDeclaration(item)">{{item.dclId}}</a>
+								</td>
+								<td>{{item.statusCode}}</td>
+								<td>{{item.dclNo}}</td>
+								<td>{{item.createdDate}}</td>
+								<td>{{item.impCtrNm}}</td>
+								<td>{{item.imperNm}}</td>
+								<td style="max-width:300px"> 
+									{{item.dclKindCd}}
+								</td>
+								<td>
+									<span v-if="item.insClsCd == 1">Xanh</span>
+									<span v-if="item.insClsCd == 2">Vàng</span>
+									<span v-if="item.insClsCd == 3">Đỏ</span>
+								</td>
+								<td>
+									<span v-if="!item.dateOfPermit">Chưa thông quan</span>
+									<span v-if="item.dateOfPermit"> Thông quan</span>
+								</td>
+								<td>{{item.cstOfficeNm}}</td>
+								<td>{{item.dateOfPermit}}</td>
+								<td>
+									<a class="btn btn-warning" v-on:click="viewDeclaration(item)">Sửa</a>
+									<a class="btn btn-danger" v-on:click="removeDe(item.dclId)">Xóa</a>
+								</td>
+							</tr>
 
-                        </tbody>
+						</tbody>
                     </table>
                 </div>
 
@@ -205,152 +230,212 @@
 
 </div>
 
-
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="~/Content/js/vue.min.js"></script>
-<script src="~/Content/js/lib.js"></script>
+ 
 <script type="text/javascript">
     var calltable = 0;
-    var lstDeImport = new Vue({
-        el: '#lstDeImport',
+    var app = new Vue({
+        el: '#app',
         data: {
-            data: {},
+			data: {},
+			showLoading: true,
             lstOrganizationType: [],
             lstGroupType: [],
             lstCustoms: [],
             lstCustomsDepartment: [],
-            lstDeclaration: []
+            lstDeclaration: [], 
+			nameKind: [],
 
+			advanSearch: false, //Mặc định tìm kiếm nâng cao là false
+			advanSearchName: "Tìm kiếm nâng cao", //Text tìm kiếm nâng cao
+
+			startCreatedDate: "",
+			endCreatedDate: "",
+
+			pageSize: 10,
+			currentPage: 0,
+			totalRow: 0
         },
         methods: {
             init: async function () {
                 var data = this.data;
-                data.id = "";
+				data.nameCustom = "";
                 data.cstOffice = ""; 
-                data.clsOrgCd = 0;   
-                data.groupTypeId = "";
+				data.clsOrg = "";   
+				data.dclKindCd = "";
                 data.insClsCd = "";
                 data.clearanStatus = 0;
                 data.status = 0;
                 data.statusCode = "";
-                data.type = 0;
-                data.startCreatedDate = "";
+                data.type = 0; 
                 data.endCreatedDate = "";
-                data.dclNo = "";
-
-                //utils.Loading();
-                this.lstGroupType = await Lib.getGroupType();
-                this.lstCustoms = await Lib.getCustomsOffice();
+				data.dclNo = "";
+				data.houseAwbNo = "";
+				
+                this.lstGroupType = await Lib.getDeclarationKind();
                 this.lstOrganizationType = await Lib.getOrganizationType();
                 this.lstCustomsDepartment = await Lib.GetCustomsDepartment();
-                //utils.unLoading();
 
             },
             getList: async function (page, callback) {
                 try {
                     var token = $('#hdfToken').val();
-                    if(page == undefined || page == null) page = 1;
+					if (!page) page = 0;
+					this.currentPage = page;
 
-                    var accountId = $("#accIdLogin").val();
-                    var dt = this.data;
-                    const response = await axios.get(Config.API_Login + "Agency/SearchDeclaration?type=" + dt.type + "&cstOffice=" + dt.cstOffice + "&dclNo=" + dt.dclNo +
-                        "&startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&dclKindCd=" + dt.groupTypeId + "&insClsCd=" + dt.insClsCd
-                        + "&clearanStatus=" + dt.clearanStatus + "&status=" + dt.status + "&page=" + page + "&signatureId=0&accountId=" + accountId,
+					var accountId = $("#accIdLogin").val(); 
+
+					var dt = this.data;
+					dt.startCreatedDate = this.convertDate(this.startCreatedDate);
+					dt.endCreatedDate = this.convertDate(this.endCreatedDate);
+
+					var url = Config.API_Login + "Agency/SearchDeclaration?type=" + dt.type + "&cstOffice=" + dt.cstOffice + "&dclNo=" + dt.dclNo +
+						"&startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&dclKindCd=" + dt.dclKindCd + "&insClsCd=" + dt.insClsCd + "&clearanStatus=" + dt.clearanStatus + "&status=" + dt.status + "&page=" + page + "&signatureId=0&accountId=" + accountId + "&statusCode=" + dt.statusCode + "&clsOrg=" + dt.clsOrg + "&count=" + this.pageSize + "&houseAwbNo=" + dt.houseAwbNo;
+
+					const response = await axios.get(url,
                         {
                             headers: { "Authorization": "Bearer " + token },
-                        });
+						});
+					this.showLoading = false;
                     var res = response.data;
-                    console.log("List: ", res);
+                     
                     if (res.ResponseCode >= 0)
                     {
                         this.lstDeclaration = response.data.Data.ListDeclarations;
-                        lstDeImport.showPage(page, response.data.Data.Total);
+						this.showPage(page, response.data.Data.Total);
+						this.totalRow = response.data.Data.Total;
+
                         if(typeof callback != 'undefined' && typeof callback == 'function')
                             callback()
-                    }
-                    else return null;
-                } catch (error) {
+					} 
+
+				} catch (error) {
+					this.showLoading = false;
                     console.error(error);
                 }
-            },
-            viewEdit: async function (id, type) {
-                if(type == 1){
-                    var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + id + "&ishight=1&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-                else if(type == 2){
-                    var urlLink = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + id + "&ishight=2&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-            },
-            viewDeclaration: function(id, type){
-                if(type == 1){
-                    var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + id + "&ishight=1&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-                else if(type == 2){
-                    var urlLink = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + id + "&ishight=2&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-            },
-            removeDe:  function(idDe){ 
+			},
+			showPage: function (page, total) {
 
+				var totalPage = 0;
+				if (total % this.pageSize == 0) {
+					totalPage = total / this.pageSize;
+				}
+				else {
+					var du = total % this.pageSize;
+					total = total - du;
+					totalPage = total / this.pageSize + 1;
+				}
+				var htmlP = '';
+				var CurPage = page + 1;
+
+				if (totalPage > 1) {
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(0)"><i class="fa fa-angle-double-left"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
+
+					for (var i = CurPage - 3; i < CurPage + 3; i++) {
+						if (i > 0 && i <= totalPage) {
+							if (CurPage == i) {
+								htmlP += '<li class="active"><a href="javascript:;" onclick="app.getList(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+							else {
+								htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+						}
+					}
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
+
+				}
+
+				$(".pagination").html(htmlP);
+
+			},
+			SearchAdvanced: function () {
+				if (this.advanSearch) {
+					this.advanSearch = false;
+					this.advanSearchName = "Tìm kiếm nâng cao";
+				}
+				else {
+					this.advanSearch = true;
+					this.advanSearchName = "Thu gọn";
+				}
+			},
+			//----------
+            viewDeclaration: function(item){
+				if (item.type == 1) {
+					var tab = this.getTab(item.status, 1);
+					var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + item.dclId + "&ishight=1&tab=" + tab; 
+                    window.location.href = urlLink;
+                }
+				else if (item.type == 2) {
+					var tab = this.getTab(item.status, 2);
+					var urlLink = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + item.dclId + "&ishight=2&tab=" + tab; 
+                    window.location.href = urlLink;
+                }
+			},
+			getTab: function (status, type) {
+				var tab = 1;
+				if (!status || !type)
+					return tab;
+				if (status == 3 || status == 9) {
+					tab = 2;
+				}
+				else if (status == 4 || status == 10) {
+					tab = 3;
+				}
+				else if (status == 5) {
+					tab = 5;
+				}
+				else if (status == 6 || (status == 22 && type == 1)) {
+					tab = 4;
+				}
+				else if (status == 7) {
+					tab = 6;
+				}
+				else if (status == 22 && type == 2) {
+					tab = 7;
+				}
+
+				return tab;
+			},
+            removeDe:  function(idDe){ 
+				var self = this;
                 Decla.DeleteDecla(idDe, function(){
-                    lstDeImport.getList(1);
+					self.getList(0);
                 }); 
 
-            },
+			},
+			//------------
             getListCustomSearch:async function(){
-                debugger;
-                var dt = this.data;
-                this.lstCustoms =await Lib.getCustomsOffice(dt.id);
+				if (!this.data.nameCustom) { 
+					this.lstCustoms = [];
+					return;
+				}
+                
+				this.lstCustoms = await Lib.getCustomsOffice("", "", this.data.nameCustom);
                 this.$forceUpdate()
 
             },
-            showPage: function(page, total){
-
-                var totalPage = 0;
-                if(total % 10 == 0){
-                    totalPage = total / 10;
+            getDclKindNm: function(dclKindCd){  
+                if(!dclKindCd){
+                    return "";
                 }
-                else{
-                    var du = total % 10;
-                    total = total - du;
-                    totalPage = total / 10 + 1;
-                }
-                var htmlP = '';
-                var CurPage = page + 1;
-                //debugger;
-                if(totalPage > 1){
-                    htmlP += '<li><a href="javascript:;" onclick="lstDeImport.getList(0)"><i class="fa fa-angle-double-left"></i></a></li>';
-                    htmlP += '<li><a href="javascript:;" onclick="lstDeImport.getList(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
-
-                    for (var i = CurPage - 3; i < CurPage + 3; i++) {
-                        if(i > 0 && i <= totalPage){
-                            if(CurPage == i){
-                                htmlP += '<li class="active"><a href="javascript:;" onclick="lstDeImport.getList(' + (i - 1) + ')" >' + i + '</a></li>';
-                            }
-                            else{
-                                htmlP += '<li><a href="javascript:;" onclick="lstDeImport.getList(' + (i - 1) + ')" >' + i + '</a></li>';
-                            }
-                        }
+                for (var i = 0; i < this.lstGroupType.length; i++) {
+                    if(dclKindCd == this.lstGroupType[i].dclKindCd){
+                        return this.lstGroupType[i].dclKindNm;
+                        break;
                     }
-                    htmlP += '<li><a href="javascript:;" onclick="lstDeImport.getList(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
-                    htmlP += '<li><a href="javascript:;" onclick="lstDeImport.getList(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
-
-                    $(".pagination").html(htmlP);
                 }
-                
-            },
+            }, 
+            convertDate: function (date) {
+				if (!date)
+					return ""; 
+
+				return moment(String(date)).format('DD-MM-YYYY');
+            }, 
         },
         mounted() {
             this.init();
             this.getList(0);
-
-            var a = $("li[class='treeview act']");
-            if (a.length > 1) {
-                a[1].removeAttribute("class", "act");
-            }
         }, 
 
     });

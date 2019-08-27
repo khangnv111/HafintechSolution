@@ -1,0 +1,740 @@
+﻿
+@{
+    ViewBag.Title = "IDAView";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div id="ama-dec">
+	<div class="row-fluid">
+		<div class="span12">
+
+			<h5>Đăng ký các thông tin khai bổ sung (tăng/ giảm thuế)</h5>
+
+			<button class="btn btn-success span2" style="padding: 5px 0; margin-left: 0"> Tờ khai </button>
+			<button v-on:click="ViewResult(@ViewBag.decId,@ViewBag.tab)" class="btn span2" style="padding: 5px 0; margin-left: 0">Kết quả xử lý tờ khai</button>
+
+			<div class="widget-box">
+				<div class="widget-content nopadding">
+					<div class="form-horizontal">
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Số thông báo </label>
+									<div class="controls">
+										<input type="text" class="span11" v-model="data.notificationNo" />
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Ngày hoàn thành kiểm tra </label>
+									<div class="controls">
+										<input type="text" class="span6" v-model="data.dateCmplInsp" />
+										<input type="text" class="span3" v-model="data.timeCmplInsp" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Số Tờ khai bổ sung: </label>
+									<div class="controls">
+										<input type="text" class="span11" v-model="data.amendDclNo" />
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Ngày đăng ký </label>
+									<div class="controls">
+										<input type="text" class="span6" v-model="data.amDclRegDate" />
+										<input type="text" class="span3" v-model="data.amDclRegTime" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Số Tờ khai:<span class="error">(*)</span> </label>
+									<div class="controls">
+										<input type="text" class="span3" v-model="data.ieClsf" />
+										<input style="margin-left:2px" type="text" class="span5" v-model="data.dclNo" v-on:change="getDataInfoAMA()" />
+										<input style="margin-left:2px" type="text" class="span3 ICB" v-model="data.dclKindCd" />
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Nhóm xử lý hồ sơ: </label>
+									<div class="controls">
+										<input type="text" class="span11" v-model="data.cstSubSection" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Cơ quan hải quan:<span class="error">(*)</span></label>
+									<div class="controls">
+										<input type="text" v-model="data.cstOffice" class="span3 CH" />
+										<input type="text" class="span7 CH" v-model="data.cstOfficeNm" />
+										@*<button type="button" style="padding: 0 10px" v-on:click="OpenPop(1)">...</button>*@
+									</div>
+								</div>
+							</div> 
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Ngày Tờ khai Xuất nhập khẩu</label>
+									<div class="controls" style="position:relative;">
+										<input type="text" v-model="data.ieDclDate" class="span5" />
+										<input type="text" v-model="data.signOver60D" class="span2" />
+										<input type="text" v-model="data.cdTimeLOver" class="span2" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Ngày cấp phép:<span class="error">(*)</span></label>
+									<div class="controls" style="position:relative;">
+										<input type="text" v-model="data.dateOfPermit" class="span11 dDate" required />
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Thời hạn tạm nhập tái xuất: </label>
+									<div class="controls">
+										<input type="text" class="span11 dDate" v-model="data.timeLimReIE" maxlength="12" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="widget-box">
+				<div class="widget-content nopadding">
+					<div class="form-horizontal">
+						<div class="row-fluid">
+							<div class="span12">
+								<h5 style="margin-left:10px;">NGƯỜI KHAI</h5>
+								<div class="control-group span12">
+									<label class="control-label">Mã: </label>
+									<div class="controls">
+										<input type="text" class="span6" v-model="data.dclrCode" maxlength="13" />
+									</div>
+								</div>
+
+								<div class="control-group span12">
+									<label class="control-label">Tên: </label>
+									<div class="controls">
+										<input type="text" class="span11" v-model="data.dclrName" maxlength="100" />
+									</div>
+								</div>
+								<div class="control-group span12">
+									<label class="control-label">Mã bưu chính: </label>
+									<div class="controls">
+										<input type="text" class="span6" v-model="data.dclrPostCode" maxlength="7" />
+									</div>
+								</div>
+								<div class="control-group span12">
+									<label class="control-label">Điện thoại: </label>
+									<div class="controls">
+										<input type="text" v-model="data.dclrPhoneNo" class="span6" maxlength="20" />
+									</div>
+								</div>
+								<div class="control-group span12">
+									<label class="control-label">Địa chỉ: </label>
+									<div class="controls">
+										<textarea rows="3" v-model="data.addrDclr" class="span10" maxlength="100"></textarea>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12">
+								<div class="row">
+									<div class="span6">
+										<div class="control-group span12">
+											<label class="control-label">Đại lý Hải quan</label>
+											<div class="controls">
+												<input type="text" class="span3" v-model="data.agentCd" />
+												<input type="text" class="span6" v-model="data.agentNm" />
+											</div>
+										</div>
+									</div>
+									<div class="span6">
+										<div class="control-group span12">
+											<label class="control-label">Mã nhân viên HQ</label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.cstBrokerCd" />
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="span6">
+										<div class="control-group span12">
+											<label class="control-label">Mã lý do khai bổ sung:<span class="error">(*)</span> </label>
+											<div class="controls">
+												<select class="span9" v-model="data.amendDlcReaCd">
+													<option value="">--Chọn--</option>
+													<option value="1">1: Sai sót về tính thuế</option>
+													<option value="2">2: Sai sót về trị giá hải quan</option>
+													<option value="3">3: Sai sót về thuế suất</option>
+													<option value="4">4: Sai sót về mã HS</option>
+													<option value="5">5: Sai sót về số lượng</option>
+													<option value="6">6: Các lý do khác</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="span6">
+										<div class="control-group span12">
+											<label class="control-label">Phân loại nộp thuế</label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.paymentCls" required />
+
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="span6">
+										<div class="control-group span12">
+											<label class="control-label">Số quản lý nội bộ doanh nghiệp: </label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.eiControlNo" maxlength="9" />
+											</div>
+										</div>
+									</div>
+									<div class="span6">
+									</div>
+								</div>
+								<div class="row">
+									<div class="span6">
+										<div class="control-group span12">
+											<label class="control-label">Mã ngân hàng trả thuế thay:</label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.bankPayCd" />
+											</div>
+										</div>
+									</div>
+									<div class="span6">
+									</div>
+								</div>
+								<div class="row">
+									<div class="span4">
+										<div class="control-group span12">
+											<label class="control-label">Năm phát hành hạn mức: </label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.bankPayIssYear" maxlength="9" />
+											</div>
+										</div>
+									</div>
+									<div class="span4">
+										<div class="control-group span12">
+											<label class="control-label">Kí hiệu chứng từ hạn mức:</label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.bankPaySign" />
+											</div>
+										</div>
+									</div>
+									<div class="span4">
+										<div class="control-group span12">
+											<label class="control-label">Số chứng từ hạn mức: </label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.bankPayNo" maxlength="9" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="span4">
+										<div class="control-group span12">
+											<label class="control-label">Mã xác định thời hạn nộp thuế: </label>
+											<div class="controls">
+												<input type="text" v-model="data.extPayDueCd" class="span3" />
+												<select class="span9" v-model="data.extPayDueCd" v-on:change="onChange()">
+													<option value="">--chọn--</option>
+													<option value="A">A: TH được áp dụng thời hạn nộp thuế do sử dụng bảo lãnh riêng</option>
+													<option value="B">B: TH được áp dụng thời hạn nộp thuế do sử dụng bảo lãnh chung</option>
+													<option value="C">C: TH được áp dụng thời hạn nộp thuế mà không sử dụng bảo lãnh</option>
+													<option value="D">D: TH nộp thuế ngay</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="span4">
+										<div class="control-group span12">
+											<label class="control-label">Ngày hiệu lực của chứng từ </label>
+											<div class="controls">
+												<input type="text" v-model="data.defDurStrDate" class="span9" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="span4">
+										<div class="control-group span12">
+											<label class="control-label">Thời hạn nộp thuế </label>
+											<div class="controls">
+												<input type="text" v-model="data.noDefDay" class="span9" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="span6">
+										<div class="control-group span12">
+											<label class="control-label">Mã ngân hàng bảo lãnh: </label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.secSupplBankCd" maxlength="9" />
+											</div>
+										</div>
+									</div> 
+									<div class="span6">
+										<div class="control-group span12">
+											<label class="control-label">GTGT </label>
+											<div class="controls">
+												<input type="text" class="span9" v-model="data.noDefDaySpec" maxlength="9" />
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="control-group span12">
+										<label class="control-label">Năm phát hành bảo lãnh: </label>
+										<div class="controls">
+											<input type="text" class="span9" v-model="data.issuedYear" maxlength="9" />
+										</div>
+									</div>
+									<div class="control-group span12">
+										<label class="control-label">Kí hiệu chứng từ bảo lãnh: </label>
+										<div class="controls">
+											<input type="text" class="span9" v-model="data.secBankSign" maxlength="9" />
+										</div>
+									</div>
+									<div class="control-group span12">
+										<label class="control-label">Số chứng từ bảo lãnh: </label>
+										<div class="controls">
+											<input type="text" class="span9" v-model="data.secNo" maxlength="9" />
+										</div>
+									</div>
+								</div>
+								
+
+
+							</div> 
+						</div> 
+						<div class="row-fluid">
+							<div class="control-group span12">
+								<div class="span2"></div>
+								<div class="span2">Mã tiền tệ của trị giá khai báo</div>
+								<div class="span2">Tỷ giá tiền thuế</div>
+								<div class="span6">Phần ghi chú</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="text-align: center">(Trước khi khai báo)</div>
+								<div class="span2">
+									<input type="text" v-model="data.curCdBTaxAmend" class="span12" />
+								</div>
+								<div class="span2">
+									<input type="text" class="span12" v-model="data.curExRateBTaxA" />
+								</div>
+								<div class="span6">
+									<textarea class="span11" rows="3" v-model="data.noteBTaxAmend"></textarea>
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="text-align: center">(Sau khi khai báo)</div>
+								<div class="span2">
+									<input type="text" v-model="data.curCdATaxAmend" class="span12" />
+								</div>
+								<div class="span2">
+									<input type="text" class="span12" v-model="data.curExRateATaxA" />
+								</div>
+								<div class="span6">
+									<textarea class="span11" rows="3" v-model="data.noteATaxAmend"></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid" style="margin-top: 20px">
+							<div class="control-group span12">
+								<div class="span3" style="text-align: center">
+									Mã sắc thuế <br />
+									Thuế Xuất nhập khẩu
+								</div>
+								<div class="span3">
+									Tổng số tiền tăng giảm thuế
+								</div>
+								<div class="span3">
+									Mã sắc thuế
+								</div>
+								<div class="span3">
+									Tổng số tiền tăng giảm thuế
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span3">
+								</div>
+								<div class="span3">
+									<input type="text" class="span3" v-model="data.displayInDe" />
+									<input type="text" class="span6" v-model="data.ttlInExTaxInDe" />
+									<input type="text" class="span3" v-model="data.curCdTaxAmt"/>
+								</div>
+								<div class="span3">
+									<input type="text" class="span3" v-model="data.cdRETtlAOTax"/>
+									<input type="text" class="span6" />
+								</div>
+								<div class="span3">
+									<input type="text" class="span3" />
+									<input type="text" class="span6" />
+									<input type="text" class="span3" />
+								</div>
+							</div>
+							<div class="control-group span12" style="margin: 10px 0;">
+								<div class="span3" style="text-align: center">
+									<input type="text" class="span4" />
+									<input type="text" class="span7" />
+								</div>
+								<div class="span3">
+									<input type="text" class="span3" />
+									<input type="text" class="span6" />
+									<input type="text" class="span3" />
+								</div>
+								<div class="span3">
+									<input type="text" class="span3" />
+									<input type="text" class="span6" />
+								</div>
+								<div class="span3">
+									<input type="text" class="span3" />
+									<input type="text" class="span6" />
+									<input type="text" class="span3" />
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span3">
+								</div>
+								<div class="span3">
+									<input type="text" class="span3"/>
+									<input type="text" class="span6"/>
+									<input type="text" class="span3" />
+								</div>
+								<div class="span3">
+									<input type="text" class="span3" />
+									<input type="text" class="span6" />
+								</div>
+								<div class="span3">
+									<input type="text" class="span3" />
+									<input type="text" class="span6" />
+									<input type="text" class="span3" />
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="control-group span12">
+								<div class="span6">
+									<label class="control-label">Tổng số trang của Tờ khai</label>
+									<div class="controls">
+										<input type="text" class="span6" v-model="data.configPageNo" />
+									</div>
+								</div>
+								<div class="span6">
+									<label class="control-label">
+										Tổng số dòng hàng của Tờ khai
+									</label>
+									<div class="controls">
+										<input type="text" class="span6" v-model="data.noOfLineDcl" />
+									</div>
+								</div>
+							</div>
+							<div class="control-group span12">
+								<label class="control-label">Lý do</label>
+								<div class="controls">
+									<textarea rows="3" class="span11" v-model="data.reason"></textarea>
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span6">
+									<label class="control-label">Tên của người phụ trách</label>
+									<div class="controls">
+										<input type="text" class="span11" v-model="data.nmOPerCharge" />
+									</div>
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span6">
+									<label class="control-label">Trên trường Đơn vị Hải quan</label>
+									<div class="controls">
+										<input type="text" class="span11" v-model="data.nmHeadCstOff" />
+									</div>
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span6">
+									<label class="control-label">Ngày đăng ký dữ liệu</label>
+									<div class="controls">
+										<input type="text" class="span6" v-model="data.dateDataEReg" />
+										<input type="text" class="span5" v-model="data.timeDataEReg" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="widget-box">
+				<div class="widget-content nopadding">
+					<div class="row-fluid">
+						<div class="span12" style="padding: 10px;">
+							<a href="javascript:;" v-on:click="prePro()" v-bind:disabled="pageProduct == 1">
+								<i class="fa fa-fast-backward fa-2x" aria-hidden="true" style="margin-right: 10px"></i>
+							</a>
+							<a href="javascript:;" v-on:click="prePro()" v-bind:disabled="pageProduct == 1">
+								<i class="fa fa-play fa-rotate-180 fa-2x" aria-hidden="true"></i>
+							</a>
+							<input type="text" class="span2" v-model="textPage" style="text-align: center;" disabled />
+
+							<a href="javascript:;" v-on:click="nextPro()" v-bind:disabled="pageProduct == 50">
+								<i class="fa fa-play fa-2x" aria-hidden="true" style="margin-right: 10px"></i>
+							</a>
+							<a href="javascript:;" v-on:click="nextPro()" v-bind:disabled="pageProduct == 50">
+								<i class="fa fa-fast-forward fa-2x" aria-hidden="true"></i>
+							</a>
+						</div>
+					</div>
+
+					<div class="form-horizontal">
+
+						<div class="row-fluid">
+							<div class="control-group span12">
+								<label class="control-label">Số thứ tự dòng/ hàng trên tờ khai gốc:</label>
+								<div class="controls">
+									<input style="width:350px" type="text" class="span8" v-model="Product.fieldNoOrgDcl" />
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="row-fluid">
+									<div class="span2">
+									</div>
+									<div class="span6">
+										Mô tả hàng hóa
+									</div>
+									<div class="span4">
+										Mã nước xuất xứ
+									</div>
+								</div>
+								<div class="row-fluid">
+									<div class="span2" style="text-align: center">
+										(Trước khi khai báo)
+									</div>
+									<div class="span6">
+										<textarea rows="2" class="span11" v-model="Product.iNameBTaxAmend"></textarea>
+									</div>
+									<div class="span4">
+										<input type="text" class="span8" v-model="Product.plcOriCdBTaxAm" maxlength="35" />
+									</div>
+								</div>
+								<div class="row-fluid" style="margin-top: 10px">
+									<div class="span2" style="text-align: center">
+										(Sau khi khai báo)
+									</div>
+									<div class="span6">
+										<textarea rows="2" class="span11" v-model="Product.iNameATaxAmend"></textarea>
+									</div>
+									<div class="span4">
+										<input type="text" class="span8" v-model="Product.plcOriCdATaxAm" maxlength="35" />
+									</div>
+								</div>
+							</div> 
+						</div>
+						<div class="row-fluid" style="margin-top: 25px">  
+							<div class="control-group span12">
+								<div class="span2">
+								</div>
+								<div class="span3" style="text-align: center">
+									(Trước khi khai báo)
+									<br />Thuế nhập khẩu và xuất khẩu
+								</div>
+								<div class="span3" style="text-align: center">
+									(Sau khi khai báo)
+								</div>
+								<div class="span4" style="text-align: center">
+									Tăng/ Giảm thuế
+								</div>
+							</div>
+
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									<label>Trị giá tính thuế</label>
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="Product.stTaxValBTaxAm"/>
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="Product.stTaxValATaxAm">
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									<label>Số lượng tính thuế</label>
+								</div>
+								<div class="span3">
+									<input type="text" class="span8" v-model="Product.stQuanBTaxAm">
+									<input type="text" class="span4"  v-model="Product.mUCOQuanBTaxAm">
+								</div>
+								<div class="span3">
+									<input type="text" class="span8" v-model="Product.stQuanATaxAm">
+									<input type="text" class="span4" v-model="Product.mUCOStQATaxAm" >
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									<label>Mã số hàng hóa</label>
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="Product.hsCodeBTaxAm">
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="Product.hsCodeATaxAm" >
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									<label>Thuế suất</label>
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="Product.taxRateBTaxAm">
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="Product.taxRateATaxAm">
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									<label>Số tiền thuế phải nộp</label>
+								</div>
+								<div class="span3">
+									<input type="text" class="span8" v-model="Product.taxAmtBTaxAm">
+									<input type="text" class="span4" v-model="Product.disTaxExBTaxAm">
+								</div>
+								<div class="span3">
+									<input type="text" class="span8" v-model="Product.taxAmtATaxAm">
+									<input type="text" class="span4" v-model="Product.disTaxExATaxAm">
+								</div>
+								<div class="span4">
+									<input type="text" class="span4" v-model="Product.disTaxExATaxAm">
+									<input type="text" class="span7" v-model="Product.amtDutyInDe">
+								</div>
+							</div>
+						</div>
+
+						<div class="row-fluid" v-for="(item, index) in Product.lsProREInfo">
+							<div class="control-group span12">
+								<div style="width: 95%; border-top: 1px solid #878383; margin: 0 auto;margin-top: 10px;"></div>
+							</div>
+
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									Thuế và thu khác
+								</div>
+								<div class="span3">
+									<input type="text" class="span5" v-model="item.cdRETtlAOTax"/>
+									<input type="text" class="span7" v-model="item.nmRETtlAOTax"/>
+								</div>
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									Trị giá tính thuế
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="item.stTaxValBTaxAm" />
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="item.stTaxValTCAm"/>
+								</div> 
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									Số lượng tính thuế
+								</div>
+								<div class="span3">
+									<input type="text" class="span7" v-model="item.stQuanBTaxAm"/>
+									<input type="text" class="span5" v-model="item.msBOTaxColAm"/>
+								</div>
+								<div class="span3">
+									<input type="text" class="span7" v-model="item.stQuanAOTCAm"/>
+									<input type="text" class="span5" v-model="item.msUCSQAOTCAm"/>
+								</div> 
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									Mã xác định thuế xuất
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="item.clsfCdBTaxAm"/>
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="item.clsfCdAOTColAm"/>
+								</div> 
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									Thuế xuất
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="item.tRateBTaxColAm"/>
+								</div>
+								<div class="span3">
+									<input type="text" class="span12" v-model="item.tRateAOTColAm"/>
+								</div> 
+							</div>
+							<div class="control-group span12">
+								<div class="span2" style="padding: 7px;">
+									Số tiền thuế phải nộp
+								</div>
+								<div class="span3">
+									<input type="text" class="span7" v-model="item.tAmtBOTColAm"/>
+									<input type="text" class="span5" v-model="item.disOTaxEBTaxAm"/>
+								</div>
+								<div class="span3">
+									<input type="text" class="span7" v-model="item.tAmtAOTColAm"/>
+									<input type="text" class="span5" v-model="item.disOTaxEATaxAm" />
+								</div>
+								<div class="span4">
+									<input type="text" class="span4" v-model="item.displayInDe"> 
+									<input type="text" class="span7" v-model="item.amtOTaxInDe">
+								</div>
+							</div>
+
+						</div>
+						 
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> 
+
+	<input type="hidden" value="@ViewBag.decId" id="decId" />
+</div> 
+<script src="~/Content/js/ama-decla/ida-view-ama.js"></script>

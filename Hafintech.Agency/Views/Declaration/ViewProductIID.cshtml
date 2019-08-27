@@ -1,0 +1,327 @@
+﻿<div id="loginbox" style="width:100%">
+	<div class="control-group normal_text">
+		<b id="titleHH" style="font-size:18px;text-transform: uppercase">thông tin hàng hóa</b>
+		<b onclick="utils.closeAll()" class="icClose">X</b>
+	</div>
+	<form enctype="multipart/form-data" id="form-iid" name="form-inputx">
+		<input type="hidden" id="hdf_declarationID" name="hdf_declarationID" value="@ViewBag.IdDec" />
+		<input type="hidden" id="hdf_productID" name="hdf_productID" value="@ViewBag.proId" />
+		<div class="form-horizontal" style="padding:10px 10px 0 10px; ">
+			<div class="row-fluid">
+				<div class="span12">
+					<label class="control-label">Mã số hàng hóa  (HS): <span class="error">(*)</span></label>
+					<div class="controls">
+						<div class="span4">
+							<input type="text" class="span12" id="txthSCd" name="txthSCd" required maxlength="12" v-model="data.hSCd" v-on:click="getIntroMess('IDA','CMD')" />
+						</div>
+						<div class="span4">
+							<label class="span6">
+								Mã quản lý riêng:
+							</label>
+							<span class="span6">
+								<input type="text" class="span12" id="txtmaterialCd" v-model="data.materialCd"
+									   name="txtmaterialCd" onkeyup="$('#txtmaterialCd').val($('#txtmaterialCd').val().toUpperCase())" maxlength="7" v-on:click="getIntroMess('IDA','COC')" />
+							</span>
+						</div>
+						<div class="span4">
+							<label class="span6">
+								Mã phân loại tái xác nhận giá
+							</label>
+							<span class="span6">
+								<input type="text" class="span12" v-model="data.prcReCfClsCd" />
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<label class="control-label">Mô tả hàng hóa:<span class="error">(*)</span> </label>
+					<div class="controls">
+						<input type="text" class="span12" id="txtitemName" name="txtitemName" required maxlength="200" v-model="data.itemName" v-on:click="getIntroMess('IDA','CMN')" />
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<label class="control-label">(1) Số lượng:<span class="error">(*)</span> </label>
+					<div class="controls">
+						<div class="span4">
+							<input type="number" min="0" maxlength="12" class="span6" v-model="data.qtt1" v-on:click="getIntroMess('IDA','QN1')">
+							<input type="text" class="span6" v-model="data.qttUnitCd1" v-on:click="getIntroMess('IDA','QT1')" />
+						</div>
+						<div class="span3">
+							(2) Số lượng thực tế:
+						</div>
+						<div class="span4">
+							<input type="text" id="txtqtt2" name="txtqtt2" class="span6" v-model="data.qtt2" v-on:click="getIntroMess('IDA','QN2')" />
+							<input type="text" class="span6" v-model="data.qttUnitCd2" v-on:click="getIntroMess('IDA','QT2')" />
+						</div>
+						<div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<label class="control-label">Số của mục khai khoản điều chỉnh:</label>
+					<div class="controls">
+						<div class="span2" v-for="(value,index) in data.lsValuationNo">
+							<input type="text" class="span12" v-model="value.valuationNo" />
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<label class="control-label">Trị giá hóa đơn: </label>
+					<div class="controls">
+						<div class="span3">
+							<input type="text" class="span12" id="txtinvValue" name="txtinvValue" v-model="data.invValue" v-on:click="getIntroMess('IDA','BPR')" />
+						</div>
+						<div class="span8">
+							<label class="control-label">Đơn giá hóa đơn: </label>
+							<div class="controls">
+								<input type="text" class="span4" v-model="data.invUnitPrice" />
+
+								<input type="text" class="span4" v-model="data.unitPriceCurCd">
+
+								<input type="text" class="span4" v-model="data.priceQttUnit">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<div class="span6">
+						<label class="control-label">Trị giá tính thuế (S): </label>
+						<div class="controls">
+							<div class="span10">
+								<input type="text" class="span6" v-model="data.cstValSystem" /> VND
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<label class="control-label">Trị giá tính thuế (M): </label>
+						<div class="controls">
+							<div class="span10">
+								<input type="text" class="span6" v-model="data.taxValCurCd" />
+								<input type="text" class="span6" v-model="data.taxValManual" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<div class="span6">
+						<label class="control-label">Số lượng tính thuế: </label>
+						<div class="controls">
+							<div class="span10">
+								<input type="text" class="span6" v-model="data.cstStdQtt" />
+								<input type="text" class="span6" v-model="data.msrUnitCdCst" />
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<label class="control-label">Đơn giá tính thuế: </label>
+						<div class="controls">
+							<div class="span10">
+								<input type="text" class="span6" v-model="data.cstValUnitPrc" /> VNĐ
+								<input type="text" class="span4" v-model="data.unitCstUnitPrc" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<div class="span6">
+						<label class="control-label">Thuế suất: </label>
+						<div class="controls">
+							<input type="text" class="span4" v-model="data.impTaxRateCd" />
+							<input type="text" class="span2" v-model="data.impTaxRate" /> %
+							<input type="text" class="span4" v-model="data.impTaxRateInp" />
+						</div>
+					</div>
+					<div class="span6">
+						<label class="control-label">Mã mức thuế tuyệt đối </label>
+						<div class="controls">
+							<input type="text" class="span4" v-model="data.absTariffRate" />
+							<input type="text" class="span4" v-model="data.absDutyUnitCd" />
+							<input type="text" class="span4" v-model="data.curCdAbsDuty" />
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<div class="span6">
+						<label class="control-label">Số tiền thuế: </label>
+						<div class="controls">
+							<input type="text" class="span4" v-model="data.impTaxAmt" /> VNĐ
+						</div>
+					</div>
+					<div class="span6">
+						<label class="control-label">Nước xuất xứ </label>
+						<div class="controls">
+							<input type="text" class="span4" v-model="data.placeOriginCd" />
+							<input type="text" class="span4" v-model="data.oriPlaceNm" />
+							<input type="text" class="span4" v-model="data.importTaxClfCd" />
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<div class="span6">
+						<label class="control-label">Số tiền miễn giảm</label>
+						<div class="controls">
+							<input type="text" class="span4" v-model="data.rdcImpTaxAmt" /> VNĐ
+						</div>
+					</div>
+					<div class="span6">
+						<label class="control-label">Mã ngoài hạn ngạch</label>
+						<div class="controls">
+							<input type="text" class="span4" v-model="data.tariffQuotaClf" />
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<label class="span4">Số thứ tự của dòng hàng trên tờ khai tạm nhập tái xuất tương ứng:</label>
+					<div class="controls">
+						<div class="span4">
+							<input type="text" class="span12" v-model="data.tenDclLineNo" maxlength="2" />
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<label class="span4">Danh mục miễn thuế nhập khẩu</label>
+					<div class="controls">
+						<div class="span6">
+							<input type="text" class="span4" v-model="data.taxExpLsNo" />
+							<input type="text" class="span4" v-model="data.taxExpLsLineNo" />
+						</div>
+					</div>
+				</div>
+
+				<div class="span12" style="margin:5px 0 5px 0;">
+					<label class="span4">Mã miễn/ giảm/ không chịu thuế nhập khẩu: </label>
+					<div class="controls">
+						<div class="span6">
+							<input type="text" class="span4" v-model="data.rdcImpTaxCd" style="text-transform: uppercase" />
+							<input type="text" class="span4" v-model="data.rdcAmtImpTax" />
+						</div> 
+					</div>
+				</div>
+				  
+				<h4>Thuế và thu khác</h4>
+				<table class="table table-bordered" id="tbl_container_add">
+					<tr>
+						<th class="span3">Tên</th>
+						<th class="span2">Mã áp dụng thuế suất/Mức thuế</th>
+						<th class="span3">Trị giá tính thuế</th>
+						<th class="span3">Số lượng tính thuế</th>
+						<th class="span2">Thuế suất</th>
+						<th class="span3">Số tiền thuế</th>
+						<th class="span2">Mã miễn/ giảm/ không chịu thuế</th>
+						<th class="span2">Điều khoản miễn/ giảm/ không chịu thuế và thu khác</th>
+						<th class="span3">Số tiền giảm thuế</th>
+					</tr>
+					<tr v-for="(value,index) in data.lsOtherTax">
+						<td>{{value.itemNmOTax}} </td>
+						<td>
+							<input type="text" class="span8" v-model="value.oTaxTypeCd" />
+						</td>
+						<td>
+							<input type="text" class="span8" v-model="value.cstOTaxAmt" /> VND
+						</td>
+						<td>
+							<input type="text" class="span6" v-model="value.stdOTax" />
+							<input type="text" class="span6" v-model="value.stdOTaxUnitCd" />
+						</td>
+						<td>
+							<input type="text" class="span12" v-model="value.taxRateOfOTax" />
+						</td>
+						<td>
+							<input type="text" class="span9" v-model="value.otherTaxAmt" /> VND
+						</td>
+						<td>
+							<input type="text" class="span12" v-model="value.oTaxRdcCd" />
+						</td>
+						<td>
+							<input type="text" class="span12" v-model="value.prvOTaxInLaw" />
+						</td>
+						<td>
+							<input type="text" class="span9" v-model="value.oTaxCerAmt" /> VND
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="social-auth-links text-center">
+				<p id="LogError" style="color:red;display:none;">{{data.productId}}</p>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+	var proIID = new Vue({
+		el: '#form-iid',
+		data: {
+			data: {},
+
+			currency: [],
+			lstAbsDutyUnit: [],
+			lstPerUnitTax: [],
+			lstImportTaxClf: [],
+		},
+		methods: {
+			init: async function () {
+				this.data.lsOtherTax = [];
+				this.data.lsOtherLawCode = []; 
+				for (var i = 0; i < 5; i++) {
+					this.data.lsOtherLawCode.push({ otherLawCd: "" });
+				};
+				this.data.lsOtherTax.push({ itemNmOTax: "Thuế nhập khẩu bổ sung", oTaxTypeCd: "", cstOTaxAmt: "", oTaxRdcCd: "" });
+				this.data.lsOtherTax.push({ itemNmOTax: "Thuế tiêu thụ đặc biệt", oTaxTypeCd: "", cstOTaxAmt: "", oTaxRdcCd: "" });
+				this.data.lsOtherTax.push({ itemNmOTax: "Thuế bảo vệ môi trường", oTaxTypeCd: "", cstOTaxAmt: "", oTaxRdcCd: "" });
+				this.data.lsOtherTax.push({ itemNmOTax: "Thuế giá trị gia tăng", oTaxTypeCd: "", cstOTaxAmt: "", oTaxRdcCd: "" });
+				this.data.lsOtherTax.push({ itemNmOTax: "Thuế chống phân biệt đối xử", oTaxTypeCd: "", cstOTaxAmt: "", oTaxRdcCd: "" });
+
+				this.currency = await Lib.getCurrency();
+				this.lstPerUnitTax = this.lstAbsDutyUnit = await Lib.getAbsoluteDutyRateUnit();
+				this.lstImportTaxClf = await Lib.getImportTaxClassification();
+				this.loadDetail();  
+
+				setTimeout(function () {
+					$("#form-iid :input").prop('readonly', true);
+				}, 200);
+			}, 
+			loadDetail: async function () {
+				try {
+
+					var token = $('#hdfToken').val();
+					var id = $('#hdf_productID').val();
+
+					const response = await axios.get(Config.API_Login + "import/GetIDAProductDetail?productid=" + id,
+						{
+							headers: { "Authorization": "Bearer " + token }
+						});
+					var res = response.data;
+					if (res.ResponseCode >= 0) {
+						this.data = response.data.Data; 
+
+						if (this.data.lsValuationNo) {
+							for (var i = 0; i < 5; i++) {
+								this.data.lsValuationNo.push({ valuationNo: "" });
+							}
+						}
+					}
+				} catch (error) {
+					console.error(error);
+				}
+			},
+			
+		},
+		mounted() {
+			this.init();
+		}
+
+	});
+</script>

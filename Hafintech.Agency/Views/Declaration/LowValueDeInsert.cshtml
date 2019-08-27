@@ -3,149 +3,144 @@
     Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
 }
 
-<form action="#" enctype="multipart/form-data" id="form-input-file" name="form-input-file">
+<div id="form-input-file">
     <div class="row-fluid">
-        <div class="span12">
+		<div class="span12">
 
-            <h4><a href="javascript:;">Tờ khai nhập khẩu giá trị thấp</a> >> Đăng ký tờ khai:</h4>
+			<h4>Tờ khai nhập khẩu giá trị thấp</h4> 
 
-            <a class="btn btn-warning" id="btnTab2"> Tờ khai </a>
-            <a onclick="" class="btn btn-success">Kết quả xử lý tờ khai</a>
+			<button class="btn btn-success" style="padding: 5px 70px;">Tờ khai</button>
+			<button v-on:click="ViewResult(@ViewBag.tab)" class="btn" style="padding: 5px 70px">Kết quả xử lý</button>
 
-            <div class="widget-box">
-                <div class="widget-title">
-                    <span class="icon"> <i class="icon-align-justify"></i> </span>
-                    <h5>Thông Tin chung</h5>
-                </div>
-                <div class="widget-content nopadding">
-                    <div class="form-horizontal">
-                        <div class="row-fluid">
-                            <div class="span12">
-                                <div class="control-group span12">
-                                    <div class="span3">
-                                        <label class="control-label">Phần luồng: </label>
-                                        <div class="controls" style="color: blue">
-                                            {{stream}}
-                                        </div>
-                                    </div>
+			<div class="widget-box">
+				<div class="widget-title">
+					<span class="icon"> <i class="icon-align-justify"></i> </span>
+					<h5>Thông Tin chung</h5>
+				</div>
+				<div class="widget-content nopadding">
+					<div class="form-horizontal">
+						<div class="row-fluid" v-show="data.dclNo">
+							<div class="span12">
+								<div class="control-group span12">
+									<div class="span3">
+										<label class="control-label">Phân luồng: </label>
+										<div class="controls" style="color: blue">
+											{{stream}}
+										</div>
+									</div>
 
-                                    <div class="span4">
-                                        <label class="control-label">Thông quan: </label>
-                                        <div class="controls" v-if="data.dateOfPermit">
-                                            Thông quan
-                                        </div>
-                                        <div class="controls" v-else>
-                                            Chưa thông quan
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row-fluid">
-                            <div class="span6">
+									<div class="span4">
+										<label class="control-label">Thông quan: </label>
+										<div class="controls" v-if="data.dateOfPermit">
+											Thông quan
+										</div>
+										<div class="controls" v-else>
+											Chưa thông quan
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
 
-                                <div class="control-group span12">
-                                    <label class="control-label">Số Tờ khai: </label>
-                                    <div class="controls">
-                                        <input style="width:350px" type="hidden" class="span5" id="dclId" name="dclId" value="@ViewBag.IdDec" />
-                                        <input style="width:350px" type="text" class="span5" id="txtdclNo" name="txtdclNo" disabled v-model="data.dclNo" />
-                                    </div>
-                                </div>
-                                <div class="control-group span12">
-                                    <label class="control-label">Phân loại cá nhân tổ chức:<span class="error">(*)</span></label>
-                                    <div class="controls">
-                                        <select id="slclsOrg" name="slclsOrg" class="span11 SKB" required v-model="data.clsOrg" v-on:click="getIntroMess('MIC','SKB')">
-                                            <option value="">--Chọn--</option>
-                                            <option v-for="item in lstOrganizationType" :value="item.clsOrgCd">{{item.clsOrgCd}} || {{item.clsOrgNm}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="control-group span12">
-                                    <label class="control-label">Cơ quan hải quan:<span class="error">(*)</span></label>
-                                    <div class="controls">
-                                        <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" v-model="data.cstOffice" v-on:click="getIntroMess('MIC','CH')"/>
-                                        <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7 CH" v-on:click="getIntroMess('MIC','CH')"
-                                               onclick="DePop.PopCustom()" autocomplete="off" required />
-                                        <button type="button" style="padding: 0 10px" onclick="DePop.PopCustom()">...</button>
-                                    </div>
-                                </div>
-                                <div class="control-group span12" v-show="data.status==22">
-                                    <label class="control-label">Phân loại kiểm tra tài liệu / hàng hóa:</label>
-                                    <div class="controls">
-                                        <input type="text" id="insClsCd" value="" disabled v-model="data.insClsCd" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="span6">
-                                <div class="control-group span12">
-                                    <label class="control-label">Mã bộ phận xử lý tờ khai:</label>
-                                    <div class="controls">
-                                        <select id="slcstSubSection" name="slcstSubSection" class="span11 CHB" v-model="data.cstSubSection" v-on:click="getIntroMess('MIC','CHB')">
-                                            <option value="">--Chọn--</option>
-                                            <option v-for="item in lstCstSubSection" :value="item.cstSubCd">{{item.cstSubCd}} || {{item.cstSubNm}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="control-group span12" v-show="data.status==22">
-                                    <label class="control-label">Ngày đăng ký:</label>
-                                    <div class="controls">
-                                        <input type="text" id="regDate" name="regDate" class="span3" disabled="disabled" v-model="data.regDate" />
-                                        <input type="text" id="regTime" name="regTime" class="span7" disabled v-model="data.regTime" />
-                                    </div>
-                                </div>
-                                <div class="control-group span12" v-show="data.status==22">
-                                    <label class="control-label">Ngày thay đổi đăng ký:</label>
-                                    <div class="controls">
-                                        <input type="text" id="regDateOfCor" name="regDateOfCor" class="span3" disabled="disabled" v-model="data.regDateOfCor" />
-                                        <input type="text" id="regTimeOfCor" name="regTimeOfCor" class="span7" disabled v-model="data.regTimeOfCor" />
-                                    </div>
-                                </div>
-                            </div>
-                           
-                        </div>
-                        <div class="row-fluid" style="display:none">
-                            <div class="span12">
-                                <div class="control-group span12">
-                                    <label class="control-label">Văn Bản Liên Quan : </label>
-                                    <div class="controls">
-                                        <input name="file" type="file" id="file-input-docs" />
-                                        <input type="hidden" id="dataFileDocsInput" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+								<div class="control-group span12">
+									<label class="control-label">Số Tờ khai: </label>
+									<div class="controls">
+										<input style="width:350px" type="hidden" class="span5" id="dclId" name="dclId" value="@ViewBag.IdDec" />
+										<input style="width:350px" type="text" class="span5 ICN" id="txtdclNo" name="txtdclNo" disabled v-model="data.dclNo" />
+									</div>
+								</div>
+								<div class="control-group span12">
+									<label class="control-label">Phân loại cá nhân tổ chức:<span class="error">(*)</span></label>
+									<div class="controls">
+										<select class="span11 SKB" v-model="data.clsOrg" v-on:click="getIntroMess('MIC','SKB')" v-bind:disabled="data.dclNo > 0">
+											<option value="">--Chọn--</option>
+											<option v-for="item in lstOrganizationType" v-bind:value="item.clsOrgCd">{{item.clsOrgCd}} || {{item.clsOrgNm}}</option>
+										</select>
+									</div>
+								</div>
+								<div class="control-group span12">
+									<label class="control-label">Cơ quan hải quan:<span class="error">(*)</span></label>
+									<div class="controls">
+										<input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" v-model="data.cstOffice" v-on:click="getIntroMess('MIC','CH')" style="text-transform: uppercase" v-bind:disabled="data.dclNo > 0"/>
+										<input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7 CH" v-on:click="getIntroMess('MIC','CH')"
+											   onclick="DePop.PopCustom()" autocomplete="off" v-model="data.cstOfficeNm" v-bind:disabled="data.dclNo > 0"/>
+										<button type="button" style="padding: 0 10px" onclick="DePop.PopCustom()" v-bind:disabled="data.dclNo > 0">...</button>
+									</div>
+								</div>
+								<div class="control-group span12" v-show="@ViewBag.tab == 4">
+									<label class="control-label">Phân loại kiểm tra tài liệu / hàng hóa:</label>
+									<div class="controls">
+										<input type="text" id="insClsCd" value="" disabled v-model="data.insClsCd" />
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group span12">
+									<label class="control-label">Mã bộ phận xử lý tờ khai:</label>
+									<div class="controls">
+										<input type="text" class="span11 CHB" v-model="data.cstSubSection" v-on:click="getIntroMess('MIC','CHB')"/>
+										@*<select id="slcstSubSection" name="slcstSubSection" class="span11 CHB" v-model="data.cstSubSection" v-on:click="getIntroMess('MIC','CHB')">
+											<option value="">--Chọn--</option>
+											<option v-for="item in lstCstSubSection" v-bind:value="item.cstSubCd">{{item.cstSubCd}} || {{item.cstSubNm}}</option>
+										</select>*@
+									</div>
+								</div>
+								<div class="control-group span12" v-show="@ViewBag.tab == 4">
+									<label class="control-label">Ngày đăng ký:</label>
+									<div class="controls">
+										<input type="text" id="regDate" name="regDate" class="span4" disabled="disabled" v-model="data.regDate" />
+										<input type="text" id="regTime" name="regTime" class="span3" disabled v-model="data.regTime" />
+									</div>
+								</div>
+								<div class="control-group span12" v-show="@ViewBag.tab == 4">
+									<label class="control-label">Ngày thay đổi đăng ký:</label>
+									<div class="controls">
+										<input type="text" id="regDateOfCor" name="regDateOfCor" class="span4" disabled="disabled" v-model="data.regDateOfCor" />
+										<input type="text" id="regTimeOfCor" name="regTimeOfCor" class="span3" disabled v-model="data.regTimeOfCor" />
+									</div>
+								</div>
+							</div>
 
-                    </div>
-                </div>
-            </div>
-        </div>
+						</div>
+						<div class="row-fluid" style="display:none">
+							<div class="span12">
+								<div class="control-group span12">
+									<label class="control-label">Văn Bản Liên Quan : </label>
+									<div class="controls">
+										<input name="file" type="file" id="file-input-docs" />
+										<input type="hidden" id="dataFileDocsInput" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
     </div>
 
     <div class="row-fluid">
         <div class="span12">
             <div class="widget-box">
-                <!--<div class="widget-title">
-                    <span class="icon"> <i class="icon-align-justify"></i> </span>
-                    <h5>Thông tin Xuất nhập khẩu:</h5>
-                </div>
-                    -->
+
                 <div class="widget-content nopadding">
                     <div class="form-horizontal">
                         <div class="row-fluid">
                             <div class="span12">
                                 <h5 style="margin-left:10px;">NGƯỜI NHẬP KHẨU</h5>
                                 <div class="control-group span12">
-                                    <label class="control-label">Mã: </label>
+                                    <label class="control-label">Mã:<span class="error">(*)</span> </label>
                                     <div class="controls">
-                                        <input type="text" class="span6 IMC" id="txtimperCd" v-on:click="getIntroMess('MIC','IMC')"
-                                               name="txtimperCd" maxlength="13" v-model="data.imperCd" />
+                                        <input type="text" class="span6 IMC" v-on:click="getIntroMess('MIC','IMC')" maxlength="13" v-model="data.imperCd" v-bind:disabled="data.dclNo > 0"/>
                                     </div>
                                 </div>
                                 <div class="control-group span12">
-                                    <label class="control-label">Tên: </label>
+                                    <label class="control-label">Tên:</label>
                                     <div class="controls">
-                                        <input type="text" class="span11 IMN" id="txtimperNm" v-on:click="getIntroMess('MIC','IMN')"
-                                               name="txtimperNm" maxlength="100" v-model="data.imperNm" />
+                                        <input type="text" class="span11 IMN" v-on:click="getIntroMess('MIC','IMN')" maxlength="100" v-model="data.imperNm"/>
                                     </div>
                                 </div>
                                 <div class="control-group span12">
@@ -164,9 +159,8 @@
                                 </div>
                                 <div class="control-group span12">
                                     <label class="control-label">Địa chỉ: </label>
-                                    <div class="controls">
-                                        <input style="max-width:700px; width:700px" type="text" id="txtaddressOfImp" v-model="data.addressOfImp" v-on:click="getIntroMess('MIC','IMA')"
-                                               name="txtaddressOfImp" class="span11 IMA" maxlength="100" />
+                                    <div class="controls"> 
+										<textarea rows="3" v-model="data.addressOfImp" v-on:click="getIntroMess('MIC','IMA')" class="span11 IMA" maxlength="100"></textarea>
                                     </div>
                                 </div>
                                 <h5 style="margin:10px 0 0 10px; float:left">NGƯỜI XUẤT KHẨU</h5>
@@ -178,10 +172,9 @@
                                     </div>
                                 </div>
                                 <div class="control-group span12">
-                                    <label class="control-label">Tên:</label>
+                                    <label class="control-label">Tên: <span class="error">(*)</span></label>
                                     <div class="controls">
-                                        <input type="text" class="span11 EPN" id="txtconsignorNm" v-model="data.consignorNm" v-on:click="getIntroMess('MIC','EPN')"
-                                               name="txtconsignorNm" maxlength="70" onkeyup="$('#txtconsignorNm').val(Decla.ConvertVietNamese($('#txtconsignorNm').val()));" />
+                                        <input type="text" class="span11 EPN" id="txtconsignorNm" v-model="data.consignorNm" v-on:click="getIntroMess('MIC','EPN')" name="txtconsignorNm" maxlength="70" onkeyup="$('#txtconsignorNm').val(Decla.ConvertVietNamese($('#txtconsignorNm').val()));"  v-bind:disabled="data.dclNo > 0"/>
                                     </div>
                                 </div>
                                 <div class="control-group span12">
@@ -193,28 +186,27 @@
                                 </div>
 
                                 <div class="control-group span12">
-                                    <label class="control-label">Mã nước: </label>
+                                    <label class="control-label">Mã nước: <span class="error">(*)</span></label>
                                     <div class="controls">
                                         <input type="text" id="txtcountryCd" name="txtcountryCd" class="span2 EPO"  v-on:click="getIntroMess('MIC','EPO')"
-                                               v-model="data.countryCd" disabled />
+                                               v-model="data.countryCd" style="text-transform: uppercase"/>
                                         <button type="button" style="padding: 0 10px" onclick="DePop.PopCountryGTT(1)">...</button>
                                     </div>
                                 </div>
 
                                 <div class="control-group span12">
-                                    <label class="control-label">Địa chỉ: </label>
+                                    <label class="control-label">Địa chỉ: <span class="error">(*)</span></label>
                                     <div class="controls">
                                         <p>
-                                            <input type="text" class="span6 EPA" id="txtaddress1Street" v-on:click="getIntroMess('MIC','EPA')" name="txtaddress1Street" maxlength="35" style="text-transform: uppercase"
-                                                   onkeyup="$('#txtaddress1Street').val(Decla.ConvertVietNamese($('#txtaddress1Street').val()));" v-model="data.address1Street" />
-                                            <input type="text" class="span6 EP2" id="txtaddress2Street" v-on:click="getIntroMess('MIC','EP2')" name="txtaddress2Street" maxlength="35" style="text-transform: uppercase"
-                                                   onkeyup="$('#txtaddress2Street').val(Decla.ConvertVietNamese($('#txtaddress2Street').val()));" v-model="data.address2Street" />
+                                            <input type="text" class="span6 EPA" id="txtaddress1Street" v-on:click="getIntroMess('MIC','EPA')" name="txtaddress1Street" maxlength="35" style="text-transform: uppercase" onkeyup="$('#txtaddress1Street').val(Decla.ConvertVietNamese($('#txtaddress1Street').val()));" v-model="data.address1Street" />
+
+                                            <input type="text" class="span6 EP2" id="txtaddress2Street" v-on:click="getIntroMess('MIC','EP2')" name="txtaddress2Street" maxlength="35" style="text-transform: uppercase" onkeyup="$('#txtaddress2Street').val(Decla.ConvertVietNamese($('#txtaddress2Street').val()));" v-model="data.address2Street" />
                                         </p>
+
                                         <p>
-                                            <input type="text" class="span6 EP3" id="txtaddress3CityNm" v-on:click="getIntroMess('MIC','EP3')" name="txtaddress3CityNm" maxlength="35" style="text-transform: uppercase"
-                                                   onkeyup="$('#txtaddress3CityNm').val(Decla.ConvertVietNamese($('#txtaddress3CityNm').val()));" v-model="data.address3CityNm" />
-                                            <input type="text" class="span6 EP4" id="txtcountryNmAddress" v-on:click="getIntroMess('MIC','EP4')" name="txtcountryNmAddress" maxlength="35" style="text-transform: uppercase"
-                                                   onkeyup="$('#txtcountryNmAddress').val(Decla.ConvertVietNamese($('#txtcountryNmAddress').val()));" v-model="data.countryNm" />
+                                            <input type="text" class="span6 EP3" id="txtaddress3CityNm" v-on:click="getIntroMess('MIC','EP3')" name="txtaddress3CityNm" maxlength="35" style="text-transform: uppercase" onkeyup="$('#txtaddress3CityNm').val(Decla.ConvertVietNamese($('#txtaddress3CityNm').val()));" v-model="data.address3CityNm" />
+
+                                            <input type="text" class="span6 EP4" id="txtcountryNmAddress" v-on:click="getIntroMess('MIC','EP4')" name="txtcountryNmAddress" maxlength="35" style="text-transform: uppercase" onkeyup="$('#txtcountryNmAddress').val(Decla.ConvertVietNamese($('#txtcountryNmAddress').val()));" v-model="data.countryNm" />
                                         </p>
                                     </div>
                                 </div>
@@ -236,15 +228,14 @@
                                 <div class="control-group span12">
                                     <label class="control-label">Số House AWB:<span class="error">(*)</span></label>
                                     <div class="controls">
-                                        <input style="width:350px" type="text" class="span8" id="txthouseAwbNo" name="txthouseAwbNo" v-model="data.houseAwbNo"
+                                        <input style="width:350px" type="text" class="span8 AWB" id="txthouseAwbNo" name="txthouseAwbNo" v-model="data.houseAwbNo"
                                                required maxlength="18" onkeyup="$('#txthouseAwbNo').val(Decla.ConvertVietNamese($('#txthouseAwbNo').val()));" />
                                     </div>
                                 </div>
                                 <div class="control-group span12">
-                                    <label class="control-label">Số lượng kiện:<span class="error">(*)</span></label>
-                                    <div class="controls">
-                                        <input type="hidden" id="hdfpieceUnitCd" name="hdfpieceUnitCd" class="span3 NOT" v-on:click="getIntroMess('MIC','NOT')" v-model="data.pieceUnitCd" />
-                                        <input type="number" min="0" id="txtcargoPiece" name="txtcargoPiece" class="span10 NO" required maxlength="8" v-model="data.cargoPiece" />
+                                    <label class="control-label">Số lượng:<span class="error">(*)</span></label>
+                                    <div class="controls"> 
+                                        <input type="number" min="0" id="txtcargoPiece" name="txtcargoPiece" class="span10 NO" maxlength="8" v-model="data.cargoPiece" v-on:click="getIntroMess('MIC','NO')"/>
                                         <span>
                                             Gói
                                         </span>
@@ -253,24 +244,23 @@
                                 <div class="control-group span12">
                                     <label class="control-label">Mã địa điểm lưu kho hàng chờ thông quan dự kiến:<span class="error">(*)</span></label>
                                     <div class="controls">
-                                        <input type="text" id="txtcstWrhCd" name="txtcstWrhCd" class="span3 ST" v-on:click="getIntroMess('MIC','ST')" disabled="disabled" v-model="data.cstWrhCd" />
-                                        <input type="text" id="txtcstWrhCd_text" name="txtcstWrhCd_text" class="span7 ST" v-on:click="getIntroMess('MIC','ST')" v-model="data.cstClrWrhNm"
-                                               onclick="DePop.PopWareHouse()" autocomplete="off" required />
-                                        <button type="button" style="padding: 0 10px" onclick="DePop.PopWareHouse()">...</button>
+                                        <input type="text" id="txtcstWrhCd" name="txtcstWrhCd" class="span3 ST" v-on:click="getIntroMess('MIC','ST')"  v-model="data.cstWrhCd" style="text-transform: uppercase"  v-bind:disabled="data.dclNo > 0"/>
+                                        <input type="text" id="txtcstWrhCd_text" name="txtcstWrhCd_text" class="span7 ST" v-on:click="getIntroMess('MIC','ST')" v-model="data.cstClrWrhNm" onclick="DePop.PopWareHouse()" v-bind:disabled="data.dclNo > 0" />
+                                        <button type="button" style="padding: 0 10px" onclick="DePop.PopWareHouse()"  v-bind:disabled="data.dclNo > 0">...</button>
                                     </div>
                                 </div>
                                 <div class="control-group span12">
-                                    <label class="control-label">Tên máy bay chở hàng: </label>
+                                    <label class="control-label">Tên phương tiện vận chuyển: <span class="error">(*)</span></label>
                                     <div class="controls">
-                                        <input style="width:350px" type="text" class="span8" id="txtflightNo" name="txtflightNo" maxlength="35" v-model="data.flightNo" />
+                                        <input style="width:350px; text-transform: uppercase" type="text" class="span8 VSN" id="txtflightNo" v-on:click="getIntroMess('MIC','VSN')" name="txtflightNo" maxlength="35" v-model="data.flightNo"/>
                                     </div>
                                 </div>
                                 <div class="control-group span12">
                                     <label class="control-label">Địa điểm dỡ hàng:<span class="error">(*)</span> </label>
                                     <div class="controls">
-                                        <input type="text" id="txtunloadPortCd" name="txtunloadPortCd" class="span3 DST" v-on:click="getIntroMess('MIC','DST')" disabled="disabled" v-model="data.unloadPortCd" />
-                                        <input type="text" id="txtunloadPortNm" name="txtunloadPortNm" class="span7 DSN" v-on:click="getIntroMess('MIC','DSN')" v-model="data.unloadPortNm"
-                                               onclick="DePop.PopUnplace()" autocomplete="off" required />
+                                        <input type="text" id="txtunloadPortCd" name="txtunloadPortCd" class="span3 DST" v-on:click="getIntroMess('MIC','DST')"  v-model="data.unloadPortCd" style="text-transform: uppercase"/>
+                                        <input type="text" id="txtunloadPortNm" name="txtunloadPortNm" class="span7 DSN" v-on:click="getIntroMess('MIC','DSN')" v-model="data.unloadPortNm" onclick="DePop.PopUnplace()"/>
+
                                         <button type="button" style="padding: 0 10px" onclick="DePop.PopUnplace()">...</button>
                                     </div>
                                 </div>
@@ -284,9 +274,9 @@
                                     </div>
                                 </div>
                                 <div class="control-group span12">
-                                    <label class="control-label">Tổng trọng lượng hàng (Gross): </label>
+                                    <label class="control-label">Tổng trọng lượng hàng (Gross):<span class="error">(*)</span> </label>
                                     <div class="controls">
-                                        <input type="hidden" id="hdfweigUnitCdGrs" name="hdfweigUnitCdGrs" class="span3 GWT" v-on:click="getIntroMess('MIC','GWT')" v-model="data.weigUnitCdGrs" />
+                                         
                                         <input type="number" min="0" id="txtcargoWeigGrs" name="txtcargoWeigGrs" class="span10 GW" v-on:click="getIntroMess('MIC','GW')" maxlength="10" v-model="data.cargoWeigGrs" />
                                         <span>KGM</span>
                                     </div>
@@ -300,9 +290,9 @@
                                 <div class="control-group span12">
                                     <label class="control-label">Địa điểm xếp hàng:<span class="error">(*)</span></label>
                                     <div class="controls">
-                                        <input type="text" id="txtloadLocCd" name="txtloadLocCd" class="span3 PSC" v-on:click="getIntroMess('MIC','PSC')" disabled="disabled" v-model="data.loadLocCd" />
-                                        <input type="text" id="txtloadLocNm" name="txtloadLocNm" class="span7 PSN" v-on:click="getIntroMess('MIC','PSN')" onclick="DePop.PopPlace()" v-model="data.loadLocNm"
-                                               autocomplete="off" required />
+                                        <input type="text" id="txtloadLocCd" name="txtloadLocCd" class="span3 PSC" v-on:click="getIntroMess('MIC','PSC')" v-model="data.loadLocCd" style="text-transform: uppercase"/>
+                                        <input type="text" id="txtloadLocNm" name="txtloadLocNm" class="span7 PSN" v-on:click="getIntroMess('MIC','PSN')" onclick="DePop.PopPlace()" v-model="data.loadLocNm" />
+
                                         <button type="button" style="padding: 0 10px" onclick="DePop.PopPlace()">...</button>
                                     </div>
                                 </div>
@@ -321,23 +311,33 @@
                     <div class="form-horizontal">
                         <div class="row-fluid">
                             <div class="span12">
+
+                                <div class="control-group span12" v-show="@ViewBag.tab == 4">
+                                    <label class="control-label">Tỷ giá tính thuế:</label>
+
+                                    <div class="controls" v-for="(item, index) in data.lsCurrency">
+                                        <input style="width:100px" type="text" class="span5 " v-model="item.curCd" disabled />
+                                        <input style="width:350px" type="text" class="span5" v-model="item.curExcRate" disabled />
+                                    </div> 
+                                </div>
+
                                 <div class="control-group span12">
                                     <label class="control-label">Trị giá hóa đơn:</label>
                                     <div class="controls">
                                         <div class="span11">
                                             <select id="slinvPrcKindCd" name="slinvPrcKindCd" class="span3 IP1" v-on:click="getIntroMess('MIC','IP1')" style="width:167px" required v-model="data.invPrcKindCd">
                                                 <option value="">--Chọn giá trị--</option>
-                                                <option v-for="item in lstInvPrcKind" :value="item.invPrcKindCd">{{item.invPrcKindCd}} || {{item.invPrcKindNm}}</option>
+                                                <option v-for="item in lstInvPrcKind" v-bind:value="item.invPrcKindCd">{{item.invPrcKindCd}} || {{item.invPrcKindNm}}</option>
                                             </select>
                                             <span> - </span>
                                             <select id="slinvPrcCdtCd" name="slinvPrcCdtCd" class="span3 IP2" v-on:click="getIntroMess('MIC','IP2')" style="width:167px" required v-model="data.invPrcCdtCd">
                                                 <option value="">--Chọn--</option>
-                                                <option v-for="item in lstPrcCdtCd" :value="item.invPrcCdtCd">{{item.invPrcCdtCd}} || {{item.invPrcCdtNm}}</option>
+                                                <option v-for="item in lstPrcCdtCd" v-bind:value="item.invPrcCdtCd">{{item.invPrcCdtCd}} || {{item.invPrcCdtNm}}</option>
                                             </select>
                                             <span> - </span>
                                             <select id="slinvCurCd" name="slinvCurCd" class="span3 IP3" v-on:click="getIntroMess('MIC','IP3')" style="width:167px" required v-model="data.invCurCd">
                                                 <option value="">--Đồng tiền--</option>
-                                                <option v-for="item in currency" :value="item.currencyCode">{{item.currencyCode}}</option>
+                                                <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
                                             </select>
                                             <span> - </span>
                                             <input type="number" min="0" class="span12 IP4" v-on:click="getIntroMess('MIC','IP4')" id="txttotalInvPrc" name="txttotalInvPrc" required maxlength="20" v-model="data.totalInvPrc" />
@@ -350,12 +350,12 @@
                                         <div class="span11">
                                             <select id="slfreightDemarCd" name="slfreightDemarCd" class="span3 FR1" v-on:click="getIntroMess('MIC','FR1')" style="width:167px" v-model="data.freightDemarCd">
                                                 <option value="">--Chọn giá trị--</option>
-                                                <option v-for="item in lstFreightDemar" :value="item.freightDemarCd">{{item.freightDemarNm}}</option>
+                                                <option v-for="item in lstFreightDemar" v-bind:value="item.freightDemarCd">{{item.freightDemarNm}}</option>
                                             </select>
                                             <span> - </span>
                                             <select id="slfreightCurCd" name="slfreightCurCd" class="span3 FR2" v-on:click="getIntroMess('MIC','FR2')" style="width:167px" v-model="data.freightCurCd">
                                                 <option value="">--Đồng tiền--</option>
-                                                <option v-for="item in currency" :value="item.currencyCode">{{item.currencyCode}}</option>
+                                                <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
                                             </select>
                                             <span> - </span>
                                             <input type="number" min="0" class="span12 FR3" id="txtfreight" v-on:click="getIntroMess('MIC','FR3')" name="txtfreight" v-model="data.freight"
@@ -369,12 +369,12 @@
                                         <div class="span11">
                                             <select id="slinsDemarCd" name="slinsDemarCd" class="span3 IN1" v-on:click="getIntroMess('MIC','IN1')" style="width:167px" v-model="data.insDemarCd">
                                                 <option value="">--Chọn giá trị--</option>
-                                                <option v-for="item in lstInsDemar" :value="item.insDemarCd">{{item.insDemarNm}}</option>
+                                                <option v-for="item in lstInsDemar" v-bind:value="item.insDemarCd">{{item.insDemarNm}}</option>
                                             </select>
                                             <span> - </span>
                                             <select id="slinsCurCd" name="slinsCurCd" class="span3 IN2" v-on:click="getIntroMess('MIC','IN2')" style="width:167px" v-model="data.insCurCd">
                                                 <option value="">--Đồng tiền--</option>
-                                                <option v-for="item in currency" :value="item.currencyCode">{{item.currencyCode}}</option>
+                                                <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
                                             </select>
                                             <span> - </span>
                                             <input type="number" min="0" class="span12" id="txtinsAmt IN3" v-on:click="getIntroMess('MIC','IN3')" name="txtinsAmt" v-model="data.insAmt"
@@ -384,16 +384,15 @@
                                 </div>
                                 <div class="control-group span12">
                                     <label class="control-label">Mô tả hàng hóa: <span class="error">(*)</span></label>
-                                    <div class="controls">
-                                        <input id="txtitemName" name="txtitemName" class="span11 CMN" v-on:click="getIntroMess('MIC','CMN')" required maxlength="200" v-model="data.itemName">
+                                    <div class="controls"> 
+                                        <textarea class="span11 CMN" rows="3" v-on:click="getIntroMess('MIC','CMN')" required maxlength="200" v-model="data.itemName"></textarea>
                                     </div>
                                 </div>
                                 <div class="control-group span12">
                                     <label class="control-label">Mã nước xuất xứ:<span class="error">(*)</span></label>
-                                    <div class="controls">
-                                        <input type="hidden" id="placeOriginCd" name="placeOriginCd" class="span3" value="" v-model="data.placeOriginCd" />
-                                        <input type="text" id="txtplaceOriginCd" name="txtplaceOriginCd" class="span3 OR" v-on:click="getIntroMess('MIC','OR')" disabled="disabled" v-model="data.placeOriginCd" />
-                                        <input type="text" id="txtcountryNm" name="txtcountryNm" class="span7 OR" v-on:click="getIntroMess('MIC','OR')" onclick="DePop.PopCountryGTT(2)" autocomplete="off" />
+                                    <div class="controls"> 
+                                        <input type="text" id="txtplaceOriginCd" name="txtplaceOriginCd" class="span3 OR" v-on:click="getIntroMess('MIC','OR')"  v-model="data.placeOriginCd" style="text-transform: uppercase"/>
+                                        <input type="text" id="txtcountryNm" name="txtcountryNm" class="span7 OR" v-on:click="getIntroMess('MIC','OR')" onclick="DePop.PopCountryGTT(2)" autocomplete="off" v-model="data.oriPlaceNm"/>
                                         <button type="button" style="padding: 0 10px" onclick="DePop.PopCountryGTT(2)">...</button>
                                     </div>
                                 </div>
@@ -418,7 +417,7 @@
                                                onkeyup="$('#txteiControlNo').val(Decla.ConvertVietNamese($('#txteiControlNo').val()));" />
                                     </div>
                                 </div>
-                                <div class="control-group span12" v-show="data.status==22">
+                                <div class="control-group span12" v-show="@ViewBag.tab == 4">
                                     <label class="control-label">Ngày cấp phép nhập khẩu:</label>
                                     <div class="controls">
                                         <input style="width:350px" type="text" id="dateOfPermit"  v-model="data.dateOfPermit"
@@ -426,7 +425,7 @@
                                     </div>
                                 </div>
 
-                                <div class="control-group span12" v-show="data.status==22">
+                                <div class="control-group span12" v-show="@ViewBag.tab == 4">
                                     <label class="control-label">Ngày hoàn thành kiểm tra:</label>
                                     <div class="controls">
                                         <input style="width:350px" type="text" id="dateCmplInsp" v-model="data.dateCmplInsp"
@@ -434,7 +433,7 @@
                                     </div>
                                 </div>
 
-                                <div class="control-group span12" v-show="data.status==22">
+                                <div class="control-group span12" v-show="@ViewBag.tab == 4">
                                     <label class="control-label">Phân loại kiểm tra sau thông quan:</label>
                                     <div class="controls">
                                         <input style="width:350px" type="text" id="clsfOfPostInsp" v-model="data.clsfOfPostInsp"
@@ -442,7 +441,7 @@
                                     </div>
                                 </div>
 
-                                <div class="control-group span12" v-show="data.status==22">
+                                <div class="control-group span12" v-show="@ViewBag.tab == 4">
                                     <label class="control-label">Ngày hủy khai báo hải quan:</label>
                                     <div class="controls">
                                         <input style="width:350px" type="text" id="dateImpDclCan"  v-model="data.dateImpDclCan"
@@ -450,7 +449,7 @@
                                     </div>
                                 </div>
 
-                                <div class="control-group span12" v-show="data.status==22">
+                                <div class="control-group span12" v-show="@ViewBag.tab == 4">
                                     <label class="control-label">Ngày chuyển xử lý khai báo nhập khẩu bằng tay:</label>
                                     <div class="controls">
                                         <input style="width:350px" type="text" id="dTrfManPrImDcl" v-model="data.dTrfManPrImDcl"
@@ -467,27 +466,33 @@
 
     <div class="row-fluid">
         <div class="span12">
-            <div class="form-actions" style="text-align: center;">
-                <a class="btn btn-success" v-on:click="update()" v-show="data.dclId">CẬP NHẬT</a>
-                <a class="btn btn-success" v-on:click="signDecla()" v-show="data.dclId&&data.status<2">TRÌNH KÝ</a>
+			<div class="form-actions" style="text-align: center;">
 
-                <a class="btn btn-success" v-on:click="submit(8)" v-show="data.status<8||data.status==21">SUBMIT MIC</a>
-                <a class="btn btn-success" v-on:click="submit(9)" v-show="data.dclId&&data.status===8">SUBMIT MID</a>
-                <a class="btn btn-success" v-on:click="submit(10)" v-show="data.dclId&&data.status===9">SUBMIT MIE</a>
-                <a class="btn btn-success" v-on:click="save()" v-show="!data.dclId">THÊM TỜ KHAI</a>
-                <a class="btn btn-sm" onclick="">IN TỜ KHAI</a>
-                <a class="btn btn-warning" onclick="">XÁC THỰC TÀI KHOẢN</a>
-                <a class="btn btn-primary" onclick="">IN EXEL</a>
+				<button v-show="data.dclId" v-on:click="exportXLS()" style="padding: 4px 25px"><i class="fa fa-print"></i> In</button>
 
-            </div>
+				<a class="btn btn-success" v-on:click="save()" v-show="!data.dclId">LƯU TỜ KHAI</a>
+				<a class="btn btn-success" v-on:click="update()" v-show="data.dclId && (data.status < 8 || data.status == 9)">CẬP NHẬT</a>
+
+				<a v-if="submitTT" class="btn btn-success" v-on:click="submit(8)" v-show="(data.status<8||data.status==21) && enableSubmit == true">SUBMIT MIC</a>
+				<a v-if="submitUSB" class="btn btn-success" v-bind:disabled="disabledSubmit" v-on:click="SubmitSign(8)" v-show="(data.status<8||data.status==21) && enableSubmit == true">SUBMIT MIC </a>
+
+				<a v-if="submitTT" class="btn btn-success" v-on:click="submit(10)" v-show="(data.dclId&&data.status==9) && enableSubmit == true">SUBMIT MIE</a>
+				<a v-if="submitUSB" class="btn btn-success" v-bind:disabled="disabledSubmit" v-on:click="SubmitSign(10)" v-show="(data.dclId&&data.status==9) && enableSubmit == true">SUBMIT MIE </a>
+				 
+				<button v-show="data.dclId && showCopy" v-on:click="copy()" style="padding: 4px 25px"><i class="fa fa-copy" style="color: #ff6a00"></i> COPY TK</button>
+
+				<a class="btn btn-warning" v-on:click="signDecla()" v-show="data.dclId && data.status<2 && enableTK == true">TRÌNH KÝ</a>
+
+			</div>
         </div>
     </div>
-</form>
+</div> 
+<script src="~/Content/js/signkey/inport-onload.trinhky.js"></script>
 <script src="~/Content/js/mic.js"></script>
 <script>
     Account.GetAccountInfo(1);
-
-    if (((utils.getCookie("isAgency") == "2" && utils.getCookie("Type") == "2") || (utils.getCookie("agency") == "1" &&  utils.getCookie("permitGroup") != "3")) && @ViewBag.IdDec == 0) {
+    windowOnload();
+	if (((utils.getCookie("isAgency") == "2" && utils.getCookie("Type") == "2") || (utils.getCookie("agency") == "1" &&  utils.getCookie("permitGroup") != "3")) && @ViewBag.IdDec == 0) {
         setTimeout(function () {
             Obj.ShowPop(1);
         }, 500);

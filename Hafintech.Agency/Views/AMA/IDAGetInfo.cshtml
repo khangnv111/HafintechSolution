@@ -1,0 +1,155 @@
+﻿
+@{
+	ViewBag.Title = "IDAGetInfo";
+	Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid" id="ida">
+	<div class="span12">
+
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"> <i class="icon-align-justify"></i> </span>
+				<h5>Tham chiếu Tờ khai bổ sung - IAD</h5>
+			</div>
+			<div class="widget-content nopadding">
+				<div class="form-horizontal">
+
+					<div class="row-fluid">
+						<div class="span12">
+
+							<div class="control-group span12">
+								<label class="control-label">Số tờ khai bổ xung</label>
+								<div class="controls">
+									<input type="text" class="span4" v-model="amendDclNo" />
+									<button v-show="submitTT" class="btn btn-success" style="margin-left: 20px;" v-on:click="submit()">Lấy thông tin</button>
+									<button v-show="submitUSB" class="btn btn-warning" style="margin-left: 20px;" v-on:click="SubmitSign(734)">Lấy thông tin USB</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="~/Content/js/ama-decla/ida-ama-onload.trinhky.js"></script>
+<script>
+
+	windowOnload();
+	var app = new Vue({
+		el: '#ida',
+		data: {
+			data: {
+			},
+			amendDclNo: '',
+			statusTK: 0,
+
+			submitTT: false,
+			submitUSB: false,
+		},
+		methods: {
+			init: function () {
+				//Check hiện button submit
+				this.submitTT = Vali.CheckButtonSubmit().submitTT;
+				this.submitUSB = Vali.CheckButtonSubmit().submitUSB;
+			},
+			submit: function () {
+				if (!this.amendDclNo) {
+					bootbox.alert("Bạn chưa nhập số tờ khai bổ xung");
+					return;
+				}
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "tax/SubmitIAD",
+					data: JSON.stringify({
+						"amendDclNo": this.amendDclNo.trim(),
+					}),
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) {
+						console.log(data);
+						utils.unLoading();
+						if (data) {
+
+							if (data.ResponseCode > 0 && data.Data) {
+
+								bootbox.alert("Thành công", function () {
+									window.location.href = Config.Url_Root + "AMA/IDAView?ishight=6&tab=4" + "&amendDclNo=" + data.Data.amendDclNo + "&decId=" + data.Data.id;
+								});
+							}
+							else {
+								if (data.Data) {
+									bootbox.alert(data.Data.object[0].Description);
+								}
+								else {
+									bootbox.alert(data.Description);
+								}
+							}
+						}
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+					}
+				});
+			},
+
+			SubmitSign: function (status) {
+
+				if ($("#downSignkey").val() == 1) {
+					bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+						if (res) {
+							downTK();
+						}
+					});
+					return;
+				}
+
+				if (!this.amendDclNo) {
+					bootbox.alert("Chưa nhập số tờ khai");
+					return;
+				}
+				this.amendDclNo = this.amendDclNo.trim();
+
+				this.statusTK = status;
+				var data = {
+					"dclNo": this.amendDclNo,
+					"status": status
+				}
+				utils.Loading();
+				var xhttp = new XMLHttpRequest();
+				xhttp.withCredentials = true;
+				xhttp.onreadystatechange = function () {
+
+					if (this.readyState == 4 && this.status == 200) {
+						utils.unLoading();
+						var jsonObj = JSON.parse(xhttp.responseText);
+						if (jsonObj["ResponseCode"] >= 0) {
+							var ediStr = jsonObj["Data"].replace('"', '');
+							sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+						}
+						else if (jsonObj["ResponseCode"] == -100001) {
+							bootbox.alert(jsonObj["Description"]);
+						}
+						else {
+							bootbox.alert(jsonObj["Data"].message);
+						}
+					}
+				};
+				xhttp.open("POST", Config.API_Login + "Agency/GetEdiToSign", true);
+				xhttp.setRequestHeader("content-type", "application/json");
+				xhttp.send(JSON.stringify(data));
+			}
+		},
+		mounted() {
+			this.init();
+		},
+	});
+</script>
+

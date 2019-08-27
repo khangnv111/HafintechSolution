@@ -1,0 +1,86 @@
+﻿<div class="row-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Danh sách hàng hóa ({{pageProduct}})</h5>
+        </div>
+        <div class="widget-content nopadding">
+            <div class="form-horizontal" style="padding:10px 10px 0 10px;">
+                <div class="row-fluid" v-for="(value, index) in Product" id="lsProduct">
+                    <div v-show="(index + 1 > (pageProduct - 1) * 5) && (index + 1 < (pageProduct * 5) + 1)" class="widget-box">
+                        <div class="span12">
+                            <label class="control-label"><span>{{Product[index].index}}</span> || Số hiệu container / toa tàu / kiện hàng:</label>
+                            <div class="controls">
+                                <div class="span4">
+                                    <input type="text" class="span12" id="txthSCd" name="txthSCd" required maxlength="12" v-model="Product[index].coFrCarPkgNo" style="text-transform:uppercase" v-on:keyup="ChangeText()" />
+                                </div>
+                                <div class="span4">
+                                    <label class="span6">
+                                        Số dòng hàng trên tờ khai:
+                                    </label>
+                                    <span class="span6">
+                                        <input type="text" class="span12" id="txtmaterialCd" v-model="Product[index].lineNoOnDcl"
+                                               name="txtmaterialCd" onkeyup="$('#txtmaterialCd').val($('#txtmaterialCd').val().toUpperCase())" maxlength="7" />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span12" style="margin:5px 0 5px 0;">
+                            <label class="control-label">Số seal: </label>
+                            <div class="controls">
+                                <div class="span4" v-for="(valueX, jndex) in value.lsSealNo" style="margin-left:0px;margin-bottom:5px;">
+                                    <input type="text" class="span8 SE_" v-model="valueX.sealNo" style="text-transform:uppercase" v-on:click="getIntroMess('OLA','SE_')" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="social-auth-links text-center">
+                            <p id="LogError" style="color:red;display:none;">{{data.productId}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span6"></div>
+    <div class="span6" style="position:relative;">
+        <div style="position:absolute;right:0;">
+            <a href="javascript:;" v-on:click="preStartProDec()">
+                <i v-if="pageProduct == 1" v-bind:style="{color:disableColor}" class="fa fa-fast-backward fa-2x" aria-hidden="true"></i>
+                <i v-else="pageProduct != 1" v-bind:style="{color:activeColor}" class="fa fa-fast-backward fa-2x" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:;" v-on:click="preProDec()">
+                <i v-if="pageProduct == 1" v-bind:style="{color:disableColor}" class="fa fa-play fa-rotate-180 fa-2x" aria-hidden="true"></i>
+                <i v-else="pageProduct != 1" v-bind:style="{color:activeColor}" class="fa fa-play fa-rotate-180 fa-2x" aria-hidden="true"></i>
+            </a>
+            <input type="text" class="span3" v-model="textPageProduct" style="text-align: center;" disabled />
+
+            <a href="javascript:;" v-on:click="nextProDec()">
+                <i v-if="pageProduct == 10" v-bind:style="{color:disableColor}" class="fa fa-play fa-2x" aria-hidden="true"></i>
+                <i v-else="pageProduct == 10" v-bind:style="{color:activeColor}" class="fa fa-play fa-2x" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:;" v-on:click="nextEndProDec()">
+                <i v-if="pageProduct == 10" v-bind:style="{color:disableColor}" class="fa fa-fast-forward fa-2x" aria-hidden="true"></i>
+                <i v-else="pageProduct == 10" v-bind:style="{color:activeColor}" class="fa fa-fast-forward fa-2x" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+
+    @*<div class="control-group span4">
+            <label class="control-label">Chọn dòng vận đơn: </label>
+            <div class="controls">
+                <select class="span6 IEI">
+                    <option>{{index+1}}</option>
+                </select>
+            </div>
+        </div>*@
+</div>
+
+<style>
+    #lsProduct .widget-box:first-child {
+        border-top: none;
+    }
+</style>

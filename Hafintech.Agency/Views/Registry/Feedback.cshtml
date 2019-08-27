@@ -1,0 +1,88 @@
+﻿
+<div id="loginbox">
+	<div id="feed-back-pop">
+		<div class="control-group normal_text" style="width: 100%">
+			<b style="font-size:18px; text-transform: uppercase">Phản hồi</b>
+			<b v-on:click="ClosePop()" class="icClose">X</b>
+		</div>
+		<div class="container-fluid">
+			<div class="row-fluid" style="margin: 20px 0">
+				<textarea rows="3" class="span12" placeholder="Nội dung phản hồi" v-model="data.content"></textarea>
+			</div>
+			<div class="row-fluid">
+				<button style="padding: 5px 30px; margin-bottom: 20px; float: right" v-on:click="SendFeedBack()">Gửi</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	var pop = new Vue({
+		el: '#feed-back-pop',
+		data: {
+			data: {}, 
+			infoDcl: {},//Thông tin tờ khai
+		},
+		methods: {
+			init: function () { 
+				var data = this.data; 
+				data.status = 0; 
+			},
+			ClosePop: function () {
+				app.showPop = false;
+				$("#pop_feedback").html('');
+
+				$("#pop_feedback_left").remove();
+				$("#pop_feedback_background").remove();
+			},
+			SendFeedBack: function () {
+				var self = this;
+				this.data.dclId = this.infoDcl.dclId;
+				this.data.toAccId = this.infoDcl.createdAccId;
+				if (!this.data.content) {
+					bootbox.alert("Bạn chưa nhập nội dung phản hồi");
+					return;
+				}
+
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					url: Config.API_Login + "agency/feedBack",
+					type: 'POST',
+					data: JSON.stringify(this.data),
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: "application/json; charset=utf-8",
+					processData: false,
+					success: function (data) { 
+						utils.unLoading();
+
+						if (data.ResponseCode > 0) {
+							bootbox.alert("Phản hồi thành công", function () {
+								self.ClosePop();
+
+								try {
+									lstComment.getListComment(self.data.dclId);
+								} catch{
+								}
+							});
+						}
+						else {
+							bootbox.alert(data.Description);
+						}
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+					}
+				});
+
+			},
+		},
+		mounted() {
+			this.init();  
+		},
+
+	});
+</script>

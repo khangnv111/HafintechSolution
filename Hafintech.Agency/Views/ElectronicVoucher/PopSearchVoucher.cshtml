@@ -1,0 +1,38 @@
+﻿
+
+<div id="loginbox" style="">
+    <div class="control-group normal_text" style="width: 100%;">
+        <b style="font-size:18px; text-transform: uppercase">Tìm kiếm tờ khai</b>
+        <b onclick="Voucher.ClosePop();" class="icClose">X</b>
+    </div>
+
+    <form enctype="multipart/form-data" id="form-input" name="form-input">
+
+        <div class="form-horizontal" style="padding:10px;">
+            <div class="row-fluid" style=" padding: 19px; ">
+                <div class="span12">
+                    <div class="control-group1">
+                        <div class="col-sm-3"><label>Số tờ khai hải quan</label></div>
+                        <div class="col-sm-9"><input type="text" class="span12" id="dclNoVoucher" v-model="data.dclId" /></div>
+                    </div>
+                </div>
+                <div class="span12">
+                    <div style="margin-top:25px;" class="text-center">
+                        <a onclick="Voucher.SearchExistDeclaration()" class="btn btn-success "><i class="icon icon-search"></i> Tìm kiếm</a>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row-fluid">
+                <p class="text-center" id="displayLoading" style="display:none">
+                    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                </p>
+                <div class="alert alert-danger text-center" role="alert" id="tbSearch" style="display:none">
+                    
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>

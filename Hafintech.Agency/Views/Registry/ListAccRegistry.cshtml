@@ -66,7 +66,7 @@
                                 <td>{{item.email}}</td>
                                 <td>{{item.name}}</td>
                                 <td>
-                                    <select class="span6" v-model="item.status" :disabled="!item.isUpdate">
+                                    <select class="span6" v-model="item.status" v-bind:disabled="!item.isUpdate">
                                         <option value="0">Không cho phép</option>
                                         <option value="1">Cho phép</option>
                                     </select>
@@ -129,7 +129,8 @@
                     $.ajax({
                         url: Config.API_Login + "business/UpdateBussinessStatus",
                         type: 'POST',
-                        data: JSON.stringify({
+						data: JSON.stringify({
+							accountId: item.accountId,
                             businessId: item.businessId,
                             status: item.status
                         }),
@@ -151,11 +152,11 @@
                             else {
                                 utils.Message("Hệ thống bận, vui lòng quay lại sau!");
                             }
-                            //accounts.Unloading();
+                            //utils.unLoading();
                         },
                         error: function (data) {
                             utils.Message("Hệ thống bận, vui lòng quay lại sau!");
-                            //accounts.Unloading();
+                            //utils.unLoading();
                         }
                     });
                 }

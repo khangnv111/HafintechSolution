@@ -46,7 +46,7 @@
             <div class="row-fluid" style="margin-bottom: 5px;text-align: left">
                 <div style="width: 50%; float: left">
                     <label style="text-align:left; font-weight:bold; width: 30%; display: inline-block">Số điện thoại (*)</label>
-                    <input type="text" class="form-control" id="txtPhone" style="width: 60%; height: 25px" placeholder="Nhập Số điện thoại" onkeypress="Vali.CheckOnlyNumber(this,event)" />
+                    <input type="text" class="form-control" id="txtPhone" style="width: 60%; height: 25px" placeholder="Nhập Số điện thoại" maxlength="12"/>
                 </div>
 
                 <div style="width: 50%; float: left">
@@ -60,11 +60,12 @@
                 <input type="text" class="form-control" id="txtEmail" style="width: 60%; height: 25px" placeholder="Email" />
             </div>
             
-            <div class="row-fluid" style="margin-bottom: 5px;text-align: left">
-                <label style="text-align:left; font-weight:bold; width: 30%; display: inline-block">Đối tượng sử dụng (*)</label>
-                <input type="radio" class="" id="typeUser1" name="typeUser" style="" value="2"/> Đại lý tờ khai
-                <input type="radio" class="" id="typeUser2" name="typeUser" style="" value="1"/> Doanh nghiệp xuất nhập khẩu
-            </div> 
+			<div class="row-fluid" style="margin-bottom: 5px;text-align: left">
+				<label style="text-align:left; font-weight:bold; width: 30%; display: inline-block">Đối tượng sử dụng (*)</label>
+				<input type="radio" class="" id="typeUser1" name="typeUser" style="" value="2" /> Đại lý tờ khai
+				<input type="radio" class="" id="typeUser2" name="typeUser" style="" value="1" /> Doanh nghiệp xuất nhập khẩu
+				<input type="radio" class="" id="typeUser2" name="typeUser" style="" value="3" /> Đơn vị chuyển phát nhanh
+			</div> 
 
             <div class="social-auth-links text-center">
                 <p id="RegisterError" style="color:red;display:none;"></p>
@@ -86,7 +87,11 @@
         if (e.which === 13) {
             Reg.confirmRegister();
         }
-    });
+	});
+
+	Vali.setInputFilter(document.getElementById("txtPhone"), function (value) {
+		return /^-?\d*[+]?\d*$/.test(value);
+	});
 </script>
 
 

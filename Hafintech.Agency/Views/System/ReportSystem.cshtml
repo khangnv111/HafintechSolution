@@ -1,0 +1,102 @@
+﻿
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span4">
+			<h4>HỆ THỐNG BÁO CÁO</h4>
+		</div>
+	</div>
+
+	<div class="row-fluid" id="system_report">
+		<div class="menuLeft">
+			<div class="row-fluid">
+				<div class="widget-box">
+					<ul>
+						<li v-bind:class="{'act' : tab == 1}">
+							<a href="javascript:;" v-on:click="SelectReport(1)">Bảng kê tờ khai NK/XK (MIC/MEC)</a>
+						</li>
+						<li v-bind:class="{'act' : tab == 2}">
+							<a href="javascript:;" v-on:click="SelectReport(2)">Tờ khai chứng từ không có giá trị thương mại</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+		</div>
+		<div id="contentRight">
+			 
+		</div>
+	</div>
+</div>
+
+ <script>
+	 var app = new Vue({
+		 el: '#system_report',
+		 data: {
+			 data: {}, 
+			 tab: '@ViewBag.tab',
+			 infoAccount: null,
+		 },
+		 methods: {
+			 init: async function () {
+				 if (this.tab == 1)
+					 this.ReportMICMEC();
+				 else
+					 this.ReportNoValue();
+
+				 this.infoAccount = await Lib.GetAccountInfo();
+			 },
+			 SelectReport: function (tab) {
+				 this.tab = tab;
+				 var url = window.location.href; 
+
+				 if (tab == 1) {
+					 this.ReportMICMEC();
+
+					 if (url.indexOf("?tab=2") > -1)
+						 url = url.replace("?tab=2", ""); 
+					 history.pushState({}, null, url);
+				 }
+				 else {
+					 this.ReportNoValue();
+					 history.pushState({}, null, url + "?tab=2");
+				 }
+			 },
+			 ReportMICMEC: function () { 
+
+				 $.ajax({
+					 type: 'GET',
+					 url: Config.Url_Root + "System/ReportMIC_MEC",
+					 data: {
+					 },
+					 dataType: "html",
+					 success: function (data) {
+						 $("#contentRight").html(data);
+					 },
+					 error: function (data) {
+						 bootbox.alert("Hệ thống bận, vui lòng quay lại sau!"); 
+					 }
+				 });
+			 },
+			 ReportNoValue: function () {
+
+				 $.ajax({
+					 type: 'GET',
+					 url: Config.Url_Root + "System/ReportNoValueBusiness",
+					 data: {
+					 },
+					 dataType: "html",
+					 success: function (data) {
+						 $("#contentRight").html(data);
+					 },
+					 error: function (data) {
+						 bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+					 }
+				 });
+			 },
+		 },
+		 mounted() {
+			 this.init();
+		 },
+	 });
+ </script>

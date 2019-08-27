@@ -38,4 +38,11 @@ namespace Hafintech.Agency.Models
         public DateTime DateReleased { get; set; }
         public string PlaceReleased { get; set; }
     }
+
+    public class AccResult
+    {
+        public int code { get; set; }
+        public string Description { get; set; }
+        public dynamic Data { get; set; }
+    }
 }

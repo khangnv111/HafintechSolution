@@ -1,0 +1,367 @@
+﻿
+@{
+	ViewBag.Title = "ListScanner";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" id="list-data">
+	<div class="row-fluid">
+		<div class="span6">
+			<h4>DANH SÁCH SOI CHIẾU</h4>
+		</div>
+		<div class="span6">
+			@*<button class="span4" style="padding: 5px; float: right" v-on:click="showPop()">Đăng ký mới</button>*@
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"><i class="icon-align-justify"></i></span>
+				<h5>Tìm kiếm</h5>
+			</div>
+			<div class="widget-content">
+				<div class="row-fluid">
+
+					<div class="span2">
+						<label>Đăng ký soi chiếu từ ngày</label>
+						<input type="date" class="span12" placeholder="Từ ngày" v-model="data.fromScanDateTime">
+					</div>
+					<div class="span2">
+						<label>Đến ngày</label>
+						<input type="date" class="span12" placeholder="Đến ngày" v-model="data.toScanDateTime">
+					</div>
+
+					<div class="span2">
+						<label>Trạng thái soi chiếu</label>
+						<select class="span12" v-model="data.scanStatus">
+							<option value="">&nbsp; Tất cả</option>
+							<option v-for="(item, index) in listScanStatus" v-bind:value="item.value">&nbsp; {{item.value}} || {{item.name}}</option>
+							@*v-bind:selected="item.value == 0"*@
+						</select>
+					</div>
+
+					<div class="span2">
+						<label>Mã soi chiếu</label>
+						<input type="text" class="span12" v-model="data.verifyCode">
+					</div>
+
+					<div class="span2">
+						<label>Trạng thái thanh toán</label>
+						<select class="span12" v-model="data.payStatus">
+							<option value="">&nbsp; Tất cả</option>
+							<option v-for="(item, index) in listPayStatus" v-bind:value="item.value">&nbsp; {{item.value}} || {{item.name}}</option> 
+						</select>
+					</div>
+
+					<div class="span2">
+						<label>Trạng thái kiểm tra</label>
+						<select class="span12" v-model="data.verifyStatus">
+							<option value="">&nbsp; Tất cả</option>
+							<option v-for="item in listVerifyStatus" v-bind:value="item.value">{{item.value}} || {{item.name}}</option>
+						</select>
+					</div>
+
+				</div>
+				<div class="row-fluid">
+					<div class="span3">
+						<label>Tên máy soi chiếu</label>
+						<input type="text" class="span12" v-model="data.xRayName">
+					</div>
+
+					<div class="span3">
+						<label>Tên máy Scan</label>
+						<input type="text" class="span12" v-model="data.scanName">
+					</div>
+
+					<div class="span2">
+						<label>Vị trí line vào soi chiếu</label>
+						<input type="text" class="span12" v-model="data.lineIn">
+					</div>
+
+					<div class="span2">
+						<label>Vị trí line ra soi chiếu</label>
+						<input type="text" class="span12" v-model="data.lineOut">
+					</div>
+
+					<div class="span2">
+						<button class="span10" style="padding: 5px;margin-top: 23px;" v-on:click="getList(0)">Tìm kiếm</button>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="box-body">
+			<table class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+				<thead>
+					<tr>
+						<th class="text-center" style="min-width:70px">STT</th>
+						<th class="text-center">Mã soi chiếu </th>
+						<th class="text-center">Ngày giờ đăng ký <br /> soi chiếu</th>
+						<th class="text-center">Kiểm tra hàng hóa</th>
+						<th class="text-center">Ngày giờ soi chiếu <br /> thực tế</th>
+						<th class="text-center">Trạng thái kiểm tra</th>
+						<th class="text-center">Trạng thái soi chiếu</th>
+						<th class="text-center">Tổng cân <br /> nặng (Kg)</th>
+						<th class="text-center">Số tiền (VNĐ)</th>
+						<th class="text-center">Trạng thái thanh <br /> toán</th>
+						<th class="text-center">Thao tác</th>
+					</tr>
+				</thead>
+				<tbody class="content-search-table">
+					<tr v-show="showLoading">
+						<td colspan="14" style="text-align:center">
+							<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+						</td>
+					</tr>
+
+					<tr v-for="(item, index) in listScan">
+						<td style="text-align: center">{{index + 1}}</td>
+						<td>
+							<a href="javascript:;" v-on:click="ViewInfo(item.id)">
+								{{item.verifyCode}}
+							</a>
+						</td>
+						<td>{{item.regisScanDt}}</td>
+						<td></td>
+						<td>{{item.scanDateTime}}</td>
+						<td>
+							{{getNameVerityStatus(item.verifyStatus)}}
+						</td>
+						<td>{{item.scanName}}</td>
+						<td>{{item.weigh}}</td>
+						<td>{{item.weigh}}</td>
+						<td>{{item.payStatusName}}</td>
+						<td style="text-align: center">
+							<a href="javascript:;" v-show="!item.weigh" v-on:click="viewEdit(item)">
+								<i class="fa fa-pencil-square-o fa-2x" style="color: #058307"></i>
+							</a>&nbsp; &nbsp;
+							<a href="javascript:;" v-show="item.scanStatus == 0 && !item.weigh" v-on:click="remove(item)">
+								<i class="fa fa-times-rectangle fa-2x" style="color: #ff0000;"></i>
+							</a>
+
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+	<div class="row-fluid">
+		<ul class="pagination"></ul>
+	</div>
+
+	@*<div id="overlay_pop" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+	<div id="fill_popup" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 50%; display: none">
+		
+	</div>*@
+
+</div>
+
+<script>
+	var app = new Vue({
+		el: '#list-data',
+		data: {
+			data: {},
+			showLoading: true,
+			listScan: [], //danh sách soi chiếu
+
+			listScanStatus: [], //trạng thái soi chiếu
+			listPayStatus: [],//trạng thái thanh toán
+			listVerifyStatus: [], //trạng thái kiểm tra
+			 
+		},
+		methods: {
+			init: async function (callback) {
+				var data = this.data;
+				data.firstResult = 0;
+				data.maxResult = 10;
+
+				data.fromScanDateTime = "";
+				data.toScanDateTime = "";
+				data.scanStatus = 0;
+				data.verifyStatus = "";
+				data.payStatus = "";
+				data.verifyCode = "";
+				data.xRayName = "";
+				data.scanName = "";
+				data.lineIn = "";
+				data.lineOut = "";
+
+				this.listScanStatus = await Lib.ListScannerDictionary('SCAN_STATUS');
+				this.listVerifyStatus = await Lib.ListScannerDictionary('VERIFY_STATUS');
+				this.listPayStatus = await Lib.ListScannerDictionary('PAY_STATUS');
+
+				if (callback != 'undefined' && typeof callback == 'function')
+					callback();
+
+			},
+			getList: function (page, callback) {
+				this.data.firstResult = page * this.data.maxResult;
+				$('#pagination').html('');
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetListTransactions",
+					data: {
+						businessId: utils.getCookie("accountIdBuss"),
+						fromScanDateTime: self.data.fromScanDateTime,
+						toScanDateTime: self.data.toScanDateTime,
+						scanStatus: self.data.scanStatus,
+						payStatus: self.data.payStatus,
+						verifyStatus: self.data.verifyStatus,
+						verifyCode: self.data.verifyCode,
+						xRayName: self.data.xRayName,
+						scanName: self.data.scanName,
+						lineIn: self.data.lineIn,
+						lineOut: self.data.lineOut,
+						firstResult: self.data.firstResult,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					//cache: false,
+					//contentType: false,
+					//processData: false,
+					success: function (data) {
+						self.showLoading = false;
+						console.log(data);
+						if (data.ResponseCode >= 0) {
+							self.listScan = data.Data.data;
+
+							self.loadPages(page, data.Data.pages);
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			loadPages: function (page, totalPage) {
+				var self = this;
+
+				var htmlP = '';
+				var CurPage = page + 1;
+				//debugger;
+				if (totalPage > 1) {
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(0)"><i class="fa fa-angle-double-left"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
+
+					for (var i = CurPage - 3; i < CurPage + 3; i++) {
+						if (i > 0 && i <= totalPage) {
+							if (CurPage == i) {
+								htmlP += '<li class="active"><a href="javascript:;" onclick="app.getList(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+							else {
+								htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+						}
+					}
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
+				}
+
+				$(".pagination").html(htmlP);
+			},
+			getNameVerityStatus: function (status) {
+				if (!status && status != 0)
+					return "";
+				var name = "";
+				for (var i = 0; i < this.listVerifyStatus.length; i++) {
+					if (status == this.listVerifyStatus[i].value) {
+						name = this.listVerifyStatus[i].name;
+						break;
+					}
+				}
+				return name;
+			},
+			showPop: function () {
+				var self = this;
+				utils.Loading();
+				$.ajax({
+					type: 'GET',
+					url: Config.Url_Root + "Scanner/PopRegisScanner",
+					data: {
+					},
+					//dataType: "html",
+					success: function (data) {
+						utils.unLoading(); 
+						$("#fill_popup").html(data);
+
+						$("#fill_popup").show();
+						$("#overlay_pop").show();
+
+						if (typeof callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						utils.unLoading();
+					}
+				});
+			},
+			//---------
+			ViewInfo: function (tranId) {
+				window.location.href = Config.Url_Root + "Scanner/VerifyCodeInfo?tranId=" + tranId;
+			},
+			viewEdit: function (item) {
+				window.location.href = Config.Url_Root + "Scanner/PopRegisScanner?tranId=" + item.id;
+			},
+			//======
+			remove: function (item) {
+				var self = this;
+				bootbox.confirm("Bạn có chắc chắn muốn hủy mã soi chiếu: " + item.verifyCode, function (res) {
+					if (res) { 
+						utils.Loading();
+						var token = $('#hdfToken').val();
+						$.ajax({
+							url: Config.API_Login + "agency/RemoveScan?transId=" + item.id,
+							type: 'GET',
+							data: {},
+							headers: {
+								"Authorization": "Bearer " + token
+							},
+							cache: false,
+							contentType: false,
+							processData: false,
+							success: function (data) {
+								utils.unLoading();
+								if (data.ResponseCode > 0) {
+									bootbox.alert("Thành công", function () {
+										self.getList(0);
+									});
+								}
+								else {
+									bootbox.alert(data.Description);
+									return;
+								}
+							},
+							error: function (data) {
+								bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+								utils.unLoading();
+							}
+						});
+
+					}
+				});
+			},
+		},
+		mounted() {
+			var self = this;
+			this.init(function () {
+				self.getList(0);
+			});
+		},
+
+	}); 
+
+</script>

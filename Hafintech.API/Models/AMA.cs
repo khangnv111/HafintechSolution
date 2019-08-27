@@ -4,6 +4,15 @@ namespace Hafintech.API.Models
 {
     public class AMA
     {
+        public string initType { get; set; }
+        public int agencyId { get; set; }
+        public int businessId { get; set; } 
+        public int createdAccId { get; set; }
+        public object acceptAccId { get; set; }
+        public int status { get; set; }
+        public string statusCode { get; set; }
+        public object sigAccId { get; set; }
+
         public int? id { get; set; } = null;
         public int accountId { get; set; }
         public string amendDclNo { get; set; }
@@ -51,6 +60,7 @@ namespace Hafintech.API.Models
         public string stTaxValBTaxAm { get; set; }
         public string stQuanBTaxAm { get; set; }
         public string mUCOQuanBTaxAm { get; set; }
+        public string msUCOStQTaxAm { get; set; }
         public string hsCodeBTaxAm { get; set; }
         public string taxRateBTaxAm { get; set; }
         public string taxAmtBTaxAm { get; set; }

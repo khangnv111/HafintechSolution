@@ -1,0 +1,789 @@
+﻿
+<div class="container-fluid" id="lst_imp_exp">
+	<div class="row-fluid">
+		<div class="span6">
+			<h4>DANH SÁCH TỜ KHAI IMPORT TỜ KHAI</h4>
+		</div>
+		<div class="span6" style="text-align: right">
+			<span style="margin-right: 20px">File Mẫu <a href="~/files/Import MIC Tool.xlsx">MIC xuất khẩu.ex</a></span>
+			<button type="button" style="padding: 5px 20px" v-on:click="OpenImEx()"><i class="fa fa-file-excel-o"></i> Import File</button>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"><i class="icon-align-justify"></i></span>
+				<h5>Tìm kiếm</h5>
+			</div>
+			<div class="widget-content">
+				<div class="row-fluid">
+					<div class="span4">
+						<span class="span4">Thời gian đăng ký</span>
+						<input type="date" class="span4" v-model="startCreatedDate"/>
+						<input type="date" class="span4" v-model="endCreatedDate"/>
+					</div>
+					<div class="span2">
+						<span class="span4">Số vận đơn</span>
+						<input type="text" class="span8" v-model="data.houseAwbNo"/>
+					</div>
+					<div class="span3">
+						<span class="span4">Trạng thái đồng bộ web</span>
+						<select class="span8" v-model="data.syncStatus">
+							<option value="">Tất cả</option>
+							<option value="1">Chưa đồng bộ</option>
+							<option value="-1">Đồng bộ thất bại</option>
+							<option value="2">Đã đồng bộ</option>
+						</select>
+					</div>
+					<div class="span2">
+						<span class="span4">Trạng thái gửi HQ</span>
+						<select class="span8" v-model="data.status">
+							<option value="">Tất cả</option>
+							<option value="8">Thành công</option>
+							<option value="-1">Không thành công</option>
+							<option value="1">Khởi tạo</option>
+						</select>
+					</div>
+					<button type="button" style="padding: 4px 20px" v-on:click="Search()">Tìm kiếm</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="row-fluid">
+			<div class="span2">
+				<select class="span11" v-model="pageSize" v-on:change="Search()">
+					<option value="10">Hiện 10 dòng</option>
+					<option value="20">Hiện 20 dòng</option>
+					<option value="50">Hiện 50 dòng</option>
+					<option value="100">Hiện 100 dòng</option>
+					<option value="200">Hiện 200 dòng</option>
+					<option value="500">Hiện 500 dòng</option>
+					<option value="1000">Hiện 1000 dòng</option>
+				</select> 
+			</div>
+			<span>
+				{{totalRow}} bản ghi
+			</span>
+			<div class="span4" style="float: right">
+				<button type="button" style="padding: 4px 20px" v-on:click="SyncToWebConfirm()"><i class="fa fa-exchange" style="color: #ff6a00"></i> Đồng bộ web</button>
+				<button type="button" style="padding: 4px 20px" v-on:click="SendToCustom()"><i class="fa fa-send" style="color: #05336b"></i> Gửi lên HQ</button>
+
+				<button type="button" style="padding: 4px 20px" v-on:click="deleteSelect()"><i class="fa fa-trash" style="color: #ff0000"></i> Xóa</button>
+
+				<button type="button" style="padding: 4px 20px" v-on:click="SignIID()"><i class="fa fa-refresh" style="color: #ff0000"></i> Sign IID</button>
+			</div>
+		</div>
+
+		<div class="box-body">
+			<div class="widget-box" style="max-height: 700px;overflow: auto;">
+
+				<table class="table table-bordered  table-striped with-check" role="grid" aria-describedby="example1_info">
+					<thead>
+						<tr>
+							<th class="text-center" style="min-width:70px">
+								<input v-if="showCheckbox" type="checkbox" v-on:click="SelectAll()" v-model="allSelected"/>
+							</th>
+							<th class="text-center" style="min-width:70px">STT</th>
+							<th class="text-center" style="min-width:70px">ID</th>
+							<th class="text-center" style="width:100px">Số tờ khai</th>
+							<th class="text-center">Ngày đăng ký</th>
+							<th class="text-center">Loại tờ khai</th>
+							<th class="text-center">Mã loại hình</th>
+							<th class="text-center">Vận đơn</th>
+							<th class="text-center">CQ Hải quan</th>
+							<th class="text-center">Mã người XK</th>
+							<th class="text-center">Mã người NK</th>
+							<th class="text-center">Ủy thác nhập<br /> khẩu/xuất khẩu</th>
+							<th class="text-center">Trạng thái đồng bộ web</th>
+							<th class="text-center">Trạng thái gửi HQ</th>
+							<th class="text-center">Thao tác</th>
+						</tr>
+					</thead>
+					<tbody class="content-search-table">
+						<tr v-show="showLoading">
+							<td colspan="14" style="text-align:center">
+								<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+							</td>
+						</tr>
+
+						<tr v-show="!showLoading" v-for="(item, i) in lstData">
+							<td style="text-align: center">
+								<input type="checkbox" v-bind:value="item.dclId" v-model="lstCheckId" v-on:click="select(item)"/>
+							</td>
+							<td style="text-align: center">{{(currentPage - 1)*pageSize + i + 1}}</td>
+							<td style="text-align: center">{{item.dclId}}</td>
+							<td>{{item.dclNo}}</td>
+							<td>{{item.createdDate}}</td>
+							<td>MIC</td>
+							<td></td>
+							<td>{{item.houseAwbNo}}</td>
+							<td>{{item.cstOfficeNm}}</td>
+							<td>{{item.consignorCd}}</td>
+							<td>{{item.imperCd}}</td>
+							<td></td>
+							<td>
+								<span v-if="item.syncStatus == -1">Đồng bộ thất bại</span>
+								<span v-if="item.syncStatus == 1">Chưa đồng bộ</span>
+								<span v-if="item.syncStatus == 2">Đã đồng bộ</span>
+							</td>
+							<td>
+								<span v-if="item.status == -1">Gửi thất bại</span>
+								<span v-if="item.status == 1">Khởi tạo</span>
+								<span v-if="item.status == 8">Thành công</span>
+							</td>
+							<td>
+								<a href="javascript:;" v-on:click="DeleteDeclaration(item)">
+									<i class="fa fa-remove fa-2x" style="color: #ff0000"></i> Xóa
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+		</div>
+	</div>
+
+	<template>
+		<paginate   
+				  :page-count="totalPage"
+				  :click-handler="Paging"
+				  :prev-text="'Prev'"
+				  :next-text="'Next'" 
+				  :container-class="'pagination'"
+				  :page-class="'page-item'">
+		</paginate>
+	</template>
+
+	<div v-show="showPop" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+	<div v-show="showPop" id="detail_pop" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 70%; display: none">
+
+	</div>
+
+</div>
+
+@if (Request.Url.ToString().Contains("10.1.20.2"))
+{
+    <script src="http://10.1.20.2:8080/lib.signature.js"></script>
+}
+else
+{
+    <script src="@System.Configuration.ConfigurationManager.AppSettings["UrlLibSign"]"></script>
+} 
+
+<script src="~/Content/js/import/import-onload.trinhky.js"></script>
+<script>
+
+	Vue.component('paginate', VuejsPaginate)
+	var app = new Vue({
+		el: '#lst_imp_exp',
+		data: {
+			data: {},
+			lstData: [], //danh sách dữ liệu
+			startCreatedDate: "",
+			endCreatedDate: "",
+
+			pageSize: 1000,//mặc định số dòng mỗi trang
+			totalPage: 0, //Tổng số page 
+			totalRow: 0, //Số bản ghi
+			showLoading: true, 
+			currentPage: 1,
+
+			showCheckbox: false,
+			lstCheckId: [], //Danh sách Id checkbox
+			lstCheckedDclNo: [], //Danh sách dclNo checked
+			allSelected: false, //mặc định không check all checkbox
+
+			showPop: false,
+			Id: 0, //Id SendSign
+			dclNo: null, //dclNo sendSign
+			index: 0, //Vị trí của Id sẽ được thực hiện trong danh sách lstCheckId
+
+			countSuccess: 0,//Số lượng thành công
+			isSignIID: 0, //1: getEdiToSignIID
+		},
+		methods: {
+			init: function () {
+				var data = this.data;
+				data.status = "";
+				data.syncStatus = "";
+				data.houseAwbNo = "";
+
+				var self = this;
+				setTimeout(function () {
+					self.showCheckbox = true;
+				}, 100);
+
+				this.getList();
+			},
+			formatDate: function (date) {
+				if (!date) return "";
+
+				return moment(String(date)).format('DD-MM-YYYY')
+			},
+			//-------------- 
+			Search: function () {
+				this.lstCheckId = [];
+				this.allSelected = false;
+				this.index = 0; 
+				this.getList();
+			},
+			getList: function (page) {
+				if (!page) page = 0;   
+				this.currentPage = page + 1;
+
+				this.data.startCreatedDate = this.formatDate(this.startCreatedDate);
+				this.data.endCreatedDate = this.formatDate(this.endCreatedDate);
+
+				this.showLoading = true;
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/SearchImportFile",
+					data: {
+						status: this.data.status,
+						syncStatus: this.data.syncStatus,
+						houseAwbNo: this.data.houseAwbNo,
+						startCreatedDate: this.data.startCreatedDate,
+						endCreatedDate: this.data.endCreatedDate,
+						page: page,
+						count: this.pageSize
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						self.showLoading = false;
+						if (data.ResponseCode >= 0) {
+							self.lstData = data.Data.ListMic;
+							self.countPage(data.Data.Total);
+							self.totalRow = data.Data.Total;
+						}
+					},
+					error: function (data) {
+						self.showLoading = false;
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+
+			},
+			countPage: function (total) {
+				if (total % this.pageSize == 0) {
+					this.totalPage = total / this.pageSize;
+				}
+				else {
+					this.totalPage = parseInt(total / this.pageSize) + 1;
+				}
+			},
+			Paging: function (page) {
+				 
+				this.getList(page - 1);
+			},
+			//--------------
+			select: function (item) {
+				this.allSelected = false;
+
+				var self = this; 
+				setTimeout(function () {
+					self.pushDclNoToArr(item);
+				}, 200);
+			},
+			pushDclNoToArr: function (item) {
+				
+				if (this.lstCheckId.includes(item.dclId)) {
+					//Nếu có dclId trong dãy lstCheckId => thêm dclNo vào dãy lstCheckedDclNo
+					//Nếu dclNo != null thì mới thêm vào
+					if (item.dclNo)
+						this.lstCheckedDclNo.push(item.dclNo);
+				}
+				else {
+					//Kiểm tra đã có dclNo có trong lstCheckedDclNo hay chưa
+					if (this.lstCheckedDclNo.includes(item.dclNo)) {
+						//Nếu có thì lấy vị trí dclNo trong dãy lstCheckedDclNo
+						var index = this.lstCheckedDclNo.indexOf(item.dclNo);
+						if (index > -1) {
+							this.lstCheckedDclNo.splice(index, 1); //Xóa
+						}
+					}
+				}
+			},
+			SelectAll: function () {
+				this.lstCheckId = [];
+				this.lstCheckedDclNo = [];
+
+				if (!this.allSelected) {
+					for (item in this.lstData) {
+						this.lstCheckId.push(this.lstData[item].dclId);
+
+						if (this.lstData[item].dclNo)
+							this.lstCheckedDclNo.push(this.lstData[item].dclNo);
+					}
+				}
+			},
+			//-------------- Import tờ khai
+			OpenImEx: function () {
+				var self = this;
+
+				utils.Loading();
+				$.ajax({
+					type: 'GET',
+					url: Config.Url_Root + "ExpImpData/ImpExpPopup",
+					data: {
+					},
+					success: function (data) {
+						utils.unLoading();
+						self.showPop = true;
+						$("#detail_pop").html(data);
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			//--------------Gửi lên HQ
+			GetEDI: function (Id) {
+
+				if ($("#downSignkey").val() == 1) {
+					bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+						if (res) {
+							downTK();
+						}
+					});
+					return;
+				}
+
+				this.Id = Id; //Lưu Id của tờ khai đang thực hiện 
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				//utils.Loading();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "agency/GetEdiToSignImport?Id=" + Id,
+					data: {
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {  
+						if (data.ResponseCode > 0) {
+							var ediStr = data.Data.EDI;
+							var subject = data.Data.subject;
+							var serial = data.Data.serial;
+							sendWsJs(CMD.SIGN_TXT_WITH_SERIAL, FORMAT.BINARY, [ediStr, subject, serial])
+						} 
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			SendSignData: function (signData, keyData, edi) { 
+				var signedData = {
+					"dclId": this.Id,
+					"status": 8, 
+					"data": edi,
+					"signature": signData,
+					"publicKey": keyData,
+					"isSendFile": false,
+					"isSign": true, 
+				}; 
+				var self = this; 
+				var token = $('#hdfToken').val(); 
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "agency/SendSignedDataImport",
+					data: JSON.stringify(signedData),
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: "application/json; charset=utf-8",
+					processData: false,
+					success: function (data) {
+						self.index++; //Tăng vị trí
+						setTimeout(function () {
+							self.SendToCustom();
+						}, 100); 
+						//Đếm %
+						try {
+							if (loader) {
+								loader.countPercent();
+							}
+						}
+						catch{ }
+
+						if (data.ResponseCode > 0)
+							self.countSuccess++;
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			}, 
+			SendToCustom: function () {
+				if (this.lstCheckId.length == 0) {
+					bootbox.alert({
+						title: "Thống báo",
+						message: "Bạn chưa chọn tờ khai để gửi lên Hải quan",
+					});
+					return;
+				} 
+				if (this.index == 0)
+					utils.percentLoading();
+
+				var ID = this.lstCheckId[this.index];
+				console.log("ID: ", ID);
+				if (ID) 
+					this.GetEDI(ID);
+				else {  
+					var self = this;
+					utils.unLoading();
+					bootbox.alert({
+						title: "Thông báo",
+						message: "Đã gửi thành công " + this.countSuccess + "/" + this.lstCheckId.length + " tờ khai lên Hải Quan",
+						callback: function () {
+							self.getList();
+							self.lstCheckId = [];
+							self.allSelected = false;
+							self.index = 0;
+							self.countSuccess = 0;
+						}
+					});
+				}
+			},
+			//-------------- Xóa
+			deleteSelect: function () {  
+				if (this.lstCheckId.length == 0) {
+					bootbox.alert({
+						title: "Thống báo",
+						message: "Bạn chưa chọn tờ khai nào",
+					});
+					return;
+				}
+				var self = this;
+				bootbox.confirm({
+					title: "Thông báo",
+					message: "Bạn có chắc xóa các tờ khai này",
+					callback: function (res) {
+						if (res) {
+							self.ConfirmDeleteAll();
+						}
+					},
+				});
+			},
+			ConfirmDeleteAll: function () {
+
+				if (this.index == 0)
+					utils.Loading();
+
+				var ID = this.lstCheckId[this.index];
+				if (ID)
+					this.DeleteAll(ID);
+				else {
+					utils.unLoading();
+					this.getList();
+					this.lstCheckId = [];
+					this.allSelected = false;
+					this.index = 0;
+				}
+			},
+			DeleteAll: function (dclId) {
+				var self = this;
+
+				this.index++;
+
+				var token = $('#hdfToken').val(); 
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "agency/deleteImport?Id=" + dclId,
+					data: {},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) { 
+
+						setTimeout(function () {
+							self.ConfirmDeleteAll();
+						}, 100);
+					},
+					error: function (data) {
+						 
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+
+			DeleteDeclaration: function (item) {
+				var self = this;
+				bootbox.confirm({
+					title: "Thông báo",
+					message: "Bạn có chắc xóa tờ khai này",
+					callback: function (res) {
+						if (res) {
+							self.ConfirmDelete(item.dclId);
+						}
+					},
+				});
+			},
+			ConfirmDelete: function (dclId) {
+				var self = this;
+				var token = $('#hdfToken').val();
+				utils.Loading();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "agency/deleteImport?Id=" + dclId,
+					data: {},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) { 
+						utils.unLoading();
+						if (data.ResponseCode > 0) {
+							bootbox.alert({
+								title: "Thông báo",
+								message: "Xóa tờ khai thành công",
+								callback: function () {
+									self.getList();
+								}
+							});
+						}
+						else {
+							bootbox.alert(data.Description);
+						}
+
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			//-------------- Đồng bộ Web
+			SyncToWebConfirm: function () {
+				if (this.lstCheckId.length == 0) {
+					bootbox.alert({
+						title: "Thống báo",
+						message: "Bạn chưa chọn tờ khai nào",
+					});
+					return;
+				} 
+				if (this.index == 0)
+					utils.percentLoading();
+
+				var ID = this.lstCheckId[this.index];
+				 
+				if (ID)
+					this.SyncToWeb(ID);
+				else {  
+					var self = this;
+					utils.unLoading();
+					bootbox.alert({
+						title: "Thông báo",
+						message: "Đã đồng bộ thành công " + this.countSuccess + "/" + this.lstCheckId.length + " tờ khai sang NEVS",
+						callback: function () {
+							self.getList();
+							self.lstCheckId = [];
+							self.allSelected = false;
+							self.index = 0;
+							self.countSuccess = 0;
+						}
+					});
+				}
+			},
+			SyncToWeb: function (Id) {   
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "agency/SyncToNevs?Id=" + Id,
+					data: {
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) { 
+						self.index++; //Vị trí lấy Id tiếp theo 
+						//Gọi tiếp hàm
+						setTimeout(function () {
+							self.SyncToWebConfirm();
+						}, 100);
+						//Đếm %
+						try {
+							if (loader) {
+								loader.countPercent();
+							}
+						}
+						catch{ }
+
+						if (data.ResponseCode > 0)
+							self.countSuccess++;
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			//---------Send Sign Data IID
+			GetEDIToSignIID: function (Id) {
+
+				if ($("#downSignkey").val() == 1) {
+					bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+						if (res) {
+							downTK();
+						}
+					});
+					return;
+				}
+
+				this.Id = Id; //Lưu dclNo của tờ khai đang thực hiện 
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				//utils.Loading();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "agency/GetEdiToSignImport?Id=" + Id + "&signIdd=1",
+					data: {
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						if (data.ResponseCode > 0) {
+							var ediStr = data.Data.EDI;
+							var subject = data.Data.subject;
+							var serial = data.Data.serial;
+							sendWsJs(CMD.SIGN_TXT_WITH_SERIAL, FORMAT.BINARY, [ediStr, subject, serial])
+						}
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			SendSignDataIID: function (signData, keyData, edi) {
+				var signedData = {
+					"dclNo": this.Id,
+					"status": 8,
+					"data": edi,
+					"signature": signData,
+					"publicKey": keyData,
+					"isSendFile": false,
+					"isSign": true,
+				};
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "agency/SendSignedDataImport?signIdd=1",
+					data: JSON.stringify(signedData),
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: "application/json; charset=utf-8",
+					processData: false,
+					success: function (data) {
+						 
+						self.index++; //Vị trí lấy Id tiếp theo 
+						//Gọi tiếp hàm
+						setTimeout(function () {
+							self.SignIID();
+						}, 100);
+						//Đếm %
+						try {
+							if (loader) {
+								loader.countPercent();
+							}
+						}
+						catch{ }
+
+						if (data.ResponseCode > 0)
+							self.countSuccess++;
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			SignIID: function () {
+				if (this.lstCheckId.length == 0) {
+					bootbox.alert({
+						title: "Thống báo",
+						message: "Bạn chưa chọn tờ khai",
+					});
+					return;
+				}
+				if (this.lstCheckedDclNo.length == 0) {
+					bootbox.alert({
+						title: "Thống báo",
+						message: "Tờ khai bạn chọn chưa có số tờ khai",
+					});
+					return;
+				}
+
+				if (this.index == 0)
+					utils.percentLoading();
+
+				this.isSignIID = 1;
+				var dclNo = this.lstCheckedDclNo[this.index];
+				console.log("dclNo: ", dclNo);
+				if (dclNo)
+					this.GetEDIToSignIID(dclNo);
+				else {
+					var self = this;
+					utils.unLoading();
+					bootbox.alert({
+						title: "Thông báo",
+						message: "Đã gửi thành công " + this.countSuccess + "/" + this.lstCheckedDclNo.length + " IID",
+						callback: function () {
+							self.getList();
+							self.lstCheckedDclNo = [];
+							self.lstCheckId = [];
+							self.allSelected = false;
+							self.index = 0;
+							self.countSuccess = 0;
+							self.isSignIID = 0;
+						}
+					});
+				}
+			},
+			//---------
+			CallBackWebSocket: function (signData, keyData, edi) {
+				if (this.isSignIID == 1)
+					this.SendSignDataIID(signData, keyData, edi);
+				else
+					this.SendSignData(signData, keyData, edi);
+			},
+		},
+		mounted() {
+			var self = this;
+			this.init();
+
+			WebSocketConnect(IP, PORT, PROTOCOL, this.CallBackWebSocket);
+		}, 
+	});
+</script>

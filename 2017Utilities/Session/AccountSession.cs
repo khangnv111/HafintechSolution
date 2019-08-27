@@ -89,11 +89,28 @@ namespace _2017Utilities.Session
             }
         }
 
-        public static string CreateCookie(long AccountId, string AccountName, string NickName,string Token, string Department_Code)
+        public static string Address
+        {
+            get
+            {
+                string NickName = string.Empty;
+
+                if (HttpContext.Current != null && HttpContext.Current.User.Identity.IsAuthenticated && !string.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                {
+                    var s = HttpContext.Current.User.Identity.Name.Split('|');
+                    if (s != null && s.Length > 1)
+                        NickName = s[5];
+                }
+
+                return NickName;
+            }
+        }
+
+        public static string CreateCookie(long AccountId, string AccountName, string NickName, string Address, string Token, string Department_Code)
         {
             //string ipAddress = IPAddressHelper.GetClientIP();
             //accountId | username | NickName | TotalCoin
-            return string.Format("{0}|{1}|{2}|{3}|{4}", AccountId, AccountName, NickName, Token, Department_Code);
+            return string.Format("{0}|{1}|{2}|{3}|{4}|{5}", AccountId, AccountName, NickName, Token, Department_Code, Address);
         }
     }
 }

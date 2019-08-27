@@ -9,14 +9,15 @@
             utils.Loading();
             $.ajax({
                 type: 'POST',
-                url: Config.API_Login + "oauth2/token",
+				url: Config.API_Login + "oauth2/token",
                 data: {
                     username: u,
                     password: MD5(p),
                     grant_type: "password",
                     type: 0,
                     ID: 0,
-                    AccessToken: ""
+                    AccessToken: "",
+                    //type:4
                 },
                 contentType: "application/x-www-form-urlencoded",
                 dataType: "json",
@@ -28,14 +29,16 @@
                     //console.log(data);
                     utils.unLoading();
                     if (data != null && data != "") {
-                        if (parseInt(data.AccountID) > 0) {
-                            $("#LoginError").html("Đăng nhập thành công").show();
+						if (parseInt(data.AccountID) > 0) {
+							utils.Loading();
 
-                            Login.setAuthen(data.AccountID, data.AccountName, data.FullName, data.access_token, data.UpdateStatus);
-
-                            var verify = "VerifyEmailStatus:" + data.VerifyEmailStatus;
-                            utils.setCookie("verifyAcc", verify, 0.5);
-                            utils.setCookie("Type", data.Type, 0.5);
+							$("#LoginError").html("Đăng nhập thành công").show();
+							$("#LoginError").css("color", "blue");
+							window.localStorage.setItem("token", data.access_token);
+							Login.setAuthen(data.AccountID, data.AccountName, data.FullName, data.access_token, data.address);
+                            //var verify = "VerifyEmailStatus:" + data.VerifyEmailStatus;
+                            //utils.setCookie("verifyAcc", verify, 0.5);
+                            //utils.setCookie("Type", data.Type, 0.5);
                         }
                         else {
                             $("#LoginError").html("Hệ thống bận, vui lòng quay lại sau!" + data.AccountID).show();
@@ -52,7 +55,7 @@
         }
     },
 
-    setAuthen: function (AccountID, UserName, FullName, AccessToken, UpdateStatus) {
+	setAuthen: function (AccountID, UserName, FullName, AccessToken, address) {
         utils.Loading();
         $.ajax({
             type: 'POST',
@@ -60,7 +63,8 @@
             data: JSON.stringify({
                 "AccountID": AccountID,
                 "UserName": UserName,
-                "FullName": FullName,
+				"FullName": FullName,
+				"Address": address,
                 "AccessToken": AccessToken
             }),
             contentType: "application/json; charset=utf-8",
@@ -70,7 +74,7 @@
 
                 if (dt) {
                     if (parseInt(dt) > 0) {
-                        window.location.href = Config.Url_Root + "Account/Index";
+						window.location.href = Config.Url_Root + "setup-vnaccs";
                         //window.location.href = Config.Url_Root + "dashboard";
                     }
                     else {
@@ -147,7 +151,51 @@
                 }
             });
         }
-    },
+	},
+
+	LoginAgency: function () {
+		var userName = $('#txtUsername').val();
+		var pass = $('#txtPassword').val();
+		if (!userName || !pass) {
+			$('#LoginError').html("Yêu cầu nhập tài khoản và mật khẩu!").show();
+		}
+		else {
+			utils.Loading();
+			$.ajax({
+				type: 'POST',
+				url: Config.API_Login + "Agency/login",
+				data: {
+					username: userName,
+					password: MD5(pass), 
+				},
+				contentType: "application/x-www-form-urlencoded",
+				dataType: "json", 
+				success: function (data) {
+					//console.log(data);
+					utils.unLoading();
+					if (data.ResponseCode > 0) {
+						utils.Loading();
+
+						$("#LoginError").html("Đăng nhập thành công").show();
+						$("#LoginError").css("color", "blue"); 
+
+						Login.setAuthen(data.Data.AccountID, data.Data.AccountName, data.Data.FullName, data.Data.access_token, data.Data.UpdateStatus);
+						var verify = "VerifyEmailStatus:" + data.Data.VerifyEmailStatus;
+						//utils.setCookie("verifyAcc", verify, 0.5);
+						//utils.setCookie("Type", data.Data.Type, 0.5);
+					}
+					else {
+						$("#LoginError").html(data.Description).show(); 
+					}
+				},
+				error: function (data) { 
+					utils.unLoading();
+					$("#LoginError").html("Hệ thống bận, vui lòng quay lại sau!").show();
+					$('#txtPassword').focus(); 
+				}
+			});
+		}
+	},
 };
 
 window.Reg = {
@@ -203,7 +251,12 @@ window.Reg = {
             $("#RegisterError").html("Bạn chưa nhập mật khẩu");
             $("#RegisterError").show();
             return;
-        }
+		}
+		if (passWord.length < 8) {
+			$("#RegisterError").html("Bạn phải nhập mật khẩu đủ từ 8 ký tự trở lên");
+			$("#RegisterError").show();
+			return;
+		}
         if (RepassWord == null || RepassWord == "") {
             $("#RegisterError").html("Bạn chưa nhập lại mật khẩu");
             $("#RegisterError").show();
@@ -218,7 +271,9 @@ window.Reg = {
             $("#RegisterError").html("Bạn chưa nhập email");
             $("#RegisterError").show();
             return;
-        }
+		}
+		email = email.trim();
+
         if (passWord != RepassWord) {
             $("#RegisterError").html("Mật khẩu nhập lại không trùng khớp");
             $("#RegisterError").show();
@@ -238,7 +293,7 @@ window.Reg = {
         }
 
         utils.Loading();
-        if (isAgency===2) {
+        if (isAgency == 2) {
             $.ajax({
                 type: 'POST',
                 url: Config.API_Login + "Agency/Create",
@@ -278,7 +333,7 @@ window.Reg = {
                 }
             });
         }
-        else if (isAgency === 1) {
+        else if (isAgency == 1) {
             $.ajax({
                 type: 'POST',
                 url: Config.API_Login + "Business/Create",
@@ -317,7 +372,46 @@ window.Reg = {
                     utils.unLoading();
                 }
             });
-        }
+		}
+		else if (isAgency == 3) {
+			$.ajax({
+				type: 'POST',
+				url: Config.API_Login + "Agency/ScannerCreateAcc",
+				data: JSON.stringify({
+					"taxIdNumber": taxIdNumber,
+					"name": name,
+					"passWord": MD5(passWord),
+					"address": address,
+					"legalRepre": legalRepre,
+					"zipCode": zipCode,
+					"fax": fax,
+					"phoneNumber": phoneNumber,
+					"email": email, 
+				}),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				//processData: true,
+				//crossDomain: true,
+				//xhrFields: { withCredentials: true },
+				//cache: false,
+				success: function (data) {
+					console.log(data);
+					utils.unLoading();
+
+					if (data.ResponseCode > 0) {
+						utils.closeAll();
+						utils.Message("Chúc mừng bạn đã đăng ký thành công. Bạn vui lòng vào Email đã đăng ký trên hệ thống để kích hoạt tài khoản");
+					}
+					else {
+						$('#RegisterError').html(data.Description).show();
+					}
+				},
+				error: function (data) {
+					utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+					utils.unLoading();
+				}
+			});
+		}
     },
 
     ShowOTP: function () {

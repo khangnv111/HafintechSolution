@@ -119,8 +119,14 @@ window.TK = {
 
         var cusUrl = $("#cusUrl").val();
         if (cusUrl == undefined) cusUrl = "";
+      
+        var signMethod = $("#submitMethod").val();
+        if (!signMethod) {
+            bootbox.alert("Bạn chưa chọn loại chữ ký số");
+            return;
+        } 
 
-        var jsonData = { "numberCert": numberCert, "authorityCert": authorityCert, "subjectAuthen": subjectAuthen, "cusUrl": cusUrl, "terminalId": terminalId, "userId": userId, "password": password, "accessKey": accessKey, "signatureId": signatureId, "accountId": accountId }
+        var jsonData = { "numberCert": numberCert, "authorityCert": authorityCert, "subjectAuthen": subjectAuthen, "cusUrl": cusUrl, "terminalId": terminalId, "userId": userId, "password": password, "accessKey": accessKey, "signatureId": signatureId, "accountId": accountId, "status": 1};
 
         var fileUpload = $("#fileAttach").get(0);
         var files = fileUpload.files;
@@ -129,6 +135,11 @@ window.TK = {
 
             if (size > 5000) {
                 bootbox.alert("Dung lượng file up lên không được quá 5M");
+                return;
+            }
+
+            if (files[0].type != "application/x-pkcs12") {
+                bootbox.alert("File chữ ký phải có đuôi là .p12");
                 return;
             }
         }
@@ -141,6 +152,7 @@ window.TK = {
 
         var token = $('#hdfToken').val();
         utils.Loading();
+        TK.SetSignMethod();
         $.ajax({
             type: 'POST',
             url: Config.API_Login + "Agency/CreateSignature",
@@ -173,13 +185,49 @@ window.TK = {
         });
     },
 
-    GetListSinature: function () {
+    SetSignMethod: function () {
+        var token = $('#hdfToken').val();
+        var submitMethod = $("#submitMethod").val();
+        if (!submitMethod) {
+            bootbox.alert("Bạn chưa chọn loại chữ ký số");
+            return;
+        }
+        var businessId = utils.getCookie("businessIdAcc");
+
+        utils.Loading();
+        $.ajax({
+            type: 'GET',
+            url: Config.API_Login + "Agency/SetSubmitMethod",
+            data: {
+                businessId: businessId,
+                submitMethod: submitMethod,
+            },
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                console.log("submitMethod: ", data);
+                utils.unLoading();
+            },
+            error: function (data) {
+                utils.unLoading();
+                bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                return;
+            }
+        });
+    },
+
+	GetListSinature: function () {
+
+		var accountId = $('#accIdLogin').val();
         var token = $('#hdfToken').val();
         utils.Loading();
         $.ajax({
             type: 'POST',
-            url: Config.API_Login + "Agency/GetSignature",
-            data: {
+			url: Config.API_Login + "Agency/GetSignature?accountId=" + accountId,
+			data: { 
             },
             headers: {
                 "Authorization": "Bearer " + token
@@ -196,8 +244,8 @@ window.TK = {
                         var item = data.Data[i];
                         html += '<tr>'
                         html += '<td>' + (i + 1) + '</td>';
-                        html += '<td>' + item.numberCert + '</td>';
-                        html += '<td></td>';
+                        html += '<td>' + item.taxIdNumber + '</td>';
+                        html += '<td>' + item.businessName + '</td>';
                         if (item.status == 1) {
                             html += '<td style="text-align: center"><a href="javascript:;" onclick="TK.SetDefaultSig(' + item.signatureId + ')"><i class="fa fa-check-square" aria-hidden="true"></i></a></td>';
                         }
@@ -317,7 +365,7 @@ window.Vnacc = {
         utils.Loading();
         $.ajax({
             type: 'POST',
-            url: Config.API_Login + "Agency/UpdateBusiness",
+			url: Config.API_Login + "Agency/updateBusinessVNACCS",
             data: JSON.stringify({
                 businessId: businessId,
                 cusCode: cusCode,
@@ -350,20 +398,21 @@ window.Vnacc = {
         });
     },
 
-    GetInfoSignalture: function(){
-        var token = $('#hdfToken').val();
+	GetInfoSignalture: function () {
+		var accountId = utils.getCookie("accountIdBuss");
+
+		var token = $('#hdfToken').val();  
         utils.Loading();
         $.ajax({
             type: 'POST',
-            url: Config.API_Login + "Agency/GetSignature",
-            data: {
-                status: 1
+			url: Config.API_Login + "Agency/GetSignature?accountId=" + accountId,
+			data: { 
             },
             headers: {
                 "Authorization": "Bearer " + token
             },
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
+			//contentType: false,//"application/json; charset=utf-8",
+			//dataType: false,//"json",
             success: function (data) {
                 //console.log("GetListSinature: ", data);
                 utils.unLoading();
@@ -375,6 +424,7 @@ window.Vnacc = {
                     $("#terminalId").val(item.terminalId);
                     $("#accessKey").val(item.accessKey);
                     $("#signatureIdVnacc").val(item.signatureId);
+                    $("#nameFileAttach").html(item.path);
                 }
 
             },

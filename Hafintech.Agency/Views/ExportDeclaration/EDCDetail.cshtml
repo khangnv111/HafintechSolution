@@ -1,0 +1,465 @@
+﻿<div id="loginbox" style="width:1000px; ">
+    <div class="control-group normal_text">
+        <b id="titleHH" style="font-size:18px; text-transform: uppercase">chi tiết hàng hóa</b>
+        <b onclick="utils.closeAll();" class="icClose">X</b>
+    </div>
+    <div class="row-fluid" id="edc-detail">
+        <input type="hidden" id="hdf_declarationID" name="hdf_declarationID" />
+        <input type="hidden" id="hdf_productID" name="hdf_productID" v-model="data.productId" />
+        <div class="form-horizontal" style="padding:10px 10px 0 10px; ">
+            <div class="row-fluid">
+                <div class="span12">
+                    <label class="control-label">Mã số hàng hóa  (HS): <span class="error">(*)</span></label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12 CMD" maxlength="12" v-model="data.hSCd" />
+                        </div>
+                        <div class="span7">
+                            <label class="span5">
+                                Mã quản lý riêng:
+                            </label>
+                            <span class="span7">
+                                <input type="text" class="span11 COC" v-model="data.cdOCom" maxlength="7" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Thuế suất: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12 TXA" v-model="data.dutyRate" />
+                        </div>&nbsp; %
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mức thuế tuyệt đối: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12 TXB" v-model="data.absTariffRate" />
+                        </div>
+                        <div class="span8">
+                            <span class="span6">
+                                <select class="span12 TXC" v-model="data.absDutyUnitCd">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in lstAbsDutyUnit" v-bind:value="item.absDutyUnitCd">{{item.absDutyUnitCd}}</option>
+                                </select>
+                            </span>
+                            <span class="span6">
+                                <select class="span12 TXD" v-model="data.curCdAbsDuty">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mô tả hàng hóa:<span class="error">(*)</span> </label>
+                    <div class="controls">
+                        <textarea class="span12 CMN" maxlength="200" v-model="data.itemName"></textarea>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Mã miễn/ giảm/ không chịu thuế xuất khẩu: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="hidden" id="slrdcImpTaxCd" name="slrdcImpTaxCd" v-model="data.rdcExpTaxCd" />
+                            <input type="text" id="txtrdcImpTaxCd" name="txtrdcImpTaxCd" class="span8 REG" onchange="hq.onChangeThue();" />
+                            <button type="button" style="padding: 0 10px" onclick="hq.getReductionImportTax('10',6)">...</button>
+                        </div>
+                        <div class="span8">
+                            <label class="control-label">Số tiền giảm thuế xuất khẩu</label>
+                            <div class="controls">
+                                <input type="text" class="span12" v-model="data.rdcAmtExpTax" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">(1) Số lượng:<span class="error">(*)</span> </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="number" min="0" maxlength="12" class="span6 QN1" v-model="data.qtt1">
+                            <input type="text" class="span6 QT1" v-model="data.qttUnitCd1" style="text-transform: uppercase" />
+                            @*<select class="span6 QT1" v-model="data.qttUnitCd1" v-on:click="getIntroMess('EDA','TPM')">
+                                    <option value="">--Chọn--</option>
+                                    <option value="UNK">UNK</option>
+                                    <option value="TNE">TNE</option>
+                                    <option value="PKG">PKG</option>
+                                    <option value="LBR">LBR</option>
+                                    <option value="KGM">KGM</option>
+                                </select>*@
+                        </div>
+
+                        <div class="span3">
+                            (2) Số lượng thực tế:
+                        </div>
+                        <div class="span4">
+                            <input type="text" class="span6 QN2" v-model="data.qtt2" />
+                            <input type="text" class="span6 QT2" v-model="data.qttUnitCd2" style="text-transform: uppercase" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <div class="span6">
+                        <label class="control-label">Trị giá hóa đơn: </label>
+                        <div class="controls">
+                            <input type="text" class="span12 BPR" v-model="data.invValue" />
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <label class="control-label">Trị giá tính thuế: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 DPR" v-model="data.cstValue" />
+                            <select class="span6 BPC" v-model="data.cstValueCurCd">
+                                <option value="">--Chọn--</option>
+                                <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <div class="span6">
+                        <label class="control-label">Số lượng tính thuế: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 DPR" v-model="data.cstValue" />
+                            <select class="span6 BPC" v-model="data.cstValueCurCd">
+                                <option value="">--Chọn--</option>
+                                <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <label class="control-label">Đơn giá tính thuế: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 DPR" v-model="data.cstValue" />
+                            <select class="span6 BPC" v-model="data.cstValueCurCd">
+                                <option value="">--Chọn--</option>
+                                <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+
+                    <label class="control-label">Đơn giá hóa đơn: </label>
+                    <div class="controls">
+                        <input type="text" class="span3 UPR" v-model="data.invUnitPrice" />
+                        <select class="span3 UPC" v-model="data.unitPriceCurCd">
+                            <option value="">--Chọn--</option>
+                            <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
+                        </select>
+                        <input type="text" class="span3 TSC" v-model="data.priceQttUnit">
+                        @*<select class="span3 TSC" v-model="data.priceQttUnit" v-on:click="getIntroMess('EDA','TPM')">
+                                <option value="">--Chọn--</option>
+                                <option value="UNK">UNK</option>
+                                <option value="TNE">TNE</option>
+                                <option value="PKG">PKG</option>
+                                <option value="LBR">LBR</option>
+                                <option value="KGM">KGM</option>
+                            </select>*@
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Số thứ tự của dòng hàng trên tờ khai tạm nhập tái xuất tương ứng:</label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12 TDL" v-model="data.tenDclLineNo" onkeypress="CheckOnlyNumber(this, event)" maxlength="2" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Danh mục miễn thuê nhập khẩu: </label>
+                    <div class="controls">
+                        <div class="span4">
+                            <input type="text" class="span12 TXN" v-model="data.taxExpLsNo" maxlength="12" />
+                        </div>
+                        <div class="span4">
+                            <input type="text" class="span12" maxlength="3" v-model="data.taxExpLsLineNo" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span12" style="margin:5px 0 5px 0;">
+                    <label class="control-label">Số của mục khai khoản điều chỉnh:</label>
+                    <div class="controls">
+                        <div class="span2" v-for="(valueNo, index) in lsOtherLawCode">
+                            <input type="text" class="span12 OL_" v-model="valueNo.otherLawCd" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row-fluid" style="text-align: center; margin: 25px 0">
+            <input type="hidden" id="hdfTypeSubmit" />
+            <input type="hidden" id="typeUpdate" />
+            <a href="javascript:;" class="btn btn-success" v-on:click="save(0)" v-show="!data.productId">Lưu</a>
+            <a href="javascript:;" class="btn btn-success" v-on:click="update()" v-show="data.productId">Cập nhật hàng hóa</a>
+
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    #popupwrap {
+        position: fixed;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .form-horizontal .control-label {
+        padding-top: 0;
+    }
+</style>
+<script type="text/javascript">
+
+    var edaDetail = new Vue({
+        el: '#edc-detail',
+        data: {
+            data: {},
+            currency: [],
+            lstAbsDutyUnit:[],
+            lstPerUnitTax: [],
+			lstImportTaxClf: [],
+
+			lsOtherLawCode: [],
+        },
+        methods: {
+			init: async function () {
+				var data = this.data;
+				data.absDutyUnitCd = "";
+				data.curCdAbsDuty = "";
+				data.cstValue = "";
+				data.cstValueCurCd = "";
+				data.unitPriceCurCd = "";
+
+                for (var i = 0; i < 5; i++) {
+					this.lsOtherLawCode.push({ otherLawCd: "" });
+                };
+                this.currency = await Lib.getCurrency();
+                this.lstPerUnitTax = this.lstAbsDutyUnit = await Lib.getAbsoluteDutyRateUnit();
+				this.lstImportTaxClf = await Lib.getImportTaxClassification();
+
+				this.LoadDetail();
+			},
+			LoadDetail: async function () {
+                try {
+                    //debugger;
+                    var token = $('#hdfToken').val();
+					var id = @ViewBag.IdPro;
+					if (!id)
+						return;
+
+                    const response = await axios.get(Config.API_Login + "export/GetEDAProductDetail?productid=" + id,
+                        {
+                            headers: { "Authorization": "Bearer " + token }
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0)
+						this.data = res.Data;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            save: function (isContinue) {
+				if (!this.data.hSCd) {
+					bootbox.alert("Bạn chưa nhập Mã số hàng hóa");
+					return;
+                };
+                if (!this.data.itemName) {
+                    bootbox.alert("Bạn chưa nhập mô tả hàng hóa");
+                    return;
+                };
+                if (!this.data.qttUnitCd1) {
+                    bootbox.alert("Bạn chưa nhập số lượng hàng hóa");
+                    return;
+                };
+				if (this.data.cdOCom) this.data.cdOCom = this.data.cdOCom.toUpperCase();
+				if (this.data.qttUnitCd1) this.data.qttUnitCd1 = this.data.qttUnitCd1.toUpperCase();
+				if (this.data.qttUnitCd2) this.data.qttUnitCd2 = this.data.qttUnitCd2.toUpperCase();
+				if (this.data.taxExpLsNo) this.data.taxExpLsNo = this.data.taxExpLsNo.toUpperCase();
+
+				this.data.lsOtherLawCode = this.lsOtherLawCode;
+                console.log(this.data);
+                var token = $('#hdfToken').val();
+                var self = this;
+                var listProducts = [];
+                listProducts.push(this.data)
+                var dataRequest = { listProducts: listProducts,  declarationId: @ViewBag.IdDe};
+                $.ajax({
+                    url: Config.API_Login + "export/InsertEDAProduct",
+                    type: 'POST',
+                    data: JSON.stringify(dataRequest),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        console.log("edaDetail: ", data);
+                        debugger;
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                utils.closeAll();
+                                bootbox.alert("Cập nhật sản phẩm thành công!", function(){
+                                    if(app)
+                                        app.getList();
+                                    if(isContinue == 1){
+                                        Export.AddProduct();
+                                    }
+                                })
+                            }
+                            else {
+                                utils.Message(data.Description);
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                        //accounts.Unloading();
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        //accounts.Unloading();
+                    }
+                });
+
+            },
+			update: function () {
+                if (!this.data.hSCd) {
+                    bootbox.alert("Bạn chưa nhập Mã số hàng hóa");
+                    return;
+                };
+                if (!this.data.itemName) {
+                    bootbox.alert("Bạn chưa nhập mô tả hàng hóa");
+                    return;
+                };
+                if (!this.data.qttUnitCd1) {
+                    bootbox.alert("Bạn chưa nhập số lượng hàng hóa");
+                    return;
+                };
+				if (this.data.cdOCom) this.data.cdOCom = this.data.cdOCom.toUpperCase();
+				if (this.data.qttUnitCd1) this.data.qttUnitCd1 = this.data.qttUnitCd1.toUpperCase();
+				if (this.data.qttUnitCd2) this.data.qttUnitCd2 = this.data.qttUnitCd2.toUpperCase();
+				if (this.data.taxExpLsNo) this.data.taxExpLsNo = this.data.taxExpLsNo.toUpperCase();
+				this.data.lsOtherLawCode = this.lsOtherLawCode;
+
+                var token = $('#hdfToken').val();
+                var self = this;
+                var listProducts = [];
+                listProducts.push(this.data)
+                var dataRequest = { listProducts: listProducts,  declarationId: @ViewBag.IdDe};
+                $.ajax({
+                    url: Config.API_Login + "export/UpdateEDAProduct",
+                    type: 'POST',
+                    data: JSON.stringify(dataRequest),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        console.log("edaDetail: ", data);
+                        debugger;
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                utils.closeAll();
+                                bootbox.alert("Thêm sản phẩm thành công!", function(){
+                                    if(app)
+                                        app.getList();
+                                })
+                            }
+                            else {
+                                utils.Message(data.Description);
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                        //accounts.Unloading();
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        //accounts.Unloading();
+                    }
+                });
+            },
+            getIntroMess: function (jobCode, errorCode, isFocus) {
+                $.ajax({
+                    type: 'POST',
+                    url: Config.API_Login + "tax/GetGuideInformation?jobCode=" + jobCode + "&id=" + errorCode,
+                    data: {
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        //console.log(data);
+                        if (data.ResponseCode > 0 && data.Data && data.Data.length > 0) {
+                            var text = data.Data[0].text;
+                            text = text.replace(/\n/g, "<br>");
+                            $("#mess_error p").html(text);
+                        }
+
+                        //scroll and focus
+                        if (isFocus !== undefined && isFocus === 1) {
+                            var scrH = $("." + errorCode).offset().top;
+                            $('body,html').animate({ scrollTop: scrH }, 800);
+
+                            $("." + errorCode).addClass("error");
+                            setTimeout(function () {
+                                $("." + errorCode).removeClass("error");
+                            }, 3000);
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        },
+        mounted() {
+            this.init();
+        }
+
+    });
+
+    function CheckOnlyNumber(obj, e) {
+        var whichCode = (window.Event && e.which) ? e.which : e.keyCode; /*if (whichCode == 13) { this.onPlaceOrder(); return false; }*/
+        if (whichCode == 9) return true;
+        if ((whichCode >= 48 && whichCode <= 57) || whichCode == 8) {
+            var n = obj.value.replace(/,/g, ""); if (whichCode == 8) {
+                if (n.length != 0)
+                    n = n.substr(0, n.length - 1);
+            }
+            if (parseFloat(n) == 0) {
+                n = '';
+            }
+            return true;
+        }
+        e.returnValue = false; return false;
+    }
+</script>
+<style type="text/css">
+    label.error {
+        height: 0;
+        z-index: -1;
+        font-size: 0;
+        position: absolute;
+        top: 0;
+    }
+</style>
+
+

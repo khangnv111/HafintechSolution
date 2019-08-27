@@ -52,7 +52,10 @@
 
     //Cơ quan hải quan
     PopCustom: function () {
-        DePop.PopSearch(function () {
+		DePop.PopSearch(function () {
+			$("#title-code-search-pop").html("Mã chi cục");
+			$("div#name-search-pop label").html("Tên chi cục");
+
             $("#namePop").html("danh mục chi cục hải quan");
             $("#actSearchPop").attr("onclick", "DePop.SearchCustom()");
             DePop.SearchCustom();
@@ -175,8 +178,15 @@
     //Mã nước ở tờ khai GTT
     PopCountryGTT: function (i) {
         //i == 1 xuất khẩu <> 1: xuất xứ
-        DePop.PopSearch(function () {
-            $("#namePop").html("danh mục nước xuất khẩu");
+		DePop.PopSearch(function () {
+			$("#title-code-search-pop").html("Mã nước");
+			$("div#name-search-pop label").html("Tên nước");
+			if (i == 1) {
+				$("#namePop").html("danh mục nước xuất khẩu");
+			}
+			else {
+				$("#namePop").html("danh mục nước xuất xứ");
+			}
             $("#actSearchPop").attr("onclick", "DePop.SearchCountryGTT(" + i + ")");
             DePop.SearchCountryGTT(i);
         });
@@ -192,8 +202,8 @@
             type: 'GET',
             url: Config.API_Login + "tax/GetCountry",
             data: {
-                countryCode: txtCode,
-                countryName: txtName
+				countryCode: txtCode,
+				name: txtName
             },
             headers: {
                 "Authorization": "Bearer " + token
@@ -235,7 +245,10 @@
     //Số lượng kiện
     PopSealUnit: function () {
         DePop.PopSearch(function () {
-            $("#namePop").html("danh mục đơn vị kiện");
+			$("#namePop").html("danh mục đơn vị kiện");
+			$("#title-code-search-pop").html("Mã đơn vị");
+			$("div#name-search-pop label").html("Tên đơn vị");
+
             $("#actSearchPop").attr("onclick", "DePop.SearchSealUnit()");
             DePop.SearchSealUnit();
         });
@@ -293,8 +306,11 @@
 
     //mã địa điểm lưu kho hàng
     PopWareHouse: function () {
-        DePop.PopSearch(function () {
-            $("#namePop").html("danh mục mã địa điểm lưu kho");
+		DePop.PopSearch(function () {
+			$("#title-code-search-pop").html("Mã địa điểm");
+			$("div#name-search-pop label").html("Tên công ty");
+
+            $("#namePop").html("danh mục mã địa điểm lưu kho hàng");
             $("#actSearchPop").attr("onclick", "DePop.SearchWareHouse()");
             DePop.SearchWareHouse();
         });
@@ -410,8 +426,11 @@
 
     //Điểm dỡ hàng
     PopUnplace: function () {
-        DePop.PopSearch(function () {
-            $("#namePop").html("danh mục dỡ hàng");
+		DePop.PopSearch(function () {
+			$("#title-code-search-pop").html("Mã cảng");
+			$("div#name-search-pop label").html("Tên cảng");
+
+            $("#namePop").html("danh mục địa điểm dỡ hàng");
             $("#actSearchPop").attr("onclick", "DePop.SearchUnplace()");
             DePop.SearchUnplace();
         });
@@ -469,7 +488,10 @@
     //Trọng lượng hàng
     PopWeightUnit: function () {
         DePop.PopSearch(function () {
-            $("#namePop").html("danh mục trọng lượng hàng");
+			$("#namePop").html("danh mục trọng lượng hàng");
+			$("#title-code-search-pop").html("Mã đơn vị");
+			$("div#name-search-pop label").html("Tên đơn vị");
+
             $("#actSearchPop").attr("onclick", "DePop.SearchWeightUnit()");
             DePop.SearchWeightUnit();
         });
@@ -526,8 +548,11 @@
 
     //Địa điểm xếp hàng
     PopPlace: function () {
-        DePop.PopSearch(function () {
-            $("#namePop").html("danh mục xếp hàng");
+		DePop.PopSearch(function () {
+			$("#title-code-search-pop").html("Mã cảng");
+			$("div#name-search-pop label").html("Tên cảng");
+
+            $("#namePop").html("danh mục địa điểm xếp hàng");
             $("#actSearchPop").attr("onclick", "DePop.SearchPlace()");
             DePop.SearchPlace();
         });
@@ -807,11 +832,11 @@ window.Select = {
         $("#txtdclKindCd_text").val(text);
 
         utils.closeAll();
-        try {
+        if (app) {
             app.data.dclKindCd = code;
-            app.data.dclKindNm = name;
+            app.data.dclKindNm = text;
+            app.dclKindNm = text;
         }
-        catch (e) { }
     },
 
     SelectCustom: function (code, idText) {
@@ -823,7 +848,7 @@ window.Select = {
         utils.closeAll();
         try {
             app.data.cstOffice = code;
-            app.data.cstOffice = code;
+            app.data.cstOfficeNm = text;
         }
         catch (e) {
         }
@@ -877,7 +902,8 @@ window.Select = {
             var text = $("#" + idText).text();
             $("#txtcountryNm").val(text);
             try {
-                app.data.placeOriginCd = code;
+				app.data.placeOriginCd = code;
+				app.data.oriPlaceNm = text;
             }
             catch (e) {
             }
@@ -891,7 +917,7 @@ window.Select = {
         //$("#txtcargoPiece").val(code);
 
         var text = $("#" + idText).text();
-        $("#txtpieceUnitCd_text").val(text);
+		$("#txtpieceUnitCd_text").val(code);
 
         utils.closeAll();
         try {
@@ -912,7 +938,9 @@ window.Select = {
 
         utils.closeAll();
         try {
-            app.data.cstWrhCd = code;
+			app.data.cstWrhCd = code;
+			app.data.cstWrhNm = text;
+
             app.data.cstClrWrhNm = text;
         }
         catch (e) {
@@ -928,7 +956,7 @@ window.Select = {
         utils.closeAll();
         try {
             app.data.lPlanVesselCd = code;
-            app.data.loadVesselCd = code;
+            //app.data.loadVesselCd = code;
             app.data.lPlanVesselNm = text;
             app.data.loadVesselAcNm = text;
         }
@@ -936,7 +964,8 @@ window.Select = {
         }
     },
 
-    SelectUnplace: function (code, idText) {
+	SelectUnplace: function (code, idText) {
+		//var fStr = code.substring(0, 2);
         code = code.replace("VN", "");
 
         $("#hdfunloadPortCd").val(code);
@@ -948,9 +977,14 @@ window.Select = {
         utils.closeAll();
         try {
             app.data.loadPortCd = code;
-            app.data.loadPortNm = text;
-            app.data.unloadPortCd = code;
-            app.data.unloadPortNm = text;
+			app.data.loadPortNm = text;
+
+			app.data.unloadPortNm = text;
+			app.data.unloadPortCd = code; 
+			if (app.data.meansOfTrsCd == 4 || app.data.meansOfTrsCd == 5) {
+				app.data.unloadPortCd = "VN" + code; 
+				$("#txtunloadPortCd").val("VN" + code);
+			} 
         }
         catch (e) {
         }
@@ -960,7 +994,7 @@ window.Select = {
         $("#hdfweigUnitCdGrs").val(code);
 
         var text = $("#" + idText).text();
-        $("#txtweigUnitCdGrs").val(text);
+		$("#txtweigUnitCdGrs").val(code);
 
         utils.closeAll();
         try {
@@ -992,11 +1026,17 @@ window.Select = {
     },
 
     SelectLaw: function (code, idText, n) {
-        $("#hdfotherLawCd" + n).val(code);
-        //$("#txtotherLawCd" + n).val(code);
-
-        var text = $("#" + idText).text();
-        $("#txtotherLawCd" + n).val(text);
+		$("#hdfotherLawCd" + n).val(code);
+		var text = $("#" + idText).text();
+		//$("#txtotherLawCd" + n).val(code + " | " + text); 
+		try {
+			app.data.lsOtherLawCode[n].otherLawCd = code;
+			app.data.lsOtherLawCode[n].otherLawCdText = code + " | " + text;
+			app.$forceUpdate();
+		}
+		catch(err){
+			console.log(err);
+		}
 
         utils.closeAll();
     },
@@ -1908,7 +1948,15 @@ window.Product = {
     },
 
     SelectedTax: function (code, idx) {
-        $("#txtrdcImpTaxCd, #slrdcImpTaxCd").val(code);
+		$("#txtrdcImpTaxCd, #slrdcImpTaxCd").val(code);
+
+		try {
+			idaProduct.data.rdcImpTaxCd = code;
+		} catch{
+			console.log("error");
+		}
+		
+
         DePop.ClosePopSearch();
     },
 

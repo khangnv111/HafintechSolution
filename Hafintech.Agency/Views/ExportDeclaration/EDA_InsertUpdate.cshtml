@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewBag.Title = "EDA_InsertUpdate";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div id="app">
+    <div class="row-fluid">
+        <div class="span12" id="divBtn">
+            <h4>Đăng ký mới tờ khai xuất khẩu</h4>
+            <a href="javascript:;" v-on:click="showTab(1)" v-bind:class="{'btn-success': tabDecla == 1}" class="btn">Thông tin chung</a>
+            <a href="javascript:;" v-on:click="showTab(2)" v-bind:class="{'btn-success': tabDecla == 2}" class="btn">Thông tin Container</a>
+            <a href="javascript:;" v-on:click="showTab(3)" v-bind:class="{'btn-success': tabDecla == 3}" class="btn">Danh sách hàng</a>
+            <a onclick="Export.LinktoCT(2);" class="btn">
+                Chỉ thị của hải quan
+            </a>
+            <a href="javascript:;" v-on:click="ViewResult(@ViewBag.tab)" v-bind:class="{'btn-success': tabDecla == 5}" class="btn">Kết quả xử lý tờ khai</a>
+            <a id="linkManagerVoucher" v-show="data.dclNo" data-idDec="@ViewBag.decId" v-bind:data-dclNo="data.dclNo" data-controler="ElectronicVoucher" data-action="ListVoucherCustom" href="#" class="btn">Quản lý chứng từ điện tử</a>
+        </div>
+    </div>
+    <div class="row-fluid">
+
+        <div class="row-fluid" style="margin-top: 20px">
+            <div class="span12">
+                <div v-show="data.dclNo">
+                    <div class="span4">
+                        <label class="control-label span3">Số Tờ khai:</label>
+                        <div class="controls">
+                            <span style="color: blue">{{data.dclNo}}</span>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <label class="control-label span3">Phân luồng:</label>
+
+                        <div class="controls">
+                            {{stream}}
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <label class="control-label span3">Thông quan: </label>
+                        <div class="controls" v-if="data.dateOfPermit">
+                            Thông quan
+                        </div>
+                        <div class="controls" v-else>
+                            Chưa thông quan
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="divTab1" v-show="tabDecla == 1">
+            @Html.Action("EDA_Info", "ExportDeclaration", new { decId = ViewBag.decId })
+        </div>
+
+        <div id="divTab2" style="display: none" v-show="tabDecla == 2">
+            @Html.Action("EDA_Container", "ExportDeclaration", new { decId = ViewBag.decId })
+        </div>
+
+        <div id="divTab3" style="display: none" v-show="tabDecla == 3">
+            @Html.Action("ListProduct", "ExportDeclaration", new { Id = ViewBag.decId })
+        </div>
+
+        @*<div id="divTab5" style="display: none" v-show="tabDecla == 5">
+                @Html.Action("TabResultXLTK", "ExportDeclaration", new { decId = ViewBag.decId })
+            </div>*@
+
+        <div class="row-fluid act-save-decEDA" v-show="tabDecla != 3">
+            <div class="span12">
+                <div class="form-actions" style="text-align: center;">
+                    <button type="submit" class="btn btn-success" id="btnSaveDeclaration" style="display:none"></button>
+                    <input type="hidden" id="hdfStatus" value="1" />
+
+                    @if ((long)ViewBag.decId > 0)
+                    {
+
+                        <a class="btn btn-success" v-show="showUpdate == true" v-on:click="update()">CẬP NHẬT TỜ KHAI</a>
+                        <a class="btn btn-success" v-on:click="copyEDA()">COPY TK</a>
+                        <a class="btn btn-danger" v-on:click="signDecla()" v-show="data.declarationId && data.status<2 && showTK == true">TRÌNH KÝ</a>
+
+                        <a v-if="(data.declarationId&&!data.dclNo) || data.statusCode==='EDB'" v-show="showSubmit == true && isSubmit == true" class="btn btn-success" v-on:click="submit(11)">GỬI EDA</a>
+                        <a v-if="(data.declarationId&&!data.dclNo) || data.statusCode==='EDB'" v-show="showSubmit == true && isSubmitUSB == true" class="btn btn-success" v-on:click="submitUSB(11)">GỬI EDA</a>
+
+                        <a v-if="data.status === 11" v-show="showSubmit == true && isSubmit == true" class="btn btn-success" v-on:click="submit(13)">GỬI EDC</a>
+                        <a v-if="data.status === 11" v-show="showSubmit == true && isSubmitUSB == true" class="btn btn-success" v-on:click="submitUSB(13)">GỬI EDC</a>
+
+                        <a v-if="data.status === 15" class="btn btn-success" v-show="showSubmit == true && isSubmit == true" v-on:click="submit(14)">GỬI EDA01</a>
+                        <a v-if="data.status === 15" class="btn btn-success" v-show="showSubmit == true && isSubmitUSB == true" v-on:click="submitUSB(14)">GỬI EDA01</a>
+
+                        <a v-if="data.status === 14" class="btn btn-success" v-show="showSubmit == true && isSubmit == true" v-on:click="submit(16)">GỬI EDE</a>
+                        <a v-if="data.status === 14" class="btn btn-success" v-show="showSubmit == true && isSubmitUSB == true" v-on:click="submitUSB(16)">GỬI EDE</a>
+                    }
+                    else
+                    {
+                        @*<a class="btn btn-warning" v-on:click="save()">LƯU NHÁP</a>*@
+                        <a class="btn btn-success" v-on:click="save()">LƯU TỜ KHAI</a>
+                        <a class="btn btn-success" v-on:click="copyEDA()">COPY TK</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-show="showPop" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+    <div v-show="showPop" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 85%; display: none">
+        @Html.Action("PopSearch", "ExportDeclaration")
+    </div>
+    <div v-show="showPopObject" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 85%; display: none">
+        @Html.Action("PopSelectObject", "ExportDeclaration")
+    </div>
+
+</div>
+<input type="hidden" class="span5" id="dclId" name="dclId" value="@ViewBag.decId" />
+
+
+<script src="~/Content/js/export-decla/eda-onload.trinhky.js"></script>
+<script src="~/Content/js/export-decla/eda-declaration.js"></script>
+<script>
+    $(document).ready(function () { 
+        var tab = "";
+        var ishight = "";
+        var urlParams = new URLSearchParams(window.location.search);
+        tab = urlParams.get('tab');
+        ishight = urlParams.get('ishight');
+
+        var myVar = setInterval(myTimer, 300);
+       
+        function myTimer() {
+            if (app.data.dclNo) {
+                var linkManagerVoucher = Config.Url_Root + $("#linkManagerVoucher").attr("data-controler") + "/" + $("#linkManagerVoucher").attr("data-action") + "?idDec=" + $("#linkManagerVoucher").attr("data-idDec") + "&type=5&tab=" + tab + "&ishight=" + ishight+"&dclNo=" + app.data.dclNo;
+                $("#linkManagerVoucher").attr("href", linkManagerVoucher);
+                myStopFunction();
+            } 
+        } 
+        function myStopFunction() {
+            clearInterval(myVar);
+        }
+    });
+</script>
+

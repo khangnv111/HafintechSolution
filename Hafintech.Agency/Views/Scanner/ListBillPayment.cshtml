@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewBag.Title = "ListBillPayment"; 
+}
+
+<div class="container-fluid" id="list-data">
+	<div class="row-fluid">
+		<div class="span6">
+			<h4>DANH SÁCH PHIỂU THANH TOÁN</h4>
+		</div>
+
+	</div>
+
+	<div class="row-fluid">
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"><i class="icon-align-justify"></i></span>
+				<h5>Tìm kiếm</h5>
+			</div>
+			<div class="widget-content">
+				<div class="row-fluid">
+
+					<div class="span2">
+						<label>Mã phiếu TT</label>
+						<input type="text" class="span12" v-model="data.invTransCode">
+					</div>
+
+					<div class="span2">
+						<label>Trạng thái thanh toán</label>
+						<select class="span12" v-model="data.payStatus">
+							<option value="">&nbsp; Tất cả</option>
+							<option v-for="item in lstPayStatus" v-bind:value="item.value">&nbsp; {{item.value}} || {{item.name}}</option>
+						</select>
+					</div>
+
+					<div class="span2">
+						<label>Ngày lập phiếu</label>
+						<input type="date" class="span12" v-model="data.fromCreatedDate">
+					</div>
+
+					<div class="span2">
+						<label>Đến ngày</label>
+						<input type="date" class="span12" v-model="data.toCreatedDate">
+					</div>
+
+					<div class="span2">
+						<button class="span10" style="padding: 5px;margin-top: 23px;" v-on:click="getList(0)">Tìm kiếm</button>
+					</div>
+
+				</div> 
+			</div>
+		</div>
+
+		<div class="box-body">
+			<table class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+				<thead>
+					<tr>
+						<th class="text-center" style="min-width:70px">STT</th>
+						<th class="text-center">Mã phiếu</th>
+						<th class="text-center">Ngày lập phiếu</th>
+						<th class="text-center">Người thanh toán</th>
+						<th class="text-center">Người lập phiếu</th>
+						<th class="text-center">Trạng thái thanh toán</th>
+						<th class="text-center">Tổng tiền thanh toán (VND)</th> 
+					</tr>
+				</thead>
+				<tbody class="content-search-table">
+					<tr v-show="showLoading">
+						<td colspan="14" style="text-align:center">
+							<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+						</td>
+					</tr>
+					<tr v-for="(item, index) in lstBill">
+						<td>
+							{{index + 1}}
+						</td>
+						<td>
+                            <a href="javascript:;" v-on:click="viewDetail(item.invSummaryCode)" style="color: blue">{{item.invSummaryCode}}</a>
+                        </td>
+						<td>{{item.createdDate}}</td>
+						<td>{{item.payer}}</td>
+						<td>{{item.createdBy}}</td>
+						<td>{{item.payStatName}}</td>
+						<td>{{item.totalAmount}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+	<div class="row-fluid">
+		<ul class="pagination"></ul>
+	</div> 
+
+</div>
+
+<script>
+	var app = new Vue({
+		el: '#list-data',
+		data: {
+			data: {},
+			showLoading: true,
+			showPop: false,
+			lstPayStatus: [],//Danh sách trạng thái TT
+			lstBill: [],
+		},
+		methods: {
+			init: async function (callback) {
+				var data = this.data;
+				data.firstResult = 0;
+				data.maxResult = 10; 
+				data.invTransCode = "";
+				data.payStatus = 2; 
+				data.fromCreatedDate = "";
+				data.toCreatedDate = ""; 
+
+				this.lstPayStatus = await Lib.ListScannerDictionary('PAY_STATUS');  
+				this.getList(0);
+
+				if (callback != 'undefined' && typeof callback == 'function')
+					callback();
+
+			},
+			getList: function (page, callback) {
+				this.data.firstResult = page * this.data.maxResult;
+				//$('#pagination').html('');
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetListInvoice",
+					data: {
+						businessId: utils.getCookie("accountIdBuss"),
+						fromCreatedDate: self.data.fromCreatedDate,
+						toCreatedDate: self.data.toCreatedDate, 
+						payStatus: self.data.payStatus, 
+						invTransCode: self.data.invTransCode, 
+						firstResult: self.data.firstResult,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					}, 
+					success: function (data) {
+						self.showLoading = false; 
+						if (data.ResponseCode >= 0) {
+							self.lstBill = data.Data.data; 
+							self.loadPages(page, data.Data.pages);
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			loadPages: function (page, totalPage) {
+				var self = this;
+
+				var htmlP = '';
+				var CurPage = page + 1;
+				//debugger;
+				if (totalPage > 1) {
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(0)"><i class="fa fa-angle-double-left"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
+
+					for (var i = CurPage - 3; i < CurPage + 3; i++) {
+						if (i > 0 && i <= totalPage) {
+							if (CurPage == i) {
+								htmlP += '<li class="active"><a href="javascript:;" onclick="app.getList(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+							else {
+								htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+						}
+					}
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getList(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
+				}
+
+				$(".pagination").html(htmlP);
+			},
+			getNameVerityStatus: function (status) {
+				if (!status && status != 0)
+					return "";
+				var name = "";
+				for (var i = 0; i < this.listVerifyStatus.length; i++) {
+					if (status == this.listVerifyStatus[i].value) {
+						name = this.listVerifyStatus[i].name;
+						break;
+					}
+				}
+				return name;
+			},
+			ViewInfo: function (tranId) {
+				window.location.href = Config.Url_Root + "Scanner/VerifyCodeInfo?tranId=" + tranId;
+            },
+            viewDetail: function (TransCode) { 
+                window.location.href = Config.Url_Root + "Scanner/BillPaymentDetail?TransCode=" + TransCode;
+            },
+		},
+		mounted() {
+			var self = this;
+			this.init();
+		},
+
+	});
+
+</script>

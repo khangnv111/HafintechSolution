@@ -1,0 +1,199 @@
+﻿
+@{
+    ViewBag.Title = "ListVoucherCustom";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="container-fluid" id="lst">
+    <div class="row-fluid">
+        <div class="box-body" id="dvContent">
+
+            <a href="@Url.Action("DeclarationHighValue_Update", "Declaration", new { decID = ViewBag.idDec })" class="btn btn-success">Chi tiết Tờ khai GTC</a>
+            <a href="@Url.Action("TabCommodityHighValue_List", "Declaration", new { decID = ViewBag.idDec })" class="btn btn-success">Danh sách hàng GTC</a>
+            <a href="@Url.Action("TabDirectiveHighValue_List", "Declaration", new { decID = ViewBag.idDec })" class="btn btn-success">Chỉ thị của hải quan</a>
+            <a href="javascript:;" class="btn btn-success">Kết quả xử lý tờ khai GTC</a>
+            <a href="javascript:;" class="btn btn-warning">Quản lý chứng từ điện tử</a>
+
+            <div class="widget-box">
+                <div style="clear:both"></div>
+                <div class="widget-title">
+                    <div class="span6">
+                        <span class="icon"><i class="icon-align-justify"></i></span>
+                        <h5>Quản lý chứng từ hồ sơ hải quan</h5>
+                    </div>
+                    <div class="span6" style="text-align: right">
+                        <button class="btn btn-danger" onclick="Voucher.PopVoucher()"><i class="icon glyphicon-plus"></i> Thêm chứng từ</button>
+                    </div>
+
+                </div>
+                <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                    <thead>
+                        <tr>
+                            <th style="min-width:100px">STT</th>
+                            <th>Loại chứng từ</th>
+                            <th>Mã tham chiếu</th>
+                            <th>Mã loại hình</th>
+                            <th>Ngày tải lên chứng từ</th>
+                            <th>Ngày tiếp nhận</th>
+                            <th>Số tiếp nhận</th>
+                            <th>Trạng thái</th>
+                            <th>File đính kèm</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in data">
+                            <td>{{index+1}}</td>
+                            <td>{{item.type}}</td>
+                            <td>
+                                <a v-on:click="viewDeclaration(item)">{{item.reference}}</a>
+                            </td>
+                            <td>{{item.issuer}}</td>
+                            <td>{{item.createdDate}}</td>
+                            <td>{{item.issue}}</td>
+                            <td>{{item.transCtrctNo}}</td>
+                            <td>{{item.status}}</td>
+                            <td>{{item.fileName}}</td>
+                            <td>
+                                <a class="btn btn-warning" v-on:click="viewDeclaration(item)">Sửa</a>
+                                <a class="btn btn-danger" v-on:click="removeDe(item)">Xóa</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var calltable = 0;
+    var lst = new Vue({
+        el: '#lst',
+        data: {
+            data: {
+                AttachedFile: {}
+            },
+            voucherId: "",
+            issuer: ""
+        },
+        methods: {
+            init: async function () {
+                var data = this.data;
+            },
+            getList: async function (page, callback) {
+                try {
+                    var token = $('#hdfToken').val();
+                    const response = await axios.get(Config.API_Login + "Evoucher/Search?voucherId=" + this.voucherId + "&issuer=" + this.issuer,
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0) {
+                        this.data = response.data.Data.ListVoucher;
+                        if (typeof callback != 'undefined' && typeof callback == 'function')
+                            callback()
+                    }
+                    else return null;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+
+            viewDeclaration: function (item) {
+                switch (parseInt(item.issuer)) {
+                    case 308:
+                        window.location.href = Config.Url_Root + "Electronic/license?id=" + item.voucherId ;
+                        break;
+                    case 309:
+                        window.location.href = Config.Url_Root + "Electronic/contract?id=" + item.voucherId ;
+                        break;
+                    case 310:
+                        window.location.href = Config.Url_Root + "Electronic/invoice?id=" + item.voucherId ;
+                        break;
+                    case 311:
+                        window.location.href = Config.Url_Root + "Electronic/co?id=" + item.voucherId ;
+                        break;
+                    case 312:
+                        window.location.href = Config.Url_Root + "Electronic/cargo?id=" + item.voucherId ;
+                        break;
+                    case 313:
+                        window.location.href = Config.Url_Root + "Electronic/container?id=" + item.voucherId ;
+                        break;
+                    case 314:
+                        window.location.href = Config.Url_Root + "Electronic/other?id=" + item.voucherId ;
+                        break;
+                    default:
+                }
+
+            },
+            formatDate: function (date) {
+                return moment(String(date)).format('DD/MM/YYYY hh:mm')
+            },
+            formatDate2: function (date) {
+                if (date == undefined || date == "" || date == null) {
+                    return "";
+                }
+                var d = date.substring(0, 2);
+                var m = date.substring(2, 4);
+                var y = date.substring(4, date.length);
+
+                var time = d + "/" + m + "/" + y;
+
+                return time;
+            },
+            removeDe: function (item) {
+                var self = this;
+                bootbox.confirm("Bạn có chắc xóa tờ khai này!", function (resultCon) {
+                    if (resultCon) {
+                        var token = $('#hdfToken').val();
+                        $.ajax({
+                            type: 'GET',
+                            url: Config.API_Login + "TransportDeclaration/DeleteOLA",
+                            data: {
+                                btDclId: item.btDclId
+                            },
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                //console.log(data);
+                                debugger;
+                                utils.unLoading();
+                                if (data != null && data != '' && data != undefined) {
+                                    if (data.ResponseCode > 0) {
+                                        self.getList();
+                                    }
+                                    else {
+                                        utils.Message(data.Description);
+                                    }
+                                }
+                                else {
+                                    utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                }
+
+                            },
+                            error: function (data) {
+                                utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                return;
+                            }
+                        });
+                    }
+                });
+
+            }
+        },
+        mounted() {
+            this.init();
+            this.getList(0);
+
+            var a = $("li[class='treeview act']");
+            if (a.length > 1) {
+                a[1].removeAttribute("class", "act");
+            }
+        }
+    });
+</script>
+

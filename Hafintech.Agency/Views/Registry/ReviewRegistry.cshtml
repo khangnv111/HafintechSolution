@@ -1,197 +1,762 @@
 ﻿
 @{
-    ViewBag.Title = "ReviewRegistry"; 
+	ViewBag.Title = "ReviewRegistry";
 }
 
 <div class="container-fluid">
-    <div class="row-fluid" id="lstTK">
-        <div class="widget-box">
-            <div class="widget-title">
-                <span class="icon"><i class="icon-align-justify"></i></span>
-                <h5>DUYỆT CHỨNG TỪ TRÌNH KÝ</h5>
-            </div>
-            <div class="widget-content">
-                <div class="row-fluid">
-                    <div class="span2">
-                        <label>Tài khoản trình ký</label>
-                        @*<input type="text" class="span12" value=""  placeholder="" v-model="data.createdAccId">*@
-                        <select class="span12" id="createdAccId" v-model="data.createdAccId">
-                            <option value="">-- Tất cả --</option>
-                        </select>
-                    </div>
+	<div class="row-fluid" id="lstTK">
+		<div class="widget-box">
+			<div class="widget-title">
+				<span class="icon"><i class="icon-align-justify"></i></span>
+				<h5>DUYỆT CHỨNG TỪ TRÌNH KÝ</h5>
+			</div>
+			<div class="widget-content">
+				<div class="row-fluid">
+					<div class="span2">
+						<label>Tài khoản trình ký</label>
+						@*<input type="text" class="span12" value=""  placeholder="" v-model="data.createdAccId">*@
+						<select class="span12" id="createdAccId" v-model="data.createdAccId">
+							<option value="">-- Tất cả --</option>
+						</select>
+					</div>
 
-                    <div class="span2">
-                        <label>Trạng thái ký</label>
-                        <select class="span12" id="statusReg" v-model="data.status">
-                            <option value="">--Chọn trạng thái--</option>
-                            <option value="2">Cho phép</option>
-                            <option value="0">Không cho phép</option> 
-                        </select>
-                    </div>
+					<div class="span2">
+						<label>Trạng thái ký</label>
+						<select class="span12" id="statusReg" v-model="data.status">
+							<option value="">--Chọn trạng thái--</option>
+							<option value="2">Cho phép</option>
+							<option value="0">Không cho phép</option>
+						</select>
+					</div>
 
-                    <div class="span2">
-                        <input type="checkbox"/> Tự động lấy chứng từ trình ký
-                    </div>
-                    <div class="span3">
-                        <button class="btn" v-on:click="getList(1)">Lấy chứng từ trình ký</button>
-                    </div>
+					<div class="span2">
+						<input type="checkbox" v-if="showCheckbox" v-bind:checked="autoSearch == 1" v-on:click="selectSearch(1)" /> Tự động lấy chứng từ trình ký
+					</div>
+					<div class="span3">
+						<button class="btn" v-on:click="getList(1)">Lấy chứng từ trình ký</button>
+					</div>
 
-                </div>
+				</div>
 
-                <div class="row-fluid">
+				<div class="row-fluid">
 
-                    <div class="span2">
-                        <label>Từ ngày</label>
-                        <input type="date" class="span12 dDate" value="" id="datepickerFromD" name="datepickerFrom" v-model="data.startCreatedDate" placeholder="Từ ngày" required="">
-                    </div>
+					<div class="span2">
+						<label>Từ ngày</label>
+						<input type="date" class="span12" value="" id="datepickerFromD" v-model="data.startCreatedDate">
+					</div>
 
-                    <div class="span2">
-                        <label>Đến ngày</label>
-                        <input type="date" class="span12 dDate" value="" id="datepickerToD" name="datepickerTo" v-model="data.endCreatedDate" placeholder="Đến ngày" required="">
-                    </div>
+					<div class="span2">
+						<label>Đến ngày</label>
+						<input type="date" class="span12" value="" id="datepickerToD" v-model="data.endCreatedDate">
+					</div>
 
-                    <div class="span2">
-                        <label>Loại tờ khai</label>
-                        <select class="span12" id="slType">
-                            <option value="0">--Tất cả--</option>
-                            <option value="1">Nhập khẩu</option>
-                            <option value="2">Xuất khẩu</option>
-                        </select>
-                    </div>
-                     
-                    <div class="span4">
-                        Lưu ý: Khi tự ký chứng từ, bạn nên tắt chế độ Tự động lấy chứng từ trình ký
-                    </div>
+					<div class="span4">
+						Lưu ý: Khi tự ký chứng từ, bạn nên tắt chế độ Tự động lấy chứng từ trình ký<br />
+						<input type="checkbox" v-if="showCheckbox" v-bind:checked="autoSearch == 2" v-on:click="selectSearch(2)" /> Tự động ký và gửi trả kết quả ký
+					</div>
 
-                </div> 
-            </div>
-        </div>
+				</div>
+			</div>
+		</div>
 
-        <div class="box-body" id="dvContent">
-            <div class="widget-box">
-                <div class="widget-title">
-                    <span class="icon"><i class="icon-align-justify"></i></span>
-                    <h5>Danh sách</h5>
-                </div>
+		<div class="box-body" id="dvContent">
+			<div>
+				<button v-on:click="SelectTab(1)" v-bind:class="{'btn-warning': typeDeclaration == 1, 'btn-success': typeDeclaration != 1}" class="btn" style="padding: 7px 20px; ">Tờ khai nhập khẩu</button>
+				<button v-on:click="SelectTab(2)" v-bind:class="{'btn-warning': typeDeclaration == 2, 'btn-success': typeDeclaration != 2}" class="btn" style="padding: 7px 20px;">Tờ khai xuất khẩu</button>
+				<button v-on:click="SelectTab(3)" v-bind:class="{'btn-warning': typeDeclaration == 3, 'btn-success': typeDeclaration != 3}" class="btn" style="padding: 7px 20px;">Tờ khai AMA</button>
+				<button v-on:click="SelectTab(4)" v-bind:class="{'btn-warning': typeDeclaration == 4, 'btn-success': typeDeclaration != 4}" class="btn" style="padding: 7px 20px;">Tờ khai HYS</button>
+				<button v-on:click="SelectTab(5)" v-bind:class="{'btn-warning': typeDeclaration == 5, 'btn-success': typeDeclaration != 5}" class="btn" style="padding: 7px 20px;">Tờ khai OLA</button>
+				<button v-on:click="SelectTab(6)" v-bind:class="{'btn-warning': typeDeclaration == 6, 'btn-success': typeDeclaration != 6}" class="btn" style="padding: 7px 20px;">Chứng từ điện tử</button>
+			</div>
+			<div class="widget-box">
+				<div class="widget-title">
+					<span class="icon"><i class="icon-align-justify"></i></span>
+					<h5>Danh sách</h5>
+				</div>
 
-                <div id="divUpdate">
-                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
-                        <thead>
-                            <tr>
-                                <th class="text-center" style="min-width:70px">STT</th> 
-                                <th class="text-center" style="min-width:100px">Số tờ khai</th> 
-                                <th class="text-center">Trạng thái ký</th>
-                                <th class="text-center">Trạng thái tờ khai</th>
-                                <th class="text-center">Tài khoản trình ký</th>
-                                <th class="text-center">Loại chứng từ</th>
-                                <th class="text-center">Số Ref</th>
-                                <th class="text-center">Chữ ký</th>
-                            </tr>
-                        </thead>
-                        <tbody class="content-search-table">
+				<div id="divUpdate">
+					<table v-if="!isVoucher" id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+						<thead>
+							<tr>
+								<th class="text-center" style="min-width:70px">STT</th>
+								<th class="text-center" style="min-width:100px">Mã tờ khai</th>
+								<th class="text-center" style="min-width:100px">Số tờ khai</th>
+								<th class="text-center" v-if="typeDeclaration == 3" style="min-width:100px">Số tờ khai bổ xung</th>
+								<th class="text-center">Mã nghiệp vụ</th>
+								<th class="text-center">Trạng thái ký</th>
+								<th class="text-center">Trạng thái tờ khai</th>
+								<th class="text-center">Tài khoản trình ký</th>
+								<th class="text-center">Người tạo</th>
+								<th class="text-center">Thao tác</th>
+							</tr>
+						</thead>
+						<tbody class="content-search-table">
+							<tr v-show="showLoading">
+								<td colspan="14" style="text-align:center">
+									<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+								</td>
+							</tr>
 
-                            <tr v-for="(item, index) in lstDeclaration">
-                                <td>{{index+1}}</td>
-                                <td>
-                                    <a v-on:click="viewDeclaration(item.dclId, item.type)">{{item.dclId}}</a>
-                                </td>
-                                <td>
-                                    <span v-if="item.status > 1">Cho phép</span>
-                                    <span v-else="item.status <= 1">Không cho phép</span>
-                                </td>
-                                <td>{{getTextStatus(item.status)}}</td>
-                                <td>{{item.acceptAccId}}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+							<tr v-for="(item, index) in lstDeclaration">
+								<td>{{index+1}}</td>
+								<td>
+									<a v-if="typeDeclaration == 1" v-on:click="viewDeclaration(item.dclId, item.type, item.createdAccId)">{{item.dclId}}</a>
+									<a v-if="typeDeclaration == 2" v-on:click="viewDeclaration(item.declarationId, item.type, item.createdAccId)">{{item.declarationId}}</a>
+									<a v-if="typeDeclaration == 3 || typeDeclaration == 4" v-on:click="viewDeclaration(item.id, item.type, item.createdAccId)">{{item.id}}</a>
+									<a v-if="typeDeclaration == 5" v-on:click="viewDeclaration(item.btDclId, item.type)">{{item.btDclId}}</a>
+								</td>
+								<td>
+									<a v-if="typeDeclaration == 1" v-on:click="viewDeclaration(item.dclId, item.type, item.createdAccId)">{{item.dclNo}}</a>
+									<a v-if="typeDeclaration == 2" v-on:click="viewDeclaration(item.declarationId, item.type, item.createdAccId)">{{item.dclNo}}</a>
+									<a v-if="typeDeclaration == 3" v-on:click="viewDeclaration(item.id, item.type, item.createdAccId)">{{item.dclNo}}</a>
+									<a v-if="typeDeclaration == 4" v-on:click="viewDeclaration(item.id, item.type, item.createdAccId)">{{item.attachmentNo}}</a>
+									<a v-if="typeDeclaration == 5" v-on:click="viewDeclaration(item.btDclId, item.type)">{{item.btDclNo}}</a>
+								</td>
+								<td v-if="typeDeclaration == 3">
+									<a v-on:click="viewDeclaration(item.id, item.type, item.createdAccId)">{{item.amendDclNo}}</a>
+								</td>
+								<td>
+									{{item.statusCode}}
+								</td>
+								<td>
+									<span v-if="item.status > 1">Cho phép</span>
+									<span v-else="item.status <= 1">Không cho phép</span>
+								</td>
+								<td>{{getTextStatus(item.status)}}</td>
+								<td>
+									{{item.sigAccId}} - {{lstAccSign[index] && lstAccSign[index].accname ? lstAccSign[index].accname : ""}}
+								</td>
+								<td>{{item.createdAccId}} - {{lstAccCreated[index] && lstAccCreated[index].accname ? lstAccCreated[index].accname : ""}}</td>
+								<td>
+									<a href="javascript:;" v-on:click="feedBack(item)" v-on:mouseover="HoverComment(item, index)" v-on:mouseleave="activeIndex = -1">
+										<i class="fa fa-sign-out fa-2x"></i> Phản hồi
+									</a>
+									<div v-show="index == activeIndex" style="position: absolute;margin-top: -70px;margin-left: 40px;display: none">
+										<i class="fa fa-commenting fa-4x" aria-hidden="true" style="color: #20791f;"></i>
+									</div>
+								</td>
+							</tr>
 
-                        </tbody>
-                    </table>
-                </div>
+						</tbody>
+					</table>
+					<table v-if="isVoucher" id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+						<thead>
+							<tr>
+								<th class="text-center">STT</th>
+								<th class="text-center">Mã chứng từ</th>
+								<th class="text-center">Loại chứng từ</th>
+								<th class="text-center">Mã tham chiếu</th>
+								<th class="text-center">Ngày tải lên chứng từ</th>
+								<th class="text-center">Ngày tiếp nhận</th>
+								<th class="text-center">Số tiếp nhận</th>
 
-            </div>
-        </div>
-    </div>
+								<th class="text-center">Trạng thái ký</th>
+								<th class="text-center">Trạng thái tờ khai</th>
+								<th class="text-center">Tài khoản trình ký</th>
+								<th class="text-center">Người tạo</th>
+								<th class="text-center">Số tờ khai</th>
+							</tr>
+						</thead>
+						<tbody class="content-search-table">
+							<tr v-show="showLoading">
+								<td colspan="14" style="text-align:center">
+									<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+								</td>
+							</tr>
+							<tr v-for="(item, index) in ListVoucher">
+								<td>{{index+1}}</td>
+								<td>{{item.voucherId}}</td>
+								<td>{{cusTextIssuer(item.issuer)}}</td>
+								<td>
+									<a v-on:click="viewDeclarationVoucher(item,item.type)">{{item.reference}}</a>
+								</td>
+								@*<td>{{item.DeclarationDocument.natureOfTransaction}}</td>*@
+								<td>{{item.createdDate}}</td>
+								<td>{{item.issue}}</td>
+								<td>{{item.customsReference}}</td>
+
+								<td>
+									<span v-if="item.status > 1">Cho phép</span>
+									<span v-else="item.status <= 1">Không cho phép</span>
+								</td>
+								<td>{{getTextStatus(item.status)}}</td>
+								<td>
+									{{item.sigAccId}} - {{lstAccSign[index] && lstAccSign[index].accname ? lstAccSign[index].accname : ""}}
+								</td>
+								<td>{{item.createdAccId}} - {{lstAccCreated[index] && lstAccCreated[index].accname ? lstAccCreated[index].accname : ""}}</td>
+								<td>{{item.dclId}}</td>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</div>
+
+		<div v-show="showPop" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+		<div id="pop_feedback" v-show="showPop" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 50%; display: none">
+		</div>
+	</div>
 </div>
 
 <div class="container-fluid">
-    <ul class="pagination">
-        @*<li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>*@
-    </ul>
+	<ul class="pagination"></ul>
 </div>
 
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="~/Content/js/vue.min.js"></script>
-<script src="~/Content/js/lib.js"></script>
 <script type="text/javascript">
-    var calltable = 0;
-    UserAgen.GetListUser(1);
+	var calltable = 0;
+	UserAgen.GetListUser(1);
 
-    var lstDeImport = new Vue({
-        el: '#lstTK',
-        data: {
-            data: {},
-            lstDeclaration: []
-        },
-        methods: {
-            init: async function () {
-                var data = this.data; 
-                data.status = "";
-                data.startCreatedDate = "";
-                data.endCreatedDate = "";
-                data.createdAccId = "";
-            },
-            getList: async function (page, callback) {
-                try {
-                    var token = $('#hdfToken').val();
-                    if(page == undefined || page == null) page = 0;
-                    var createdAccId = $("#accIdLogin").val();
+	var app = new Vue({
+		el: '#lstTK',
+		data: {
+			data: {},
+			lstDeclaration: [],
+			ListVoucher: [],
+			showLoading: true,
+			isVoucher: false,
+			showCheckbox: false,
+			autoSearch: 0,
 
-                    var dt = this.data;
-                    const response = await axios.get(Config.API_Login + "agency/SearchDeclaration?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&status=" + dt.status + "&page=" + page + "&createdAccId=" + dt.createdAccId + "&page=" + page + "&signatureId=0&acceptAccId=",
-                        {
-                            headers: { "Authorization": "Bearer " + token },
-                        });
-                    var res = response.data;
-                    if (res.ResponseCode >= 0)
-                    {
-                        this.lstDeclaration = response.data.Data.ListDeclarations;
+			typeDeclaration: 1, //1: import, 2: export, 3: ama, 4: hys
+			lstAccSign: [],
+			lstAccCreated: [],
+			voucherId: "",
+			issuer: "",
 
-                        if(typeof callback != 'undefined' && typeof callback == 'function')
-                            callback()
-                    }
-                    else return null;
-                } catch (error) {
-                    console.error(error);
-                }
-            },
-            getTextStatus: function(code){
-                var txt = Decla.getNameStatusCode(code);
-                return txt;
-            },
-            viewDeclaration: function(id, type){
-                if(type == 1){
-                    var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + id + "&ishight=1&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-                else if(type == 2){
-                    var urlLink = Config.Url_Root + "Declaration/HightDeclarationDetail?IdDec=" + id + "&ishight=2&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-            },
-        },
-        mounted() {
-            this.init();
-            this.getList(0);
+			//feedback
+			showPop: false,
+			activeIndex: -1, //Vị trí show biểu tưởng comment
+		},
+		methods: {
+			init: async function () {
+				var self = this;
+				var data = this.data;
+				data.status = "";
+				data.startCreatedDate = "";
+				data.endCreatedDate = "";
+				data.createdAccId = "";
+				setTimeout(function () {
+					self.showCheckbox = true;
+				}, 100);
+			},
+			getListExport: async function (page, callback) {
+				try {
+					var token = $('#hdfToken').val();
+					if (page == undefined || page == null) page = 0;
+					var accountId = $("#accIdLogin").val();
 
-        },
+					var dt = this.data;
+					const response = await axios.get(Config.API_Login + "agency/SearchEXDeclaration?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&status=21&page=" + page + "&accountId=" + accountId + "&signatureId=0&sigAccId=" + utils.getCookie("accountIdBuss"),
+						{
+							headers: { "Authorization": "Bearer " + token },
+						});
+					this.showLoading = false;
+					var res = response.data;
+					if (res.ResponseCode >= 0) {
+						this.lstDeclaration = res.Data.ListDeclarations;
+						this.showPage(page, res.Data.Total);
+						for (var i = 0; i < this.lstDeclaration.length; i++) {
+							this.getAccName(this.lstDeclaration[i].sigAccId, i, 1);
+							this.getAccName(this.lstDeclaration[i].createdAccId, i, 2);
+						}
+					}
 
-    });
+					if (typeof callback != 'undefined' && typeof callback == 'function')
+						callback()
+
+				} catch (error) {
+					console.error(error);
+				}
+			},
+			getListImport: async function (page, callback) {
+				try {
+					var token = $('#hdfToken').val();
+					if (page == undefined || page == null) page = 0;
+					var accountId = $("#accIdLogin").val();
+
+					var dt = this.data;
+					const response = await axios.get(Config.API_Login + "agency/SearchDeclaration?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&status=21&page=" + page + "&accountId=" + accountId + "&signatureId=0&sigAccId=" + utils.getCookie("accountIdBuss"),
+						{
+							headers: { "Authorization": "Bearer " + token },
+						});
+					this.showLoading = false;
+					var res = response.data;
+					if (res.ResponseCode >= 0) {
+						this.lstDeclaration = response.data.Data.ListDeclarations;
+						this.showPage(page, response.data.Data.Total);
+						for (var i = 0; i < this.lstDeclaration.length; i++) {
+							this.getAccName(this.lstDeclaration[i].sigAccId, i, 1);
+							this.getAccName(this.lstDeclaration[i].createdAccId, i, 2);
+						}
+					}
+
+					if (typeof callback != 'undefined' && typeof callback == 'function')
+						callback()
+
+				} catch (error) {
+					console.error(error);
+				}
+			},
+			getListAMA: function (page, callback) {
+				var accountId = $("#accIdLogin").val();
+
+				var token = $('#hdfToken').val();
+				var dt = this.data;
+				var self = this;
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "agency/SearchAMA",
+					data: {
+						accountId: accountId,
+						startCreatedDate: dt.startCreatedDate,
+						endCreatedDate: dt.endCreatedDate,
+						status: 21,
+						sigAccId: utils.getCookie("accountIdBuss"),
+						page: page,
+						count: 10
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						//console.log(data);
+						self.showLoading = false;
+						if (data.ResponseCode >= 0) {
+							self.lstDeclaration = data.Data.ListAmendedTaxInfomation;
+							self.showPage(page, data.Data.Total);
+							for (var i = 0; i < self.lstDeclaration.length; i++) {
+								self.getAccName(self.lstDeclaration[i].sigAccId, i, 1);
+								self.getAccName(self.lstDeclaration[i].createdAccId, i, 2);
+							}
+						}
+
+						if (typeof callback != 'undefined' && typeof callback == 'function')
+							callback()
+					},
+					error: function (data) {
+						self.showLoading = false;
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			getListHYS: async function (page, callback) {
+
+				try {
+					var data = this.data;
+					var accountId = $("#accIdLogin").val();
+
+					var token = $('#hdfToken').val();
+					const response = await axios.get(Config.API_Login + "agency/SearchAttachment?startDate=" + data.startCreatedDate + "&endDate=" + data.endCreatedDate + "&status=21&sigAccId=" + utils.getCookie("accountIdBuss") + "&page=" + page + "&count=10&accountId=" + accountId,
+						{
+							headers: { "Authorization": "Bearer " + token },
+						});
+					this.showLoading = false;
+					var res = response.data;
+					if (res.ResponseCode >= 0) {
+						this.lstDeclaration = response.data.Data.ListAttachment;
+						this.showPage(page, res.Data.Total);
+						for (var i = 0; i < this.lstDeclaration.length; i++) {
+							this.getAccName(this.lstDeclaration[i].sigAccId, i, 1);
+							this.getAccName(this.lstDeclaration[i].createdAccId, i, 2);
+						}
+					}
+				} catch (error) {
+					console.error(error);
+				}
+			},
+			getListOLA: function (page, callback) {
+				var token = $('#hdfToken').val();
+				var accountId = $("#accIdLogin").val();
+				var dt = this.data;
+				var self = this;
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "TransportDeclaration/SearchSignatureOLA",
+					data: {
+						startCreatedDate: dt.startCreatedDate,
+						endCreatedDate: dt.endCreatedDate,
+						status: 21,
+						accountId: accountId,// utils.getCookie("accountIdBuss"),
+						page: page,
+						count: 10
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						//console.log(data);
+						self.showLoading = false;
+						if (data.ResponseCode >= 0) {
+							//self.lstDeclaration = data.Data;
+							//self.showPage(page, data.Data.length);
+							self.lstDeclaration = data.Data.ListOla;
+							self.showPage(page, data.Data.Total);
+						}
+
+						if (typeof callback != 'undefined' && typeof callback == 'function')
+							callback()
+					},
+					error: function (data) {
+						self.showLoading = false;
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			getListVoucher: async function (page, callback) {
+				try {
+					var _this = this;
+					this.showLoading = true;
+					var token = $('#hdfToken').val();
+					var createdAccId = $("#accIdLogin").val();
+					if (page == undefined || page == null) page = 0;
+
+					var accountId;
+					//if (utils.getCookie("Type") == "1") {
+					//    accountId = utils.getCookie("parentId");
+					//}
+					//else {
+					//    accountId = $("#accIdLogin").val();
+					//}
+					accountId = utils.getCookie("accountIdBuss");
+					var dt = this.data;
+					var dclId = "";
+					var dclNo = "";
+					const response = await axios.get(Config.API_Login + "Evoucher/SearchVoucherSign?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&page=" + page + "&count=10&accountId=" + accountId + "&voucherId=" + this.voucherId + "&issuer=" + this.issuer + "&dclId=" + dclId + "&dclNo=" + dclNo + "&status=21",
+						{
+							headers: { "Authorization": "Bearer " + token },
+						});
+					var res = response.data;
+					if (res.ResponseCode >= 0) {
+						_this.ListVoucher = response.data.Data.ListVoucher;
+						this.showLoading = false;
+
+						//var arrVoucher =[];
+						//$.each(_this.ListVoucher, function (i, item) {
+						//    if (item.function == 29) {
+						//        arrVoucher.push(item);
+						//    }
+						//});
+						//_this.ListVoucher = arrVoucher;
+
+						//this.totalRow = _this.ListVoucher.length;
+
+						this.totalRow = response.data.Data.Total;
+						this.showPage(page, this.totalRow);
+
+						_this.ListVoucher = response.data.Data.ListVoucher;
+						for (var i = 0; i < _this.ListVoucher.length; i++) {
+							this.getAccName(_this.ListVoucher[i].sigAccId, i, 1);
+							this.getAccName(_this.ListVoucher[i].createdAccId, i, 2);
+						}
+
+						if (typeof callback != 'undefined' && typeof callback == 'function')
+							callback()
+					}
+					else return null;
+				} catch (error) {
+					console.error(error);
+				}
+			},
+			showPage: function (page, total) {
+
+				var totalPage = 0;
+				if (total % 10 == 0) {
+					totalPage = total / 10;
+				}
+				else {
+					var du = total % 10;
+					total = total - du;
+					totalPage = total / 10 + 1;
+				}
+				var CurPage = page + 1;
+
+				var htmlP = '';
+
+				if (totalPage > 1) {
+					htmlP += '<li><a href="javascript:;" onclick="app.paging(0)"><i class="fa fa-angle-double-left"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.paging(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
+
+					for (var i = CurPage - 3; i < CurPage + 3; i++) {
+						if (i > 0 && i <= totalPage) {
+							if (CurPage == i) {
+								htmlP += '<li class="active"><a href="javascript:;" onclick="app.paging(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+							else {
+								htmlP += '<li><a href="javascript:;" onclick="app.paging(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+						}
+					}
+					htmlP += '<li><a href="javascript:;" onclick="app.paging(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.paging(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
+
+				}
+
+				$(".pagination").html(htmlP);
+
+			},
+			paging: function (page) {
+
+				if (this.typeDeclaration == 1) {
+					this.getListImport(page);
+				}
+				else if (this.typeDeclaration == 2) {
+					this.getListExport(page);
+				}
+				else if (this.typeDeclaration == 3) {
+					this.getListAMA(page);
+				}
+				else if (this.typeDeclaration == 6) {
+					this.getListVoucher(page);
+				}
+				else {
+					this.getListHYS(page);
+				}
+			},
+			//=======================
+			SelectTab: function (tab) {
+				$(".pagination").html('');
+				this.isVoucher = false;
+				this.typeDeclaration = tab;
+				this.showLoading = true;
+				this.lstDeclaration = [];
+				if (tab == 1) {
+					this.getListImport(0);
+				}
+				else if (tab == 2) {
+					this.getListExport(0);
+				}
+				else if (tab == 3) {
+					this.getListAMA(0);
+				}
+				else if (tab == 4) {
+					this.getListHYS(0);
+				}
+				else if (tab == 6) {
+					this.isVoucher = true;
+					this.getListVoucher(0);
+				} else {
+					this.getListOLA(0);
+				}
+			},
+			selectSearch: function (type) {
+				if (this.autoSearch == type)
+					this.autoSearch = 0;
+				else
+					this.autoSearch = type;
+			},
+			//=======================
+			getAccName: function (id, index, type) {
+				var self = this;
+
+				if (!id) {
+					if (type == 1)
+						self.lstAccSign.push({ stt: index, id: id, accname: "" });
+					else
+						self.lstAccCreated.push({ stt: index, id: id, accname: "" });
+					return;
+				}
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "account/GetInfoByAccountID",
+					data: {
+						accountID: id,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) {
+						if (data.ResponseCode > 0 && data.Data.Accounts) {
+							if (type == 1)
+								self.lstAccSign.push({ stt: index, id: id, accname: data.Data.Accounts.userName });
+							else
+								self.lstAccCreated.push({ stt: index, id: id, accname: data.Data.Accounts.userName });
+						}
+
+					},
+					error: function (data) {
+						console.log("Hệ thống bận, vui lòng quay lại sau!");
+						utils.unLoading();
+					}
+				});
+			},
+			getTextStatus: function (code) {
+				var txt = Decla.getNameStatusCode(code);
+				return txt;
+			},
+			viewDeclaration: function (id, type, createdAccId) {
+				if (this.typeDeclaration == 3) {
+					window.location.href = Config.Url_Root + "ama/InsertUpdateAMA?decId=" + id + "&tab=1&ishight=6&createdAccId=" + createdAccId + "&IdDec=" + id + "&registry=1";
+				}
+				else if (this.typeDeclaration == 4) {
+					window.location.href = Config.Url_Root + "hys/InsertHYS?decId=" + id + "&tab=1&ishight=5&createdAccId=" + createdAccId + "&IdDec=" + id + "&registry=1";
+				}
+				else if (this.typeDeclaration == 5) {
+					window.location.href = Config.Url_Root + "TransportDeclaration/ola?olaid=" + id + "&ishight=7&tab=1" + "&registry=1";
+				}
+				//Xuất nhập khẩu
+				else if (type == 1) {
+					var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + id + "&ishight=1&tab=1&createdAccId=" + createdAccId + "&registry=1";
+					window.location.href = urlLink;
+				}
+				else if (type == 2) {
+					var urlLink = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + id + "&ishight=2&tab=2&createdAccId=" + createdAccId + "&registry=1";
+					window.location.href = urlLink;
+				}
+				else if (type == 3) {
+					window.location.href = Config.Url_Root + "ExportDeclaration/MEC_InsertUpdate?decId=" + id + "&tab=1&ishight=3&createdAccId=" + createdAccId + "&IdDec=" + id + "&registry=1";
+				}
+				else if (type == 4) {
+					window.location.href = Config.Url_Root + "ExportDeclaration/EDA_InsertUpdate?decId=" + id + "&tab=1&ishight=4&createdAccId=" + createdAccId + "&registry=1&IdDec=" + id;
+				}
+			},
+			viewDeclarationVoucher: function (item, type) {
+				//?IsHight=2&id=30085&type=2&tab=1&idDec=101153&dclNo=102459445650
+				type = 2;
+				var dclId = item.dclId.toString();
+				var prefixNumber = dclId.charAt(0) + dclId.charAt(1);
+				var IsHight = 0;
+				if (prefixNumber == "30") { IsHight = 4; type = 5 };
+				if (prefixNumber == "10") { IsHight = 2; type = 2; }
+
+				switch (parseInt(item.issuer)) {
+					case 308:
+						window.location.href = Config.Url_Root + "Electronic/license?id=" + item.voucherId + "&type=" + type + "&tab=1&ishight=" + IsHight + "&idDec=" + item.dclId + "&dclNo=" + item.dclId;
+						break;
+					case 309:
+						window.location.href = Config.Url_Root + "Electronic/contract?id=" + item.voucherId + "&type=" + type + "&tab=1&ishight=" + IsHight + "&idDec=" + item.dclId + "&dclNo=" + item.dclId;
+						break;
+					case 310:
+						window.location.href = Config.Url_Root + "Electronic/invoice?id=" + item.voucherId + "&type=" + type + "&tab=1&ishight=" + IsHight + "&idDec=" + item.dclId + "&dclNo=" + item.dclId;
+						break;
+					case 311:
+						window.location.href = Config.Url_Root + "Electronic/co?id=" + item.voucherId + "&type=" + type + "&tab=1&ishight=" + IsHight + "&idDec=" + item.dclId + "&dclNo=" + item.dclId;
+						break;
+					case 312:
+						window.location.href = Config.Url_Root + "Electronic/cargo?id=" + item.voucherId + "&type=" + type + "&tab=1&ishight=" + IsHight + "&idDec=" + item.dclId + "&dclNo=" + item.dclId;
+						break;
+					case 313:
+						window.location.href = Config.Url_Root + "Electronic/container?id=" + item.voucherId + "&type=" + type + "&tab=1&ishight=" + IsHight + "&idDec=" + item.dclId + "&dclNo=" + item.dclId;
+						break;
+					case 314:
+						window.location.href = Config.Url_Root + "Electronic/other?id=" + item.voucherId + "&type=" + type + "&tab=1&ishight=" + IsHight + "&idDec=" + item.dclId + "&dclNo=" + item.dclId;
+						break;
+					default:
+				}
+
+			},
+			cusTextIssuer: function (issuer) {
+				var txtIssuer = "";
+				switch (issuer) {
+					case "308": txtIssuer = "giấy phép điện tử";
+						break;
+					case "309": txtIssuer = "hợp đồng điện tử";
+						break;
+					case "310": txtIssuer = "hóa đơn điện tử";
+						break;
+					case "311": txtIssuer = "CO điện tử";
+						break;
+					case "312": txtIssuer = "vận đơn điện tử";
+						break;
+					case "313": txtIssuer = "container đính kèm";
+						break;
+					case "314": txtIssuer = "chứng từ khác";
+						break;
+					default: txtIssuer = "";
+						break;
+				}
+				return txtIssuer;
+			},
+			cusStatus: function (statusFunction) {
+				var txtStatus = "";
+				switch (statusFunction) {
+					case "29": txtStatus = "cấp số thành công";
+						break;
+					case "27": txtStatus = "27";
+						break;
+					case "8": txtStatus = "8";
+						break;
+					default: txtStatus = "---";
+						break;
+				}
+				return txtStatus;
+			},
+			//=======================
+			feedBack: function (item) {
+				var self = this;
+				$.ajax({
+					type: 'GET',
+					url: Config.Url_Root + "Registry/Feedback",
+					data: {
+					},
+					success: function (data) {
+						//console.log(data);
+						$("#pop_feedback").html(data);
+						self.showPop = true;
+						pop.infoDcl.createdAccId = item.createdAccId;
+						if (self.typeDeclaration == 1)
+							pop.infoDcl.dclId = item.dclId;
+						else if (self.typeDeclaration == 2)
+							pop.infoDcl.dclId = item.declarationId;
+						else if (self.typeDeclaration == 3 || self.typeDeclaration == 4)
+							pop.infoDcl.dclId = item.id;
+						else if (self.typeDeclaration == 5)
+							pop.infoDcl.dclId = item.btDclId;
+						else if (self.typeDeclaration == 6)
+							pop.infoDcl.dclId = item.voucherId;
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			//=======================
+			HoverComment: function (item, index) {
+				var id = item.dclId;
+				if (this.typeDeclaration == 2) id = item.declarationId;
+				else if (this.typeDeclaration == 3 || this.typeDeclaration == 4) id = item.id;
+				else if (this.typeDeclaration == 5) id = item.btDclId;
+
+				var token = $('#hdfToken').val();
+				var self = this;
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/getListFeedBack",
+					data: {
+						dclId: id,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						//console.log(data);
+						if (data.ResponseCode >= 0) {
+							if (data.Data.length > 0)
+								self.activeIndex = index;
+						}
+
+					},
+					error: function (data) {
+						console.log("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+		},
+		mounted() {
+			this.init();
+			this.getListImport(0);
+
+		},
+
+	});
 
 
 

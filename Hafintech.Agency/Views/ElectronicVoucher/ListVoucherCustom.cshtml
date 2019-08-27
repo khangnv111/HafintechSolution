@@ -1,0 +1,885 @@
+﻿
+@{
+    ViewBag.Title = "ListVoucherCustom";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+
+    var url = Request.Url.ToString();
+    Uri MyUrl = new Uri(url);
+    var type = HttpUtility.ParseQueryString(MyUrl.Query).Get("type");
+}
+ 
+
+<div class="container-fluid" id="lst">
+    <div class="row-fluid">
+        <div class="box-body" id="dvContent">
+
+            <h4>Đăng ký mới tờ khai</h4>
+            @if (ViewBag.Type == 2)
+            {
+                <a class="btn btn-success" href="@Url.Action("HightValueDeInsert", "Declaration", new { IdDec = ViewBag.idDec })&ishight=2&tab=1">Thông tin chung</a>
+
+                <a href="@Url.Action("ListProduct", "Declaration", new { IdDec = ViewBag.idDec })&dclNo=@ViewBag.dclNo&ishight=2&tab=1" class="btn btn-success">Danh sách hàng</a>
+
+                <a class="btn btn-success">Chỉ thị của hải quan</a>
+                <a href="@Url.Action("IDA_Result", "Declaration", new { IdDec = ViewBag.idDec })&dclNo=@ViewBag.dclNo&ishight=2&tab=1" class="btn btn-success">Kết quả xử lý tờ khai</a>
+                <a class="btn btn-success">Quản lý tờ khai</a>
+                <a id="linkManagerVoucher" data-idDec="@ViewBag.IdDec" v-bind:data-dclNo="data.dclNo" data-controler="ElectronicVoucher" data-action="ListVoucherCustom" href="#" class="btn btn-warning">Quản lý chứng từ điện tử</a>
+
+            }
+            else if (ViewBag.Type == 5)
+            {//ExportDeclaration/EDA_InsertUpdate?decId=201212&tab=1&ishight=4#
+             //ExportDeclaration/EDA_InsertUpdate?decId=201212&tab=1&ishight=4
+                <a href="@Url.Action("EDA_InsertUpdate", "ExportDeclaration", new {})?decId=@ViewBag.idDec&tab=1&ishight=4" class="btn btn-success">Chi tiết tờ khai EDA</a>
+
+                <a href="@Url.Action("TabResultXLTK", "ExportDeclaration", new {})?decId=@ViewBag.idDec&tab=1&ishight=4&&dclNo=@ViewBag.dclNo" class="btn btn-success">Kết quả xử lý tờ khai</a>
+                <a id="linkManagerVoucher" data-idDec="@ViewBag.IdDec" v-bind:data-dclNo="data.dclNo" data-controler="ElectronicVoucher" data-action="ListVoucherCustom" href="#" class="btn btn-warning">Quản lý chứng từ điện tử</a>
+
+            }
+
+
+            <div class="widget-box">
+                <div style="clear:both"></div>
+                <div class="widget-title">
+                    <div class="span6">
+                        <span class="icon"><i class="icon-align-justify"></i></span>
+                        <h5>Quản lý chứng từ hồ sơ hải quan</h5>
+                    </div>
+                    <div class="span6" style="text-align: right">
+                        <button class="btn btn-danger" onclick="Voucher.PopVoucher(@ViewBag.idDec, @ViewBag.dclNo,@ViewBag.Type,@ViewBag.IsHight)"><i class="icon glyphicon-plus"></i> Thêm chứng từ</button>
+                    </div>
+
+                </div>
+                <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                    <thead>
+                        <tr>
+                            <th style="min-width:100px">STT</th>
+                            <th>Số chứng từ</th>
+                            <th>Loại chứng từ</th>
+                            <th>Mã tham chiếu</th>
+                            @*<th>Mã loại hình</th>*@
+                            <th>Ngày tải lên chứng từ</th>
+                            <th>Ngày tiếp nhận</th>
+                            <th>Số tiếp nhận</th>
+                            <th>Trạng thái</th>
+                            <th>File đính kèm</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in data">
+                            <td>{{index+1}}</td>
+                            <td>{{item.voucherId}}</td>
+                            <td>{{cusTextIssuer(item.issuer)}}</td>
+                            <td>
+                                <a v-on:click="viewDeclaration(item,@ViewBag.IsHight)">{{item.reference}}</a>
+                            </td>
+                            @*<td>{{item.DeclarationDocument.natureOfTransaction}}</td>*@
+                            <td>{{item.createdDate}}</td>
+                            <td>{{item.issue}}</td>
+                            <td>{{item.customsReference}}</td>
+                            <td>{{cusStatus(item.function)}}</td>@*<td>{{item.status}}  doi status -> function</td>*@
+                            <td>{{item.fileName}}</td>
+                            <td>
+                                @*<a class="btn btn-warning" v-on:click="viewDeclaration(item,@ViewBag.IsHight)">Sửa</a>*@
+                                <a class="btn btn-success"v-on:click="viewDeclaration(item,@ViewBag.IsHight)">Xem</a>
+                                <a class="btn btn-danger" v-show="item.showDelete && !(item.function !=8)" v-on:click="removeDe(item)">Xóa</a>
+                                <a class="btn btn-primary" v-on:click="submitUSB(item)" v-if="item.showSubmit && item.function <=8">Gửi</a>
+                                @*<a class="btn btn-primary" v-on:click="reSubmitUSB(item)" v-if="item.showSubmit && item.function >12 && item.function != 29">Gửi lại</a>*@
+                                <a class="btn btn-primary" v-on:click="signVoucher(item)" v-if="item.showTK && item.status < 21 && item.status !=2 && item.function <=8">Trình Ký</a>
+                                <a class="btn btn-info" v-on:click="watchUSB(item)" v-if="!(item.function !=12) && item.viewResult">Hỏi KQ</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="~/Content/js.update/voucher.js"></script>
+<script type="text/javascript">
+    var calltable = 0;
+    var idDec = "@ViewBag.idDec";
+    var dclNo = "@ViewBag.dclNo"
+    var lst = new Vue({
+        el: '#lst',
+        data: {
+            data: {
+                AttachedFile: {}
+            },
+            voucherId: "",
+            dclNo: "",
+            issuer: "",
+            idDec: idDec,
+            showSubmit: false,
+            showTK: false,
+            viewResult: false,
+            lstFiles: [], 
+        },
+        methods: {
+            init: async function () {
+                var data = this.data;
+            },
+            getList: async function (page, callback) {
+                try {
+                    var _this = this;
+                    var token = $('#hdfToken').val();
+                    var currentAccountId = $("#accIdLogin").val();
+                    var dclId = window.localStorage.getItem("dclId");
+                    if (dclNo == "" || dclNo == undefined) {
+                        dclNo = window.localStorage.getItem("dclNo");
+                    }
+                    var accountId = $("#accIdLogin").val();
+                    const response = await axios.get(Config.API_Login + "Evoucher/Search?voucherId=" + this.voucherId + "&issuer=" + this.issuer + "&dclId=" + idDec + "&dclNo=" + dclNo + "&AccountID=" + accountId,
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0) {
+                        _this.data = response.data.Data.ListVoucher;
+                        for (var i = 0; i < _this.data.length; i++) {
+                            _this.data[i].showSubmit = _this.checkShowButton(_this.data[i].initType, 'submit');
+                            _this.data[i].showTK = _this.checkShowButton(_this.data[i].initType, 'tk');
+                            _this.data[i].viewResult = _this.checkShowButton(_this.data[i].initType, 'viewResult');
+                            if (_this.data[i].createdAccId == currentAccountId) {
+                                _this.data[i].showDelete = true;
+                            } else {
+                                _this.data[i].showDelete = false;
+                            }
+                        }
+                        if (typeof callback != 'undefined' && typeof callback == 'function')
+                            callback()
+                    }
+                    else return null;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+
+            viewDeclaration: function (item, IsHight) {
+                var urlParams = new URLSearchParams(window.location.search);
+                var type = urlParams.get('type');
+
+                switch (parseInt(item.issuer)) {
+                    case 308:
+                        window.location.href = Config.Url_Root + "Electronic/license?IsHight=" + IsHight + "&id=" + item.voucherId + "&type=" + type+"&tab=1&idDec=" + idDec + "&dclNo=" + dclNo;
+                        break;
+                    case 309:
+                        window.location.href = Config.Url_Root + "Electronic/contract?IsHight=" + IsHight + "&id=" + item.voucherId + "&type=" + type +"&tab=1&idDec=" + idDec + "&dclNo=" + dclNo;
+                        break;
+                    case 310:
+                        window.location.href = Config.Url_Root + "Electronic/invoice?IsHight=" + IsHight + "&id=" + item.voucherId + "&type=" + type +"&tab=1&idDec=" + idDec + "&dclNo=" + dclNo;
+                        break;
+                    case 311:
+                        window.location.href = Config.Url_Root + "Electronic/co?IsHight=" + IsHight + "&id=" + item.voucherId + "&type=" + type +"&tab=1&idDec=" + idDec + "&dclNo=" + dclNo;
+                        break;
+                    case 312:
+                        window.location.href = Config.Url_Root + "Electronic/cargo?IsHight=" + IsHight + "&id=" + item.voucherId + "&type=" + type +"&tab=1&idDec=" + idDec + "&dclNo=" + dclNo;
+                        break;
+                    case 313:
+                        window.location.href = Config.Url_Root + "Electronic/container?IsHight=" + IsHight + "&id=" + item.voucherId + "&type=" + type +"&tab=1&idDec=" + idDec + "&dclNo=" + dclNo;
+                        break;
+                    case 314:
+                        window.location.href = Config.Url_Root + "Electronic/other?IsHight=" + IsHight + "&id=" + item.voucherId + "&type=" + type +"&tab=1&idDec=" + idDec + "&dclNo=" + dclNo;
+                        break;
+                    default:
+                }
+
+            },
+            formatDate: function (date) {
+                return moment(String(date)).format('DD/MM/YYYY hh:mm')
+            },
+            formatDate2: function (date) {
+                if (date == undefined || date == "" || date == null) {
+                    return "";
+                }
+                var d = date.substring(0, 2);
+                var m = date.substring(2, 4);
+                var y = date.substring(4, date.length);
+
+                var time = d + "/" + m + "/" + y;
+
+                return time;
+            },
+            removeDe: function (item) {
+                var self = this;
+                bootbox.confirm("Bạn có chắc xóa chứng từ này!", function (resultCon) {
+                    if (resultCon) {
+                        var token = $('#hdfToken').val();
+                        $.ajax({
+                            type: 'GET',
+                            url: Config.API_Login + "Evoucher/DeleteVoucher",
+                            data: {
+                                VoucherID: item.voucherId
+                            },
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                //console.log(data);
+                                debugger;
+                                utils.unLoading();
+                                if (data != null && data != '' && data != undefined) {
+                                    if (data.ResponseCode > 0) {
+                                        self.getList();
+                                    }
+                                    else {
+                                        utils.Message(data.Description);
+                                    }
+                                }
+                                else {
+                                    utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                }
+
+                            },
+                            error: function (data) {
+                                utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                return;
+                            }
+                        });
+                    }
+                });
+
+            },
+            cusTextIssuer: function (issuer) {
+                var txtIssuer = "";
+                switch (issuer) {
+                    case "308": txtIssuer = "Giấy phép điện tử";
+                        break;
+                    case "309": txtIssuer = "Hợp đồng điện tử";
+                        break;
+                    case "310": txtIssuer = "Hóa đơn điện tử";
+                        break;
+                    case "311": txtIssuer = "CO điện tử";
+                        break;
+                    case "312": txtIssuer = "Vận đơn điện tử";
+                        break;
+                    case "313": txtIssuer = "Container đính kèm";
+                        break;
+                    case "314": txtIssuer = "Chứng từ khác";
+                        break;
+                    default: txtIssuer = "";
+                        break;
+                }
+                return txtIssuer;
+            },
+            cusStatus: function (statusFunction) {
+                var txtStatus = "";
+                switch (statusFunction) {
+                    case 29: txtStatus = "Cấp số thành công";
+                        break;
+                    case 27: txtStatus = "Input không hợp lệ";
+                        break;
+                    case 32: txtStatus = "Hải quan phản hồi function 32";
+                        break;
+                    case 8: txtStatus = "Chưa thành công chưa có STN";
+                        break;
+                    case 12: txtStatus = "Đã gửi hải quan";
+                        break;
+                    default: txtStatus = "";
+                        break;
+                }
+                return txtStatus;
+            },
+            checkShowButton: function (initType, typeCheck) { 
+                var self = this;
+                self.showSubmit = false;
+                self.showTK = false;
+                self.viewResult = false;
+
+                //(isAgency=1--- permitGroup = 3)--	(isAgency= 1 --- permitGroup = "")-- 
+                switch (initType) {
+                    case 1: self.showSubmit = true;
+                        self.viewResult = true;
+                        break;
+                    case 2: if (utils.getCookie("isAgency") == 1 && (utils.getCookie("permitGroup") == 3 || utils.getCookie("permitGroup") == "")) {
+                                self.showSubmit = true;
+                                self.viewResult = true;
+                            }
+                        break;
+                    case 3:
+                        if (utils.getCookie("permitGroup") == 2) self.showTK = true;        //=> GroupPermit = 2 : Hiển thị nút trình ký(261)
+                        if (utils.getCookie("permitGroup") == 3) self.showSubmit = true;    //=> GroupPermit = 3 : Hiển thị nút submit(262)
+                        if (utils.getCookie("Type") == 2) self.showSubmit = true;           //=> Nếu  Account.type = 2 => Hiển thị nút submit(260)"
+                        
+                        break;
+                    case 4:
+                        if ((utils.getCookie("isAgency") == 2) && (utils.getCookie("permitGroup") == 1 || utils.getCookie("permitGroup") == 3 || utils.getCookie("permitGroup") == 4)) self.showSubmit = true;
+                        //=> Business.isAgency = 2(đại lý) và Account.groupPermit = 1 hoặc 3 hoặc 4 : Hiển thị submit
+                        //=> Còn lại không hiển thị cả submit và trình ký"
+                        break;
+                    case 5:
+                        if (utils.getCookie("permitGroup") == 2) self.showTK = true;     //=> GroupPermit = 2 : Hiển thị nút trình ký(?)
+                        if (utils.getCookie("permitGroup") == 3) self.showSubmit = true; //=> GroupPermit = 3 : Hiển thị nút submit(?)
+                        if (utils.getCookie("Type") == 2) self.showSubmit = true;        //=> Nếu Account.type = 2 => Hiển thị nút submit(?)"
+                        break;
+                    case 6:
+                        if ((utils.getCookie("isAgency") == 2) && (utils.getCookie("permitGroup") == 1 || utils.getCookie("permitGroup") == 3 || utils.getCookie("permitGroup") == 4)) self.showSubmit = true;
+                        //    => Business.isAgency = 2(đại lý) và Account.groupPermit = 1 hoặc 3 hoặc 4 : Hiển thị submit
+                        //    => Còn lại không hiển thị cả submit và trình ký
+                        break;
+                    case 7:
+                        if (utils.getCookie("isAgency") == 2) {                                     //=> Business.isAgency = 2(đại lý) :
+                            if (utils.getCookie("Type") == 2) { self.showSubmit = true; }               //=> Account.type = 2: Hiển thị submit
+                            if (utils.getCookie("Type") == 1) {                                         //=> Account.type = 1,
+                                if (utils.getCookie("permitGroup") != 2) { self.showSubmit = true; }         //=> groupPermit khác 2 : Hiển thị submit
+                                if (utils.getCookie("permitGroup") == 2) { self.showTK = true; }              //=> groupPermit = 2(TK tạo) Hiển thị trình ký
+                            }
+                        }
+                        if (utils.getCookie("isAgency") == 1) {                        // => Business.isAgency = 1(doanh nghiệp):
+                            self.showTK = false;                                              //=> Chỉ xem, không hiển thị Trình ký hay submit"
+                            self.showSubmit = false;
+                        }
+                        break;
+                    case 8:
+                        if (utils.getCookie("isAgency") == 2) self.showTK = true;    //=> Business.isAgency = 2(đại lý) : Luôn hiển thị nút trình ký(?)
+                        if (utils.getCookie("isAgency") == 1) {                      //=> Business.isAgency = 1(doanh nghiệp):
+                            if ((utils.getCookie("Type") == 2) || (utils.getCookie("permitGroup") == 1 || utils.getCookie("permitGroup") == 3 || utils.getCookie("permitGroup") == 4)) self.showSubmit = true;//      Check tiếp Account.type = 2 hoặc Account.permitGroup = 1 || 3 || 4: Hiển thị submit
+                        }                                                            //        (người tạo của doanh nghiệp không được xem)"
+
+                        break;
+                    case 9:
+                        if (utils.getCookie("permitGroup") == 2) self.showTK = true;        //        => GroupPermit = 2 : Hiển thị nút trình ký(261)
+                        if (utils.getCookie("permitGroup") == 3) self.showSubmit = true;    //=> GroupPermit = 3 : Hiển thị nút submit(262)
+                        if (utils.getCookie("Type") == 2) self.showSubmit = true;           //=> Nếu  Account.type = 2 => Hiển thị nút submit(260)"
+                        break;
+                }
+
+                self.viewResult = self.showSubmit;
+
+                if (typeCheck == "submit") {
+                    return self.showSubmit;
+                }
+                else if (typeCheck == "tk") {
+                    return self.showTK;
+                }
+                else if (typeCheck == "viewResult") {
+                    return self.viewResult;
+                }
+                else {
+                    return false;
+                }
+            },
+            signVoucher: function (VoucherItem) {
+
+                if (utils.getCookie("Type") == 1 && utils.getCookie("permitGroup") == 3) {
+                    bootbox.alert(" Doanh nghiệp chưa cho phép đại lý trình ký!");
+                    return;
+                }
+
+                var self = this;
+                var token = $('#hdfToken').val();
+                utils.Loading();
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/getSignatureVoucher",
+                    type: 'POST',
+                    data: JSON.stringify(VoucherItem),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        debugger;
+                        if (data) {
+                            if (data.ResponseCode >= 0) {
+                                console.log(data.Data);
+                                self.data = data.Data;
+
+                                bootbox.alert("Thành công!", () => {
+                                    window.location.reload();
+                                });
+
+                            }
+                            else {
+                                //bootbox.alert(JSON.stringify(data.Data.message));
+                                bootbox.alert(JSON.stringify(data.Data.AdditionalInformation.content));
+                            }
+                        }
+                        else {
+                            bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            submitUSB: function (itemVoucher) {
+
+                var self = this;
+                var token = $('#hdfToken').val();
+                //var data = this.data;
+                if ($("#downSignkey").val() == 1 && utils.getCookie("signMethod") == 0) {
+                    bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+                        if (res) {
+                            downTK();
+                        }
+                    });
+                    return;
+                }
+
+                this.statusTK = status;
+                var data = {
+                    voucherId: itemVoucher.voucherId,
+                    "function": "8"
+                }
+                utils.Loading();
+
+                var confirmOfDcl = "";
+                if (status === 503 || status === 505) {
+                    confirmOfDcl = this.confirmOfDcl ? 1 : 0;
+                }
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/GetDataToSign",//"Evoucher/GetEdiToSign",
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode >= 0) {
+                                var ediStr = data.Data.replace('"', '');
+                                self.messTK = ediStr;
+                                self.voucherId = itemVoucher.voucherId;
+                                self.dclNo = itemVoucher.dclId;
+                                self.trinhky.sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+                            }
+                            else {
+                                utils.Message(JSON.stringify(data.Data));
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            signedDataCallback: function (edi, signData, keyData) {
+                var signedData = {
+                    "data": edi,
+                    "signature": signData,
+                    "certInfo": keyData,
+                    "isSendFile": false,
+                    "isSign": true,
+                    "voucherId": this.voucherId,
+                    "dclNo": this.dclNo,
+                    "status": parseInt(this.statusTK),
+                    "function": "8"
+                }
+                utils.Loading();
+                var token = $('#hdfToken').val();
+                var self = this;
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/SendSignedData",
+                    type: 'POST',
+                    data: JSON.stringify(signedData),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                bootbox.alert(data.Data.AdditionalInformation.content, function () {
+                                    self.data = data.Data;
+                                    window.location.reload();
+                                });
+                            }
+                            else if (data.ResponseCode == -99) {
+                                bootbox.alert(data.Data.message);
+                            }
+                            else if (data.ResponseCode == -100001) {
+                                bootbox.alert(data.Description);
+                            }
+                            else if (data.ResponseCode == -100001 || data.ResponseCode == -1) {
+                                bootbox.alert(data.Description);
+                            }
+                            else if (data.Data == null || data.Data == undefined) {
+                                bootbox.alert(data.Description);
+                            }
+                            else {
+                                bootbox.alert(data.Description);
+                            }
+                            //else {
+                            //    var mess = JSON.parse(data.Data.message);
+                            //    var textMess = "ErrorCode: " + mess.error[0].ErrorCode + "<br>Description: " + mess.error[0].Description + "<br>Disposition: " + mess.error[0].Disposition;
+                            //    bootbox.alert(textMess, function () {
+                            //        //Err.showError(iex.jobCode, mess.error[0].Field, 1);
+                            //    });
+                            //}
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            reSubmitUSB: async function (itemVoucher) {
+                utils.Loading();
+
+                var self = this;
+                var token = $('#hdfToken').val();
+                var objVoucher = null;
+                
+                //b1 lấy số reference mới
+                var _this = this;
+                const responseSample = await axios.get(Config.API_Login + "Evoucher/getSample?type=" + itemVoucher.issuer);
+                var resultSample = responseSample.data.Data;
+                itemVoucher.function = resultSample.function;
+                itemVoucher.reference = resultSample.reference; 
+
+                //b2 gọi view Voucher
+                const responseView = await axios.get(Config.API_Login + "Evoucher/view?voucherId=" + itemVoucher.voucherId);
+                var dataView = responseView.data;
+                if (dataView.ResponseCode >= 0) {
+                    objVoucher = dataView.Data;
+                    objVoucher.function = resultSample.function;
+                    objVoucher.reference = resultSample.reference; 
+                    objVoucher.customsReference = "";
+                    objVoucher.acceptance = "";
+
+                }
+                else {
+                    bootbox.alert("không lấy được thông tin chứng từ, kiểm tra kết lại nối internet hoặc liên hệ kỹ thuật hỗ trợ!");
+                    utils.unLoading();
+                    return;
+                }
+                //b3 gọi hàm update voucher -> cập nhật số reference
+                if (objVoucher != null) {
+                    var totalSize = 0;
+                    self.lstFiles = [];
+
+
+                    if (objVoucher.Licenses == null) objVoucher.Licenses = [];
+                    if (objVoucher.ContractDocuments == null) objVoucher.ContractDocuments = [];
+                    if (objVoucher.CommercialInvoices == null) objVoucher.CommercialInvoices = [];
+                    if (objVoucher.CertificateOfOrigins == null) objVoucher.CertificateOfOrigins = [];
+                    if (objVoucher.BillOfLadings == null) objVoucher.BillOfLadings = [];
+                    if (objVoucher.AdditionalDocuments == null) objVoucher.AdditionalDocuments = [];
+
+
+
+                    switch (objVoucher.issuer) {
+                        case "308": for (var i = 0; i < objVoucher.Licenses.length; i++) {
+                            var fileNull = new File([""], objVoucher.Licenses[i].AttachedFile.fileName);
+                            self.lstFiles.push(fileNull);
+                        };
+                            break;  //giấy phép
+                        case "309": for (var i = 0; i < objVoucher.ContractDocuments.length; i++) {
+                            var fileNull = new File([""], objVoucher.ContractDocuments[i].AttachedFile.fileName);
+                            self.lstFiles.push(fileNull);
+                        };
+                            break; //hợp đồng
+                        case "310": for (var i = 0; i < objVoucher.CommercialInvoices.length; i++) {
+                            var fileNull = new File([""], objVoucher.CommercialInvoices[i].AttachedFile.fileName);
+                            self.lstFiles.push(fileNull);
+                        };
+                            break;//hóa đơn
+                        case "311": for (var i = 0; i < objVoucher.CertificateOfOrigins.length; i++) {
+                            var fileNull = new File([""], objVoucher.CertificateOfOrigins[i].AttachedFile.fileName);
+                            self.lstFiles.push(fileNull);
+                        };
+                            break;//CO
+                        case "312": for (var i = 0; i < objVoucher.BillOfLadings.length; i++) {
+                            var fileNull = new File([""], objVoucher.BillOfLadings[i].AttachedFile.fileName);
+                            self.lstFiles.push(fileNull);
+                        };
+                            break;//vận đơn
+                        case "313": var fileNull = new File([""], objVoucher.AttachedFile.fileName);
+                            self.lstFiles.push(fileNull);
+                            break;//container
+                        case "314": for (var i = 0; i < objVoucher.AdditionalDocuments.length; i++) {
+                            var fileNull = new File([""], objVoucher.AdditionalDocuments[i].AttachedFile.fileName);
+                            self.lstFiles.push(fileNull);
+                        };
+                            break; //chứng từ khác
+                    }
+
+
+
+                    for (var i = 0; i < self.lstFiles.length; i++) {
+                        var size = parseFloat(this.lstFiles[i].size / 1024).toFixed(2);
+                        totalSize = +totalSize + +size;
+                    }
+                    if (totalSize > 3000) {
+                        bootbox.alert("Tổng dung lượng file không được quá 3 MB");
+                        return;
+                    }
+
+                    var formData = new FormData();
+                    for (var i = 0; i < self.lstFiles.length; i++) {
+                        if (self.lstFiles[i] != null) {
+                            formData.append(self.lstFiles[i].name, self.lstFiles[i]);
+                        }
+
+                    }
+                    var dataSend = objVoucher;
+
+                    if (!dataSend.DeclarationDocument.natureOfTransaction) {
+                        bootbox.alert("Bạn chưa nhập Mã Loại Hình");
+                        utils.unLoading();
+                        return;
+                    }
+
+                    //var dataTest = { "aa": "John", "bb": "30" }
+                    formData.append("jsonData", JSON.stringify(dataSend));  //formData.append(name, value);
+
+                    self.lstFiles = [];
+
+
+                    $.ajax({
+                        url: Config.API_Login + "Evoucher/update",
+                        type: 'POST',
+                        data: formData,
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        },
+                        cache: false,
+                        async: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            utils.unLoading();
+                            if (data) {
+                                if (data.ResponseCode > 0) {
+                                    //bootbox.alert("Thành công!");
+                                    //self.data = data.Data;
+                                    if ($("#downSignkey").val() == 1 && utils.getCookie("signMethod") == 0) {
+                                        bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+                                            if (res) {
+                                                downTK();
+                                            }
+                                        });
+                                        return;
+                                    }
+
+                                    this.statusTK = status;
+                                    var data = {
+                                        voucherId: itemVoucher.voucherId,
+                                        "function": "8"
+                                    }
+                                    utils.Loading();
+
+                                    var confirmOfDcl = "";
+                                    if (status === 503 || status === 505) {
+                                        confirmOfDcl = this.confirmOfDcl ? 1 : 0;
+                                    }
+                                    $.ajax({
+                                        url: Config.API_Login + "Evoucher/GetDataToSign",//"Evoucher/GetEdiToSign",
+                                        type: 'POST',
+                                        data: JSON.stringify(data),
+                                        headers: {
+                                            "Authorization": "Bearer " + token
+                                        },
+                                        cache: false,
+                                        async: false,
+                                        contentType: "application/json; charset=utf-8",
+                                        processData: false,
+                                        success: function (data) {
+                                            utils.unLoading();
+                                            if (data) {
+                                                if (data.ResponseCode >= 0) {
+                                                    var ediStr = data.Data.replace('"', '');
+                                                    self.messTK = ediStr;
+                                                    self.voucherId = itemVoucher.voucherId;
+                                                    self.dclNo = itemVoucher.dclId;
+                                                    self.trinhky.sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+                                                }
+                                                else {
+                                                    utils.Message(JSON.stringify(data.Data));
+                                                }
+                                            }
+                                            else {
+                                                utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                            }
+                                        },
+                                        error: function (data) {
+                                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                            utils.unLoading();
+                                        }
+                                    });
+                                }
+                                else {
+                                    bootbox.alert(data.Description);
+                                }
+                            }
+
+                            else {
+                                utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                            }
+                            
+                        },
+                        error: function (data) {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                            utils.unLoading();
+                        }
+                    });
+                     
+                }
+                else {
+                    bootbox.alert("không lấy được thông tin chứng từ, kiểm tra kết lại nối internet hoặc liên hệ kỹ thuật hỗ trợ!");
+                    utils.unLoading();
+                    return;
+                }
+                 
+            },
+            watchUSB: function (itemVoucher) {
+                this.trinhky = new Trinhky(this.watchUSB_Callback);
+                var self = this;
+                var token = $('#hdfToken').val();
+                //var data = this.data;
+                if ($("#downSignkey").val() == 1 && utils.getCookie("signMethod") == 0) {
+                    bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+                        if (res) {
+                            downTK();
+                        }
+                    });
+                    return;
+                }
+
+                this.statusTK = status;
+                var data = {
+                    voucherId: itemVoucher.voucherId,
+                    function: 13
+                }
+                utils.Loading();
+
+                var confirmOfDcl = "";
+                if (status === 503 || status === 505) {
+                    confirmOfDcl = this.confirmOfDcl ? 1 : 0;
+                }
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/GetDataToSign",//"Evoucher/GetEdiToSign",
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode >= 0) {
+                                var ediStr = data.Data.replace('"', '');
+                                self.messTK = ediStr;
+                                self.voucherId = itemVoucher.voucherId;
+                                self.dclNo = itemVoucher.dclId;
+                                self.trinhky.sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+                            }
+                            else {
+                                utils.Message(JSON.stringify(data.Data));
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            watchUSB_Callback: function (edi, signData, keyData) {
+                var signedData = {
+                    "data": edi,
+                    "signature": signData,
+                    "certInfo": keyData,
+                    "isSendFile": false,
+                    "isSign": true,
+                    "voucherId": this.voucherId,
+                    "dclNo": this.dclNo,
+                    "status": parseInt(this.statusTK),
+                    "function": "13"
+                }
+                utils.Loading();
+                var token = $('#hdfToken').val();
+                var self = this;
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/SendSignedData",
+                    type: 'POST',
+                    data: JSON.stringify(signedData),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                self.data = data.Data;
+                                self.$forceUpdate();
+                                bootbox.alert(data.Data.AdditionalInformation.content, function () {
+                                    self.data = data.Data;
+                                    self.$forceUpdate();
+                                    window.location.reload();
+                                });
+                            }
+                            else if (data.ResponseCode == -99) {
+                                bootbox.alert(data.Data.message);
+                            }
+                            else if (data.ResponseCode == -100001 || data.ResponseCode == -1) {
+                                bootbox.alert(data.Description);
+                            }
+                            else if (data.Data == null || data.Data == undefined) {
+                                bootbox.alert(data.Description);
+                            }
+                            else {
+                                var mess = JSON.parse(data.Data.message);
+                                var textMess = "ErrorCode: " + mess.error[0].ErrorCode + "<br>Description: " + mess.error[0].Description + "<br>Disposition: " + mess.error[0].Disposition;
+                                bootbox.alert(textMess, function () {
+                                    //Err.showError(iex.jobCode, mess.error[0].Field, 1);
+                                });
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+        },
+        mounted() {
+            this.init();
+            this.getList(0);
+
+            var a = $("li[class='treeview act']");
+            if (a.length > 1) {
+                a[1].removeAttribute("class", "act");
+            }
+            this.trinhky = new Trinhky(this.signedDataCallback);
+            $(".menuLeft").remove(); $("#contentRight").attr("id", "");
+        }
+    });
+</script>
+

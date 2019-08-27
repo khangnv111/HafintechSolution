@@ -1,0 +1,488 @@
+﻿
+@{
+	ViewBag.Title = "VerifyCodeInfo_ListDecla";
+}
+
+<div style="padding: 0 20px 0 20px; margin: auto" id="lst-decla">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="span12" style="border-bottom: 1px solid #808080; margin-bottom: 5px">
+				<a href="@Url.Action("ListScanner", "Scanner")">Soi chiếu hàng hóa</a>   &nbsp;&nbsp;&nbsp;>>&nbsp;&nbsp;&nbsp;
+				<b>Thông tin của mã kiểm tra</b>
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<h4 style="text-transform: uppercase">THÔNG TIN CỦA MÃ SOI CHIẾU SỐ: &nbsp;&nbsp;&nbsp; {{data.verifyCode}}</h4>
+	</div>
+	<div class="row-fluid">
+		<div class="span6">
+			<button class="btn" v-on:click="viewInfo()" style="padding: 7px; border: 1px solid #808080">Thông tin chung</button>
+			<button class="btn btn-info" style="padding: 7px; margin-left: 0;border: 1px solid #808080">Danh sách tờ khai</button>
+			<button class="btn" style="padding: 7px; margin-left: 0;border: 1px solid #808080">Kết quả kiểm tra</button>
+		</div>
+		<div class="span6" style="text-align: right">
+			<a v-on:click="insertProduct(1);" v-bind:disabled="data.scanStatus == 1" class="btn btn-success" style="padding: 7px 10px;">Thêm hàng không có tờ khai</a>
+			<a v-on:click="insertProduct(2);" v-bind:disabled="data.scanStatus == 1" class="btn btn-warning" style="padding: 7px 10px;">Thêm tờ khai</a>
+			<a v-on:click="edit()" v-bind:disabled="data.scanStatus == 1 || data.weigh > 0" class="btn btn-info" style="padding: 7px 10px;">Sửa</a>
+			<a class="btn btn-danger" v-bind:disabled="data.scanStatus == 1 || data.weigh > 0" v-on:click="remove()" style="padding: 7px 20px">Hủy</a>
+		</div>
+		<div class="widget-box">
+			<div class="widget-content">
+
+				<div class="row-fluid" v-show="isLot == 1">
+					<div class="row">
+						<div class="control-group span12">
+							<a class="btn" v-bind:class="{'btn-success': tabSig == index}" v-for="(item, index) in lstConsig" v-on:click="selectSig(index)">Lô {{index + 1}}</a>
+						</div>
+					</div>
+					<div class="row" style="border-bottom: 1px solid #000000">
+					</div>
+				</div>
+				<div class="row-fluid" style="margin-top: 20px">
+
+					<div class="row" v-show="isLot == 1">
+						<div class="control-group span12">
+							<div class="span4">
+								<div class="span4">Mã barcode của kho hàng</div>
+								<div class="span7">
+									<b>{{barCode}}</b>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="control-group span12">
+							<div class="span4">
+								<div class="span4">Tổng số tờ khai</div>
+								<div class="span7">
+									<b>{{totalDecla}}</b>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" v-show="isLot == 1">
+						<div class="control-group span12">
+							<div class="span4">
+								<div class="span4">Trạng thái soi chiếu</div>
+								<div class="span7">
+									<b>{{infoConsign.scanStatusName}}</b>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" v-show="isLot == 1">
+						<div class="control-group span12">
+							<div class="span4">
+								<div class="span4">Trạng thái Kiểm tra</div>
+								<div class="span7">
+									<b>
+										{{infoConsign.verifyStatusName}}
+									</b>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row" v-show="isLot == 1">
+						<div class="control-group span12">
+							<div class="span4">
+								<div class="span4">Cân nặng lô hàng </div>
+								<div class="span7">
+									<b>
+										{{infoConsign.weigh == null ? 0 : infoConsign.weigh}}  KG
+									</b>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row-fluid" style="overflow-x: auto">
+					<table class="table table-bordered data-table table-striped with-check" role="grid">
+						<thead>
+							<tr>
+								<td style="text-align: center; min-width: 90px" rowspan="2">
+									STT
+								</td>
+								<td style="text-align: center; " rowspan="2">
+									Số tờ khai
+								</td>
+								<td style="text-align: center; " rowspan="2">
+									Mã Barcode
+								</td>
+								<td style="text-align: center; " rowspan="2">Số vận đơn</td>
+								<td style="text-align: center; " colspan="3">Thông tin người nhận</td>
+								<td style="text-align: center; " rowspan="2">Trạng thái soi<br /> chiếu</td>
+								<td style="text-align: center; " rowspan="2">Trạng thái kiểm tra</td>
+								<td v-show="isLot != 1" style="text-align: center; " rowspan="2">Cân nặng<br /> (Kg)</td>
+								<td style="text-align: center; " rowspan="2">Mã <br /> nghiệp vụ</td>
+								<td style="text-align: center; " rowspan="2">Luồng</td>
+								<td style="text-align: center; " rowspan="2">Thông quan</td>
+								<td style="text-align: center; " rowspan="2">Ngày rời<br /> kho bãi</td>
+								<td style="text-align: center; " rowspan="2">Ngày lưu kho</td>
+								<td style="text-align: center; " rowspan="2">Hàng hóa</td>
+								<td style="text-align: center; " rowspan="2">Tổng tiền tính thuế</td>
+								<td style="text-align: center; " rowspan="2">Hải quan thông quan</td>
+								<td style="text-align: center; " rowspan="2">Ghi chú</td>
+							</tr>
+							<tr>
+								<td style="text-align: center; ">CMND</td>
+								<td style="text-align: center; ">Họ và tên</td>
+								<td style="text-align: center; ">Địa chỉ</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-show="showLoading">
+								<td colspan="24" style="text-align:center">
+									<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+								</td>
+							</tr>
+							<tr v-for="(item, index) in lstDecla">
+								<td style="text-align: center">{{index + 1}}</td>
+								<td>
+									<a href="javascript:;" v-on:click="viewDecla(item, 1)">
+										{{item.dclNoVnaccs}}
+									</a>
+								</td>
+								<td>{{item.dclBarCode}}</td>
+								<td>{{item.cargoNo}}</td>
+								<td>{{item.identityNo}}</td>
+								<td>{{item.fullName}}</td>
+								<td>{{item.address}}</td>
+								<td>{{item.scanStatusName}}</td>
+								<td></td>
+								<td v-show="isLot != 1"></td>
+								<td style="text-align: center">{{item.type}}</td>
+								<td>
+									<span v-if="item.insClsCd == 1">Xanh</span>
+									<span v-if="item.insClsCd == 2">Vàng</span>
+									<span v-if="item.insClsCd == 3">Đỏ</span>
+								</td>
+								<td>
+									<span v-if="item.clearanStatus == -1">Chưa thông quan</span>
+									<span v-if="item.clearanStatus == 1"> Thông quan</span>
+									<span v-if="item.clearanStatus == 2">Đợi thông quan</span>
+								</td>
+								<td> </td>
+								<td> </td>
+								<td style="text-align: center">
+									<a href="javascript:;" v-on:click="viewDecla(item, 2)">Chi tiết</a>
+								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="row-fluid">
+			<ul class="pagination"></ul>
+		</div>
+
+	</div>
+
+	<div v-show="showPop" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+	<div v-show="showPop" id="detal_pop" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 70%; display: none">
+		@*@Html.Action("WeighInfo", "Scanner")*@
+	</div>
+</div>
+
+<script>
+	var app = new Vue({
+		el: '#lst-decla',
+		data: {
+			data: {
+			},
+			showLoading: true,
+			lstDecla: [],
+
+			isLot: 0, //1: theo lô, 0: theo tờ khai
+			tabSig: 0,
+			lstConsig: [], //danh sách lô
+			infoConsign: {},
+			barCode: "",
+
+			totalDecla: 0, //Tổng số tờ khai
+
+			showPop: false,
+		},
+		methods: {
+			init: function (callback) {
+				var data = this.data;
+				//this.listScanStatus = await Lib.ListScannerDictionary('SCAN_STATUS');
+				//this.listVerifyStatus = await Lib.ListScannerDictionary('VERIFY_STATUS');
+
+				if (callback != 'undefined' && typeof callback == 'function')
+					callback();
+			},
+			getInfo: function (transId, callback) {
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetInfoTrans",
+					data: {
+						transId: transId,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+
+						if (data.ResponseCode >= 0) {
+							self.data = data.Data;
+							if (data.Data.isConsignment == 1) {
+								self.isLot = 1;
+								self.GetListConsig(transId);
+							}
+							else {
+								self.getListDecla(transId, 0);
+							}
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			GetListConsig: function (transId) {
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetConsignments",
+					data: {
+						transId: transId,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+
+						if (data.ResponseCode >= 0) {
+							self.lstConsig = data.Data.data;
+							if (self.lstConsig.length > 0) {
+								self.getListDecla(transId, 0, self.lstConsig[0].barCode);
+								self.getConsigStatis(transId, self.lstConsig[0].barCode);
+							}
+							self.showLoading = false;
+						}
+					},
+					error: function (data) {
+						console.log("Lấy danh sách lô lỗi");
+					}
+				});
+			},
+			getConsigStatis: function (transId, barCode) {
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetConsignStatistic",
+					data: {
+						transId: transId,
+						barCode: barCode,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+
+						if (data.ResponseCode >= 0) {
+							self.infoConsign = data.Data;
+						}
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			selectSig: function (index) {
+				this.tabSig = index;
+				var tranId = '@ViewBag.tranId';
+				this.getListDecla(tranId, 0, this.lstConsig[index].barCode);
+				this.getConsigStatis(tranId, this.lstConsig[index].barCode);
+			},
+
+			getListDecla: function (transId, page, barCode, callback) {
+				var firstResult = page * 10;
+				if (!barCode) barCode = "";
+				this.barCode = barCode;
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetDetailTransDecla",
+					data: {
+						transId: transId,
+						firstResult: firstResult,
+						barCode: barCode,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						self.showLoading = false;
+						if (data.ResponseCode >= 0) {
+							self.lstDecla = data.Data.data;
+							self.totalDecla = data.Data.size;
+							self.loadPages(page, data.Data.pages);
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						self.showLoading = false;
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			loadPages: function (page, totalPage) {
+				var self = this;
+
+				var htmlP = '';
+				var CurPage = page + 1;
+				//debugger;
+				if (totalPage > 1) {
+					htmlP += '<li><a href="javascript:;" onclick="app.getListDecla(0)"><i class="fa fa-angle-double-left"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getListDecla(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
+
+					for (var i = CurPage - 3; i < CurPage + 3; i++) {
+						if (i > 0 && i <= totalPage) {
+							if (CurPage == i) {
+								htmlP += '<li class="active"><a href="javascript:;" onclick="app.getListDecla(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+							else {
+								htmlP += '<li><a href="javascript:;" onclick="app.getListDecla(' + (i - 1) + ')" >' + i + '</a></li>';
+							}
+						}
+					}
+					htmlP += '<li><a href="javascript:;" onclick="app.getListDecla(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
+					htmlP += '<li><a href="javascript:;" onclick="app.getListDecla(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
+				}
+
+				$(".pagination").html(htmlP);
+			}, 
+			//---------
+			insertProduct: function (type) {
+				if(type == 1)
+					window.location.href = Config.Url_Root + "Scanner/InsertProduct?tranId=" + @ViewBag.tranId;
+				else
+					window.location.href = Config.Url_Root + "Scanner/PopRegisScanner?tranId=" + @ViewBag.tranId + "&isInsertPro=1";
+			},
+			edit: function () {
+				window.location.href = Config.Url_Root + "Scanner/PopRegisScanner?tranId=" + @ViewBag.tranId;
+			},
+			viewInfo: function () {
+				window.location.href = Config.Url_Root + "Scanner/VerifyCodeInfo?tranId=" + @ViewBag.tranId;
+			}, 
+			//Libs
+			cargoNoStr: function (lsCargoNo) {
+				if (!lsCargoNo)
+					return "";
+
+				lsCargoNo = JSON.parse(lsCargoNo);
+				var str = "";
+				for (var i = 0; i < lsCargoNo.length; i++) {
+					if (lsCargoNo[i].cargoNo)
+						str += lsCargoNo[i].cargoNo + " ,";
+				}
+				str = str.substring(0, str.length - 2);
+
+				return str;
+			},
+			//action
+			viewDecla: function (item, tab) {
+				var self = this; 
+				var dclNo = item.dclNo;
+				var barCode = item.dclBarCode;
+				var verifyCode = this.data.verifyCode;
+				utils.Loading();
+				$.ajax({
+					type: 'GET',
+					url: Config.Url_Root + "Scanner/ViewDecla",
+					data: { 
+						dclNo: dclNo,
+						tab: tab,
+						barCode: barCode,
+						verifyCode: verifyCode,
+					}, 
+					success: function (data) {
+						utils.unLoading();
+						self.showPop = true;
+						$("#detal_pop").html(data);
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+
+			remove: function () {
+				var self = this;
+				bootbox.confirm("Bạn có chắc chắn muốn hủy mã soi chiếu: " + self.data.verifyCode, function (res) {
+					if (res) {
+
+						utils.Loading();
+						var token = $('#hdfToken').val();
+						$.ajax({
+							url: Config.API_Login + "agency/RemoveScan?transId=" + self.data.id,
+							type: 'GET',
+							data: {},
+							headers: {
+								"Authorization": "Bearer " + token
+							},
+							cache: false,
+							contentType: false,
+							processData: false,
+							success: function (data) {
+								utils.unLoading();
+								if (data.ResponseCode > 0) {
+									bootbox.alert("Thành công", function () {
+										window.location.href = Config.Url_Root + "Scanner/ListScanner";
+									});
+								}
+								else {
+									bootbox.alert(data.Description);
+									return;
+								}
+							},
+							error: function (data) {
+								bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+								utils.unLoading();
+							}
+						});
+
+					}
+				});
+			},
+		},
+		mounted() {
+			var self = this;
+			var tranId = '@ViewBag.tranId';
+			this.init(function () {
+				if (tranId) {
+					self.getInfo(tranId); 
+				}
+			});
+		},
+
+	});
+</script>

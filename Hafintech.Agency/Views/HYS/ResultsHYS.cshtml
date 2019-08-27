@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "ResultsHYS";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid" id="result-hys">
+    <div class="span12">
+        <h4>Kết quả xử lý tờ khai</h4>
+         
+        <a v-on:click="viewDecla()" class="btn" style="padding: 5px 60px"> Tờ khai </a>
+        <a class="btn btn-success" style="padding: 5px 60px">Kết quả xử lý tờ khai</a>
+
+        <div class="widget-box">
+            <div style="clear:both"></div>
+            <div class="widget-title">
+                <span class="icon"><i class="icon-align-justify"></i></span>
+                <h5>Danh sách thông điệp tờ khai</h5>
+            </div>
+            <div style="padding: 15px;">
+                <button style="padding: 5px 50px"><i class="fa fa-print" style="color: #082da7"></i> In thông điệp trả về</button>
+                <button style="padding: 5px 50px"><i class="fa fa-arrows-alt" style="color: #119607"></i> Xem thông tin trả về HQ</button>
+            </div>
+            <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                <thead>
+                    <tr>
+                        <th style="min-width:50px">STT</th>
+                        <th>Loại tờ khai</th>
+                        <th>Số file đính kèm</th>
+                        <th>Số Tờ khai</th>
+                        <th>Tên thông điệp</th>
+                        <th>Mã thông điệp</th> 
+                        <th>Loại</th>
+                        <th>Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-show="showLoading">
+                        <td colspan="14" style="text-align:center">
+                            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                        </td>
+                    </tr>
+                    <tr v-for="(item, index) in lstMess">
+                        <td style="text-align: center">{{index + 1}}</td>
+                        <td>
+                            <span v-if="item.outputMsgCode != 'P'">{{item.serviceCode}}</span>
+                            <span v-if="item.outputMsgCode == 'P'"><a on:click="ViewMess(item)">{{item.serviceCode}}</a></span>
+                        </td>
+                        <td>
+                            <span v-if="item.outputMsgCode != 'P'">{{item.attachmentNo}}</span>
+                            <span v-if="item.outputMsgCode == 'P'"><a on:click="ViewMess(item)">{{item.attachmentNo}}</a></span>
+                        </td>
+                        <td>{{item.dclNo}}</td>
+                        <td>{{item.outputMsgCode}}</td>
+                        <td>{{item.resultCode}}</td>
+                        <td>{{item.messageClass}}</td>
+                        <td>{{DateFormat(item.msgRecvDate).dateS}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="span8" style="margin:0">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Thông tin thuế của tờ khai</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="control-label">Số lần miễn thuế: </label>
+                            <div class="controls">
+                                <b style="line-height: 30px;" id="txtDeclaration"></b>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="control-label"><b>Tổng tiền thuế</b></label>
+                            <div class="controls">
+                                <input type="text" class="span5" disabled />
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="span4">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>In thông tin tờ khai</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal" style="padding: 15px">
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">1. In xác nhận nội dung tờ khai</button> 
+                    </div>
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">2. In xác nhận bổ xung hàng hóa</button>
+                    </div>
+                    <div class="row-fluid" style="margin-bottom: 5px">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">3. In xác quyết định thông quan hàng hóa</button>
+                    </div>
+                    <div class="row-fluid">
+                        <button class="span11" style="padding-top: 5px; padding-bottom: 5px; padding-left: 25px;text-align: left">4. In chứng từ lệ phí phải thu</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<input type="hidden" value="@ViewBag.attNo" id="attNo" />
+<input type="hidden" value="@ViewBag.decId" id="decId" />
+<script src="~/Content/js/hys-decla/results-hys.js"></script>

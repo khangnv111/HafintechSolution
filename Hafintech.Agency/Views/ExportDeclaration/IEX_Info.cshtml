@@ -1,0 +1,658 @@
+﻿<div class="row-fluid">
+    <div class="span12">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Thông Tin chung</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+                    <div class="row-fluid">
+
+                        <div class="span6" style="margin:0">
+                            <div class="control-group span12">
+                                <label class="control-label">Số Tờ khai: </label>
+                                <div class="controls">
+                                    <input type="text" class="span5 ECN" id="txtdclNo" disabled name="txtdclNo" v-model="data.dclNo" maxlength="12" v-on:click="getIntroMess('EDA','ECN')" />
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Số Tờ khai đầu tiên: </label>
+                                <div class="controls">
+                                    <input type="text" class="span6 FIC" id="txtfirstDclNo" name="txtfirstDclNo" v-model="data.firstDclNo" maxlength="12" v-on:click="getIntroMess('EDA','FIC')" />
+                                    <span> - </span>
+                                    <input type="text" class="span2 BNO" id="txtbranchNoDivDcl" name="txtbranchNoDivDcl" v-model="data.branchNoDivDcl" maxlength="2" v-on:click="getIntroMess('EDA','BNO')" />/
+                                    <input type="text" class="span2 DNO" id="txtnoDivisDivDcl" name="txtnoDivisDivDcl" v-model="data.noDivisDivDcl" maxlength="2" v-on:click="getIntroMess('EDA','DNO')" />
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Mã loại hình:<span class="error">(*)</span></label>
+                                <div class="controls">
+                                    <input type="text" class="span3 ICB" v-model="data.dclKindCd" maxlength="3" v-on:click="getIntroMess('EDA','ICB')" v-on:keyup="ChangeText()" />
+                                    <input type="text" class="span7 ICB" v-on:click="getIntroMess('IDA','ICB'); OpenPop(12)" v-model="data.dclKindNm" />
+                                    <button type="button" style="padding: 0 10px" v-on:click="OpenPop(12)">...</button>
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Mã hiệu phương thức vận chuyển<span class="error">(*)</span></label>
+                                <div class="controls">
+                                    <input type="text" class="span3 MTC" required v-model="data.meansOfTrsCd" v-on:click="getIntroMess('EDA','MTC')" />
+                                    <select id="slmeansOfTrsCd" name="slmeansOfTrsCd" class="span8 MTC" required v-model="data.meansOfTrsCd" v-on:click="getIntroMess('EDA','MTC')">
+                                        <option value="0">--Chọn--</option>
+                                        <option v-for="item in lstMeansOfTrs" v-bind:value="item.meansOfTrsCd">{{item.meansOfTrsCd}} || {{item.meansOfTrsNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Cơ quan hải quan:</label>
+                                <div class="controls">
+                                    <input type="text" id="txtcstOffice" name="txtcstOffice" class="span3 CH" v-model="data.cstOffice" v-on:click="getIntroMess('EDA','CH')" />
+                                    <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7 CH" v-model="data.cstOfficeNm" v-on:click="getIntroMess('EDA','CH'); OpenPop(1)" />
+                                    <button type="button" style="padding: 0 10px" v-on:click="OpenPop(1)">...</button>
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Ngày đăng ký (dự kiến):</label>
+                                <div class="controls">
+                                    <input type="date" id="txtdclPlannedDate" name="txtdclPlannedDate" class="span6 dDate RID" v-model="data.dclPlannedDate" v-on:click="getIntroMess('EDA','RID')" />
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Ngày thay đổi đăng ký :</label>
+                                <div class="controls">
+                                    <input type="date" id="txtdclPlannedDate" name="txtdclPlannedDate" class="span6 dDate RID" v-model="data.dclPlannedDate" v-on:click="getIntroMess('EDA','RID')" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Số tờ khai tạm nhập tái xuất tương ứng: </label>
+                                <div class="controls">
+                                    <input type="text" class="span11 TDN" id="txttentativeDclNo" name="txttentativeDclNo" v-model="data.tentativeDclNo" maxlength="12" v-on:click="getIntroMess('EDA','TDN')" />
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Mã phân loại hàng hóa:</label>
+                                <div class="controls">
+                                    <input type="text" class="span3 CCC" v-model="data.cargoClsCd" v-on:click="getIntroMess('EDA','CCC')" v-on:keyup="ChangeText()" />
+                                    <select id="slcargoClsCd" name="slcargoClsCd" class="span8 CCC" v-model="data.cargoClsCd" v-on:click="getIntroMess('EDA','CCC')">
+                                        <option value="">--Chọn--</option>
+                                        <option v-for="item in lstCargoCls" v-bind:value="item.cargoClsCd">{{item.cargoClsCd}} || {{item.cargoClsNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Mã số hàng hóa đại diện của tờ khai: </label>
+                                <div class="controls">
+                                    <input type="text" class="span11 TDN" id="txtrepTaxCd" name="txtrepTaxCd" v-model="data.repTaxCd" maxlength="12" v-on:click="getIntroMess('EDA','TDN')" />
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Mã bộ phận xử lý tờ khai:</label>
+                                <div class="controls">
+                                    <select id="slcstSubSection" name="slcstSubSection" class="span11 CHB" v-model="data.cstSubSection" v-on:click="getIntroMess('EDA','CHB')">
+                                        <option value="0">--Chọn--</option>
+                                        <option v-for="item in lstCstSubSection" v-bind:value="item.cstSubCd">{{item.cstSubCd}} || {{item.cstSubNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+                                <label class="control-label">Thời hạn tái nhập khẩu:</label>
+                                <div class="controls" style="position:relative;">
+                                    <input type="date" id="txttimeLimReExp" name="txttimeLimReExp" class="span11 dDate RID" v-model="data.timeLimReExp" v-on:click="getIntroMess('EDA','RID')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Thông tin Xuất nhập khẩu:</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <h5 style="margin-left:10px;">NGƯỜI XUẤT KHẨU</h5>
+                            <div class="control-group span12">
+                                <label class="control-label">Mã: </label>
+                                <div class="controls">
+                                    <input type="text" class="span6 EPC" id="txtimperCd" name="txtimperCd" v-model="data.experCd" maxlength="13" v-on:click="getIntroMess('EDA','EPC')" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Tên: </label>
+                                <div class="controls">
+                                    <input type="text" class="span11 EPC" id="txtimperNm" name="txtimperNm" v-model="data.experNm" maxlength="300" v-on:click="getIntroMess('EDA','EPN')" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Mã bưu chính: </label>
+                                <div class="controls">
+                                    <input type="text" class="span6 EPP" id="txtpostcode" name="txtpostcode" v-model="data.postcode" maxlength="7" v-on:click="getIntroMess('EDA','EPN')" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Địa chỉ: </label>
+                                <div class="controls">
+                                    <input type="text" id="txtaddressOfImp" name="txtaddressOfImp" class="span12 EPA" v-model="data.addressOfExp" maxlength="300" v-on:click="getIntroMess('EDA','EPA')" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Điện thoại: </label>
+                                <div class="controls">
+                                    <input type="text" id="txtphoneNoOfImp" name="txtphoneNoOfImp" class="span6 EPT" v-model="data.phoneNoOfExp" maxlength="20" v-on:click="getIntroMess('EDA','EPT')" />
+                                </div>
+                            </div>
+
+                            <h5 style="margin:10px 0 0 10px; float:left">NGƯỜI ỦY THÁC XUẤT KHẨU</h5>
+                            <div class="control-group span12">
+                                <label class="control-label">Mã: </label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="txtimpCtrCd" name="txtimpCtrCd" v-model="data.expCtrCd" maxlength="13" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Tên: </label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="txtimpCtrNm" v-on:keyup="ChangeText()" name="txtimpCtrNm" v-model="data.expCtrNm" maxlength="300" />
+                                </div>
+                            </div>
+
+                            <h5 style="margin:10px 0 0 10px; float:left">NGƯỜI NHẬP KHẨU</h5>
+                            <div class="control-group span12">
+                                <label class="control-label">Mã: </label>
+                                <div class="controls">
+                                    <input type="text" class="span6 CGC" id="txtconsignorCd" name="txtconsignorCd" v-model="data.consigneeCd" maxlength="13" v-on:click="getIntroMess('EDA','CGC')" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Tên:<span class="error">(*)</span></label>
+                                <div class="controls">
+                                    <input type="text" class="span11 CGN" id="txtconsignorNm" name="txtconsignorNm" required v-model="data.consigneeNm" maxlength="70" v-on:click="getIntroMess('EDA','CGN')" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Mã bưu chính: </label>
+                                <div class="controls">
+                                    <input type="text" class="span6 CGP" id="txtpostcodeIdt" name="txtpostcodeIdt" v-model="data.postcodeIdt" v-on:click="getIntroMess('EDA','CGP')" />
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Địa chỉ: </label>
+                                <div class="controls">
+                                    <p>
+                                        <input type="text" class="span6 CGA" id="txtaddress1Street" name="txtaddress1Street" v-model="data.address1Street" v-on:click="getIntroMess('EDA','CGA')" v-on:keyup="ChangeText()" />
+                                        <input type="text" class="span6 CAT" id="txtaddress2Street" name="txtaddress2Street" v-model="data.address2Street" v-on:click="getIntroMess('EDA','CAT')" v-on:keyup="ChangeText()" />
+                                    </p>
+                                    <p>
+                                        <input type="text" class="span6 CAC" id="txtaddress3CityNm" name="txtaddress3CityNm" v-model="data.address3CityNm" v-on:click="getIntroMess('EDA','CAC')" v-on:keyup="ChangeText()" />
+                                        <input type="text" class="span6 CAS" id="txtaddress4CityNm" name="txtaddress4CityNm" v-model="data.address4CityNm" v-on:click="getIntroMess('EDA','CAS')" v-on:keyup="ChangeText()" />
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Mã nước:</label>
+                                <div class="controls">
+                                    <input type="text" id="txtcountryCd" name="txtcountryCd" class="span2 CGK" v-model="data.countryCd" v-on:click="getIntroMess('EDA','CGK')" />
+                                    <button type="button" style="padding: 0 10px" v-on:click="OpenPop(2)">...</button>
+                                </div>
+                            </div>
+                            <div class="control-group span12">
+                                <label class="control-label">Mã đại lý Hải quan: </label>
+                                <div class="controls">
+                                    <input type="text" class="span6 ECC" id="txtplannedDeclCd" name="txtplannedDeclCd" v-model="data.plannedDeclCd" v-on:click="getIntroMess('EDA','ECC')" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"><i class="icon-th"></i></span>
+                <h5>Số vận đơn</h5>
+            </div>
+            <div class="widget-content nopadding">
+
+                <div class="form-horizontal">
+                    <div class="span12" style="padding-top:10px;">
+                        <div class="control-group span12">
+                            <div class="span4" v-for="(value, index) in data.lsCargoNo">
+                                <span class="span2" style="text-align: center">{{index + 1}}</span>
+                                <input type="text" class="span8 EKN" v-model="value.cargoNo" style="margin-right: 5px; text-transform:uppercase"
+                                       v-on:click="getIntroMess('EDA','EKN')" />
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-horizontal">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Số lượng kiện:<span class="error">(*)</span></label>
+                                <div class="controls">
+                                    <input type="hidden" id="hdfpieceUnitCd" name="hdfpieceUnitCd" class="span3" v-model="data.pieceUnitCd" />
+                                    <input type="text" id="txtcargoPiece" name="txtcargoPiece" class="span3 NO" required v-model="data.cargoPiece" v-on:click="getIntroMess('EDA','NO')" />
+                                    <span>
+                                        <input type="text" id="txtpieceUnitCd_text" name="txtpieceUnitCd_text" class="span7 NOT" required v-model="data.pieceUnitCd" v-on:click="getIntroMess('EDA','NOT'); OpenPop(6)" />
+                                    </span>
+                                    <button type="button" style="padding: 0 10px" v-on:click="OpenPop(6)">...</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Tổng trọng lượng hàng (Gross): </label>
+                                <div class="controls">
+                                    <input type="text" id="txtcargoWeigGrs" name="txtcargoWeigGrs" class="span3 GW" v-model="data.cargoWeigGrs" v-on:click="getIntroMess('EDA','GW')" />
+                                    <input type="text" id="txtweigUnitCdGrs" name="txtweigUnitCdGrs" class="span7 GWT" v-model="data.weigUnitCdGrs" v-on:click="getIntroMess('EDA','GWT');OpenPop(7)" />
+                                    <button type="button" style="padding: 0 10px" v-on:click="OpenPop(7)">...</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Mã địa điểm lưu kho hàng chờ thông quan dự kiến:</label>
+                            <div class="controls">
+                                <input type="text" id="txtcstWrhCd" name="txtcstWrhCd" class="span2 ST" v-model="data.cstWrhCd" v-on:click="getIntroMess('EDA','ST')" />
+                                <input type="text" id="txtcstWrhCd_text" name="txtcstWrhCd_text" class="span4 ST" v-on:click="getIntroMess('EDA','ST'); OpenPop(3)" v-model="data.cstClrWrhNm" />
+                                <button type="button" style="padding: 0 10px" v-on:click="OpenPop(3)">...</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Địa điểm nhận hàng cuối cùng<span class="error">(*)</span></label>
+                            <div class="controls">
+                                <input type="text" id="txtloadLocCd" name="txtloadLocCd" class="span3 DSC" v-model="data.finalDesCd" v-on:click="getIntroMess('EDA','DSC')" />
+                                <input type="text" id="txtloadLocNm" name="txtloadLocNm" class="span7 DSC" v-model="data.finalDesNm" v-on:click="getIntroMess('EDA','DSC'); OpenPop(4)" />
+                                <button type="button" style="padding: 0 10px" v-on:click="OpenPop(4)">...</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Mã địa điểm xếp hàng:</label>
+                            <div class="controls">
+                                <input type="text" id="txtunloadPortCd" name="txtunloadPortCd" class="span3 PSC" v-model="data.loadPortCd" v-on:click="getIntroMess('EDA','PSC')" />
+                                <input type="text" id="txtunloadPortNm" name="txtunloadPortNm" class="span7 PSC" v-model="data.loadPortNm" v-on:click="getIntroMess('EDA','PSC');OpenPop(5)" />
+                                <button type="button" style="padding: 0 10px" v-on:click="OpenPop(5)">...</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Phương tiện vận chuyển dự kiến </label>
+                            <div class="controls">
+                                <input type="text" id="txtTransport" name="txtTransport" class="span3 VSC" v-model="data.lPlanVesselCd" v-on:click="getIntroMess('EDA','VSC')" />
+                                <input type="text" id="txtloadVesselAcNm" name="txtloadVesselAcNm" class="span7 VSC" v-model="data.lPlanVesselNm" v-on:click="getIntroMess('EDA','VSC');" />
+                                <button type="button" style="padding: 0 10px" v-on:click="OpenPop(8)">...</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Ngày hàng đi dự kiến:<span class="error">(*)</span></label>
+                            <div class="controls" style="position:relative;">
+                                <input type="date" id="" name="" class="span3 dDate SYM" required v-model="data.deptPlanDate" v-on:click="getIntroMess('EDA','SYM')" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Ký hiệu và số hiệu:</label>
+                            <div class="controls" style="position:relative;">
+                                <input type="text" id="txtmarksAndNos" name="txtmarksAndNos" class="span11 MRK" v-model="data.marksAndNos" v-on:click="getIntroMess('EDA','MRK')" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Giấy phép xuất khẩu: </label>
+                        </div>
+                        <div class="controls" v-for="(value, index) in data.lsPermit">
+                            <div class="span6">
+                                <b class="span1" style="line-height:30px">{{index+1}}</b>
+                                <select class="span6 SS_" v-model="value.permitType" v-on:change="listChange()" v-on:click="getIntroMess('EDA','SS_')">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in lsPermit" v-bind:value="item.permitType">{{item.permitType}}</option>
+                                </select>
+                                <input type="text" id="txtpermitType1" class="span5 SS_" disabled v-model="value.permitType" v-on:click="getIntroMess('EDA','SS_')" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="">Hóa đơn thương mại</h4>
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Phân loại hình thức hóa đơn:<span class="error">(*)</span></label>
+                            <div class="controls">
+                                <select id="slinvClsCd" name="slinvClsCd" class="span6 IV1" required v-model="data.invClsCd" v-on:click="getIntroMess('EDA','IV1')">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in lstInvCls" v-bind:value="item.invClsCd">{{item.invClsCd}} || {{item.invClsNm}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Số tiếp nhận hóa đơn điện tử: </label>
+                                <div class="controls">
+                                    <input type="text" id="txteleInvRecNo" name="txteleInvRecNo" class="span12 IV2" v-model="data.eleInvRecNo" v-on:click="getIntroMess('EDA','IV2')" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Số hóa đơn: </label>
+                                <div class="controls">
+                                    <input type="text" id="txtinvNo" name="txtinvNo" class="span11 IV3" v-model="data.invNo" maxlength="35" v-on:click="getIntroMess('EDA','IV3')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Ngày phát hành:</label>
+                                <div class="controls" style="position:relative;">
+                                    <input type="date" id="txtinvDate" name="txtinvDate" class="span12 dDate IVD" v-model="data.invDate" v-on:click="getIntroMess('EDA','IVD')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Phương thức thanh toán:</label>
+                                <div class="controls">
+                                    <select id="sltermOfPay" name="sltermOfPay" class="span11 IVP" v-model="data.termOfPay" v-on:click="getIntroMess('EDA','IVP')">
+                                        <option value="">--Chọn--</option>
+                                        <option v-for="item in lstTermOfPay" v-bind:value="item.termOfPay">{{item.termOfPay}} || {{item.termOfPayNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Tổng trị giá hóa đơn:<span class="error">(*)</span></label>
+                            <div class="controls">
+                                <div class="span3" style="position:relative">
+                                    <select class="span11 IP2" v-model="data.invPrcCdtCd" v-on:click="getIntroMess('EDA','IP2')">
+                                        <option value="">--Chọn--</option>
+                                        <option v-for="item in lstPrcCdtCd" v-bind:value="item.invPrcCdtCd">{{item.invPrcCdtCd}} || {{item.invPrcCdtNm}}</option>
+                                    </select>
+                                </div>
+                                <div class="span3" style="position:relative">
+                                    <select class="span11 IP1" v-model="data.invPrcKindCd" v-on:click="getIntroMess('EDA','IP1')">
+                                        <option value="">--Chọn--</option>
+                                        <option v-for="item in lstInvPrcKind" v-bind:value="item.invPrcKindCd">{{item.invPrcKindCd}} || {{item.invPrcKindNm}}</option>
+                                    </select>
+                                </div>
+                                <div class="span3" style="position:relative">
+                                    <select class="span11 IP3" v-model="data.invCurCd" v-on:click="getIntroMess('EDA','IP3')">
+                                        <option value="">--Chọn--</option>
+                                        <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
+                                    </select>
+                                </div>
+                                <div class="span3" style="position:relative">
+
+                                    <input type="text" id="txttotalInvPrc" name="txttotalInvPrc" class="span5 IP4" required v-model="data.totalInvPrc" maxlength="20" v-on:click="getIntroMess('EDA','IP4')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Tổng trị giá tính thuế</label>
+                            <div class="controls">
+
+                                <input type="text" id="" name="" class="span3 FKK" required v-model="data.totalTaxVal" maxlength="20" v-on:click="getIntroMess('EDA','FKK')" />
+                                <select class="span4" v-model="data.curCdTtlTaxVal">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in currency" v-bind:value="item.currencyCode">{{item.currencyCode}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Phân loại không cần quy đổi VND</label>
+                                <div class="controls">
+                                    <input type="text" id="" name="" class="span12 CNV" v-model="data.clsfNonCvInVND" maxlength="1" v-on:click="getIntroMess('EDA','CNV')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label">Tổng phân bổ trị giá tính thuế</label>
+                                <div class="controls">
+                                    <input type="text" id="" name="" class="span11 TP" v-model="data.ttlPrDisTaxVal" maxlength="20" v-on:click="getIntroMess('EDA','TP')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Người nộp thuế:</label>
+                            <div class="controls">
+                                @*<input type="text" id="txttaxPayer" name="txttaxPayer" class="span11 TPM" maxlength="1" v-model="data.taxPayer" v-on:click="getIntroMess('EDA','TPM')" />*@
+                                <select class="span11 TPM" v-model="data.taxPayer" v-on:click="getIntroMess('EDA','TPM')">
+                                    <option value="1">1. Người nộp thuế là người nhập khẩu</option>
+                                    <option value="2">2. Người nộp thuế là đại lý hải quan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="">Thuế và bảo lãnh</h4>
+                    <div class="row-fluid">
+                        <div class="control-group span12">
+                            <label class="control-label">Mã ngân hàng trả thuế thay:</label>
+                            <div class="controls">
+                                <input type="text" id="txtbankPayCd" name="txtbankPayCd" class="span2 BRC" v-model="data.bankPayCd" v-on:click="getIntroMess('EDA','BRC')" />
+                                <input type="text" id="txtbankPayCd_text" name="txtbankPayCd_text" class="span4 BRC" v-model="data.bankPayNm" v-on:click="getIntroMess('EDA','BRC'); OpenPop(9)" />
+                                <button type="button" style="padding: 0 10px" v-on:click="OpenPop(9)">...</button>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Năm phát hành hạn mức: </label>
+                            <div class="controls">
+                                <div class="span2" style="position:relative">
+                                    <input type="text" id="txtbankPayIssYear" name="txtbankPayIssYear" class="span12 BYA" v-model="data.bankPayIssYear" v-on:click="getIntroMess('EDA','BYA')" />
+                                </div>
+                                <div class="span5">
+                                    <label class="span6">Ký hiệu chứng từ hạn  mức:</label>
+                                    <input type="text" id="txtbankPaySign" name="txtbankPaySign" class="span6 BCM" v-model="data.bankPaySign" v-on:click="getIntroMess('EDA','BCM')" />
+                                </div>
+                                <div class="span5">
+                                    <label class="span6">Số chứng từ hạn mức:</label>
+                                    <input type="text" id="txtbankPayNo" name="txtbankPayNo" class="span6 BCN" v-model="data.bankPayNo" v-on:click="getIntroMess('EDA','BCN')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Mã xác định thời hạn nộp thuế:</label>
+                            <div class="controls">
+                                <input type="text" class="span2" v-model="data.extPayDueCd" />
+                                <select id="slextPayDueCd" name="slextPayDueCd" class="span5" v-model="data.extPayDueCd" v-on:change="listChange()">
+                                    <option value="">--Chọn--</option>
+                                    <option v-for="item in lstExtPayDue" v-bind:value="item.extPayDueCd">{{item.extPayDueCd}} || {{item.extPayDueNm}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Mã ngân hàng bảo lãnh:</label>
+                            <div class="controls">
+                                <input type="text" id="txtsecSupplBankCd" name="txtsecSupplBankCd" class="span3 SBC" v-model="data.secSupplBankCd" v-on:click="getIntroMess('EDA','SBC')" />
+                                <input type="text" id="txtsecSupplBankCd_text" name="txtsecSupplBankCd_text" class="span7 SBC" v-model="data.secSupplBankNm" v-on:click="getIntroMess('EDA','SBC'); OpenPop(10)" />
+                                <button type="button" style="padding: 0 10px" v-on:click="OpenPop(10)">...</button>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Năm phát hành bảo lãnh: </label>
+                            <div class="controls">
+                                <div class="span2" style="position:relative">
+                                    <input type="text" id="txtissuedYear" name="txtissuedYear" class="span12 RYA" v-model="data.issuedYear" maxlength="4" v-on:click="getIntroMess('EDA','RYA')" />
+                                </div>
+                                <div class="span5">
+                                    <label class="span6">Ký hiệu chứng từ hạn mức:</label>
+                                    <input type="text" id="txtsecBankSign" name="txtsecBankSign" class="span6 SCM" v-model="data.secBankSign" maxlength="10" v-on:click="getIntroMess('EDA','SCM')" />
+                                </div>
+                                <div class="span5">
+                                    <label class="span6">Số chứng từ hạn mức:</label>
+                                    <input type="text" id="txtsecNo" name="txtsecNo" class="span6 SCN" v-model="data.secNo" maxlength="10" v-on:click="getIntroMess('EDA','SCN')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Số đính kèm khai báo điện tử </label>
+                            <div class="controls">
+                                <div class="span4" v-for="(value, index) in data.lsDosAttc">
+                                    <select class="span4 EB_" v-model="value.attachmentNo" v-on:click="getIntroMess('EDA','EB_')">
+                                        <option value="">--Chọn--</option>
+                                        <option v-for="item in lstClsAttach" v-bind:value="item.clsAttachCd">{{item.clsAttachCd}} || {{item.clsAttachNm}}</option>
+                                    </select>
+                                    <input type="text" class="span5 EA_" v-model="value.clsAttachment" v-on:click="getIntroMess('EDA','EA_')" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Ngày khởi hành vận chuyển</label>
+                            <div class="controls" style="position:relative">
+                                <input type="date" id="txtstrDateTrs" name="txtstrDateTrs" class="span3 dDate DPD" v-model="data.strDateTrs" v-on:click="getIntroMess('EDA','DPD')" />
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Thông tin trung chuyển:</label>
+                            <div class="controls">
+                                <table class="table table-bordered" id="tbl_container_add">
+                                    <tr>
+                                        <th class="span6">Địa điểm</th>
+                                        <th class="span3">Ngày đến</th>
+                                        <th class="span3">Ngày khởi hành</th>
+                                    </tr>
+
+                                    <tr v-for="(value, index) in data.lsTransInfo">
+                                        <td>
+                                            <input type="text" class="span6" v-model="value.trnLocTrs" />
+                                            <select class="span6 ST_" v-model="value.trnLocTrs" v-on:change="listChange()" v-on:click="getIntroMess('EDA','ST_')">
+                                                <option value="">--Chọn--</option>
+                                                <option v-for="item in lstTransportPlace" v-bind:value="item.locTrs">{{item.locTrs}} || {{item.locTrsName}}</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <div style="position:relative">
+                                                <input type="date" v-model="value.arrDateTrnLoc" class="span10 dDate AD_" v-on:click="getIntroMess('EDA','AD_')" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="position:relative">
+                                                <input type="date" v-model="value.strDateTrnLoc" class="span10 dDate SD_" v-on:click="getIntroMess('EDA','SD_')" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Địa điểm đích cho vận chuyển bảo thuế:</label>
+                            <div class="controls">
+                                <table class="table table-bordered" id="tbl_container_add">
+                                    <tr>
+                                        <th class="span3">Địa điểm</th>
+                                        <th class="span3">Ngày đến</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="text" id="txtdestTransPlace" name="txtdestTransPlace ARP" class="span3" v-model="data.destTransPlace" v-on:click="getIntroMess('EDA','ARP')" v-on:change="listChange()" />
+
+                                            <select id="sldestTransPlace" name="sldestTransPlace" class="span6 ARP" v-model="data.destTransPlace" v-on:change="listChange()" v-on:click="getIntroMess('EDA','ARP')">
+                                                <option value="">--Chọn--</option>
+                                                <option v-for="item in lstTransportPlace" v-bind:value="item.locTrs">{{item.locTrs}} || {{item.locTrsName}}</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <div style="position:relative">
+                                                <input type="date" class="span8 dDate ADT" v-model="data.destarrDate" v-on:click="getIntroMess('EDA','ADT')" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Phần ghi chú:</label>
+                            <div class="controls" style="position:relative">
+                                <textarea class="span11 NT2" id="txtnotes" name="txtnotes" v-model="data.notes" maxlength="300" v-on:click="getIntroMess('EDA','NT2')"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="control-group span12">
+                            <label class="control-label">Số quản lý của  nội bộ doanh nghiệp:</label>
+                            <div class="controls" style="position:relative">
+                                <input type="text" id="txtetpControlNo" name="txtetpControlNo" class="span5 REF" v-model="data.etpControlNo" maxlength="20" v-on:click="getIntroMess('EDA','REF')" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

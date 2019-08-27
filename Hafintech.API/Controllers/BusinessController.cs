@@ -2,13 +2,9 @@
 using App.Utils.GetData;
 using Hafintech.API.Models;
 using Hafintech.API.Models.Agency;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -61,7 +57,6 @@ namespace Hafintech.API.Controllers
             }
             return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
         }
-
 
         [HttpPost]
         [Route("CreateBusiness")]
@@ -119,6 +114,7 @@ namespace Hafintech.API.Controllers
             }
             return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
         }
+
         [HttpPost]
         [Route("CreatePersonal")]
         public async Task<IHttpActionResult> CreatePersonal(Personal data)
@@ -153,7 +149,8 @@ namespace Hafintech.API.Controllers
                         parentId = data.parentId,
                         taxIdNumber = data.taxIdNumber,
                         name = data.name,
-                        status = data.status
+                        status = data.status,
+                        accountId = data.accountId
                     });
                     if (res.code < 0)
                         return Ok(new Response(res.code, res.message));
@@ -176,6 +173,7 @@ namespace Hafintech.API.Controllers
             }
             return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
         }
+
         [HttpPost]
         [Route("DeleteBusiness")]
         public async Task<IHttpActionResult> DeleteBusiness(List<Business> data)
@@ -215,6 +213,7 @@ namespace Hafintech.API.Controllers
             }
             return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
         }
+
         [HttpGet]
         [Route("SetSignMethod")]
         public async Task<IHttpActionResult> SetSignMethod(int businessId = 0, int signMethod = 0)
@@ -233,13 +232,14 @@ namespace Hafintech.API.Controllers
             }
             return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
         }
+
         [HttpGet]
         [Route("GetListParent")]
         public async Task<IHttpActionResult> GetListParent(string status = "")
         {
             try
             {
-                var url = ConfigurationManager.AppSettings["URL"] + "MediationAgency/business/getListParent?accountId=" + (int)AccountSession.AccountID + "&status=" + status;
+                var url = ConfigurationManager.AppSettings["URL"] + "MediationAgency/api/business/getListParent?accountId=" + (int)AccountSession.AccountID + "&status=" + status;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message, res.results.error));
@@ -258,9 +258,10 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                var url = ConfigurationManager.AppSettings["URL"] + "MediationAgency/business/updateBussinessStatus";
+                var url = ConfigurationManager.AppSettings["URL"] + "MediationAgency/api/business/updateBussinessStatus";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new
                 {
+                    accountId =  data.accountId,
                     businessId = data.businessId,
                     status = data.status
                 });

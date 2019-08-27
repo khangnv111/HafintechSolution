@@ -1,0 +1,670 @@
+﻿
+<style>
+	.mx-datepicker .mx-input-wrapper input {
+		height: 30px;
+	}
+
+	.mx-input-append {
+		height: 30px
+	}
+</style>
+
+<div class="container-fluid" id="reg_scan">
+	<div class="row-fluid">
+		<div class="span6">
+			<h4 v-if="!data.id">
+				ĐĂNG KÝ SOI CHIẾU HÀNG HÓA
+			</h4>
+			<h4 v-if="data.id && isInsertProduct == 0">
+				SỬA SOI CHIẾU HÀNG HÓA
+			</h4>
+			<h4 v-if="data.id && isInsertProduct == 1">
+				THÊM HÀNG HÓA
+			</h4>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="widget-box">
+			<div class="widget-content">
+				<div class="container-fluid">
+
+					<div style="margin-top: 25px">
+						<div class="row-fluid">
+							<div class="span4">
+								Mã soi chiếu
+							</div>
+							<div class="span4">
+								<input type="text" class="span5" disabled v-model="data.verifyCode"/>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span4">
+								Xuất/Nhập khẩu <span class="error">*</span>
+							</div>
+							<div class="span4">
+								<select class="span5" v-bind:disabled="isInsertProduct == 1" v-model="data.dclType">
+									<option value="1">Nhập khẩu</option>
+									<option value="2">Xuất khẩu</option>
+								</select>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span4">
+								Ngày / giờ soi chiếu <span class="error">*</span>
+							</div>
+							<div class="span7">
+								<date-picker v-bind:disabled="isInsertProduct == 1" v-model="regisScanDt" type="datetime" lang="en" format="DD-MM-YYYY HH:mm:ss"  v-bind:not-before="new Date()"></date-picker>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span4">
+								Kiểu đăng ký soi chiếu <span class="error">*</span>
+							</div>
+							<div class="span7">
+								<select class="span6" v-bind:disabled="isInsertProduct == 1" v-model="data.atCenter">
+									<option value="1">&nbsp;Kiểm tra tại trung tâm Hateco</option>
+									<option value="0">&nbsp;Mang hàng về kiểm tra - Soi chiều hàng hóa theo tờ khai</option>
+									<option value="2">&nbsp;Mang hàng về kiểm tra - Soi chiếu hàng hóa theo lô</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div class="row-fluid">
+						<div class="row-fluid">
+							<div class="span4">
+								<h5>Danh sách hàng gửi về trung tâm soi chiếu <span class="error">*</span></h5>
+							</div>
+							<div class="span7">
+								<a href="~/files/file_template.xlsx"><i class="fa fa-download"></i>&nbsp; Tải file mẫu</a> 
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span4">
+								<input type="file" class="span11" v-if="showInput" id="file_excel" ref="myFiles" v-on:change="uploadExcel()" v-on:click="chooseExcel()" multiple accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+							</div>
+							<div class="span3">
+								<a href="javascript:;" v-on:click="viewFileExcel()">
+									Xem file
+								</a>
+							</div>
+						</div>
+						<div class="row-fluid" style="margin-top: 10px">
+							<div class="span4">
+								Đăng ký bằng tờ khai trên hệ thống NEVS
+							</div>
+							<div class="span3">
+								<input v-if="showCheck == 1" type="checkbox" v-model="connectNevs" v-bind:disabled="isInsertProduct == 1"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="row-fluid" v-show="connectNevs == 0">
+						<div class="widget-box" style="width: 70%">
+							<h5>Danh sách tờ khai đăng ký soi chiếu</h5>
+							<div class="row-fluid">
+
+								<div class="row-fluid">
+							
+									<button class="btn btn-success" style="border: 1px solid #949494">File.txt (từ PM Terminal)</button>
+								</div>
+								<div class="row-fluid" style="max-height: 200px; overflow-y: auto; border:1px solid #a9a4a4">
+									<div id="dropContainer" style="width: 100%">
+										<div v-show="!haveFile" style="margin: 0 auto; padding: 50px; text-align: center">
+											<span style="color: #1250d0">Kéo thả file vào đây</span><br />
+											<span>(Tối đa 50 file)</span><br />
+											<a href="javascript:;" v-on:click="selectFile()"><i class="fa fa-file fa-3x" aria-hidden="true"></i></a>
+										</div>
+										<div v-show="haveFile" style="margin-top: 15px; margin-left: 10px">
+											<div v-for="(item, index) in lstFiles">
+												<span class="span8">
+													<i class="fa fa-file"></i>
+													{{item.name}} ({{getSizeFile(item.size)}} KB)
+												</span>
+												<span class="span3" style="text-align: center">
+													<a href="javascript:;" v-on:click="removeFile(index)"><i class="fa fa-remove" style="color: red"></i></a>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div style="display: none">
+										<input type="file" id="fileInput" ref="fileInputEdi" multiple v-on:change="ReadNameFile()" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row-fluid" style="margin: 35px 0;">
+						 
+						<a class="btn btn-success" style="padding: 5px" v-if="!data.id" v-on:click="SaveXLS()">
+							Đăng ký
+						</a>
+						<a class="btn btn-success" style="padding: 5px" v-if="data.id && isInsertProduct == 0" v-on:click="SaveUpdate()">
+							Sửa
+						</a>
+						<a class="btn btn-success" style="padding: 5px" v-if="data.id && isInsertProduct == 1" v-on:click="SaveInsert()">
+							Thêm
+						</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div v-show="viewFile" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+	<div v-show="viewFile" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 90%; display: none">
+		@Html.Action("ViewFiles", "Scanner")
+	</div>
+</div>
+<script>
+	var app = new Vue({
+		el: '#reg_scan',
+		data: {
+			data: {},
+			isInsertProduct: 0,
+			showInput: false,
+
+			showCheck: 0,
+			connectNevs: false, //true: đăng ký hệ thống NEVS
+			regisScanDt: '',
+
+			//Excel 
+			viewFile: false,
+			dataUpExcel: [], //tất cả dữ liệu file excel
+			lstDataExcel: [],//danh sách dữ liệu file excel
+			lstExcel: [],  //danh sách file excel up lên
+			//--
+			tabFile : 1,
+			haveFile: false, //mặc định chưa có file
+			lstFiles: [], //danh sách file edi upload
+		},
+		methods: {
+			init: function (callback) {
+				var self = this;
+				this.data.dclType = 1; 
+				this.data.atCenter = 0;
+				this.data.businessId = utils.getCookie("accountIdBuss");
+
+				self.isInsertProduct = @ViewBag.isInsertPro;   
+				
+				this.loadDetail();
+				setTimeout(function () {
+					self.showInput = true;
+				}, 200);
+
+				if (callback != 'undefined' && typeof callback == 'function')
+					callback();
+			}, 
+			loadDetail: function () {
+				var transId = '@ViewBag.tranId'; 
+				if (!transId)
+					return;
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetInfoTrans",
+					data: {
+						transId: transId,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+
+						if (data.ResponseCode >= 0) {
+							self.data = data.Data; 
+							//self.show_Check = true;
+							self.regisScanDt = data.Data.regisScanDt;
+							if (data.Data.isConsignment == 1) {
+								self.data.atCenter = 2;
+							}
+
+							
+							if (data.Data.connectNevs)
+								self.connectNevs = true;
+						} 
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			//view Files
+			viewFileExcel: function () { 
+				if (this.dataUpExcel.length == 0) {
+					bootbox.alert("Chưa có file");
+					return;
+				} 
+				for (var i = 0; i < this.dataUpExcel.length; i++) {
+					for (var j = 0; j < this.dataUpExcel[i].consigments.length; j++) {
+						for (var k = 0; k < this.dataUpExcel[i].consigments[j].declarations.length; k++) {
+							var dec = this.dataUpExcel[i].consigments[j].declarations[k]; 
+							dec.name = this.dataUpExcel[i].consigments[j].name; 
+
+							this.lstDataExcel.push(dec);
+						}
+					}
+				}
+
+				this.viewFile = true;
+			},
+			ClosePop: function () {
+				this.viewFile = false;
+				this.lstDataExcel = [];
+			},
+			getDclNo: function (dclNo) {
+				if (!dclNo)
+					return "";
+				dclNo = dclNo.split('D')[1];
+				dclNo = dclNo.split('C')[0];
+				return dclNo;
+			},
+			//Libs
+			formatDate: function (date, type) {
+				if (!date) return "";
+
+				var str = moment(date).format('DD-MM-YYYY HH:mm:ss');
+				if (type == 2)
+					str = moment(date).format('YYYY-MM-DD HH:mm:ss');
+
+				return str;
+			}, 
+			//Files 
+			selectFile: function () {
+				$("#fileInput").click();
+			},
+			ReadNameFile: function () {
+				this.lstFiles = [];
+				var file = this.$refs.fileInputEdi.files; //ev.target.files;
+				for (var i = 0; i < file.length; i++) {
+					this.lstFiles.push(file[i]);
+				}
+
+				this.loadFiles();
+			},
+			getSizeFile: function (size) {
+				size = parseFloat(size / 1024).toFixed(2);
+				return size;
+			},
+			loadFiles: function () {
+				if (this.lstFiles.length > 0)
+					this.haveFile = true;
+				else this.haveFile = false;
+			},
+			removeFile: function (index) {
+				this.lstFiles.splice(index, 1);
+				if (this.lstFiles.length == 0) {
+					this.haveFile = false;
+					$("#fileInput").val("");
+				}
+			},
+			//
+			chooseExcel: function () {
+				//this.lstExcel = [];
+				//this.dataUpExcel = [];  
+				//$("#file_excel").val("");
+			},
+			uploadExcel: function () {
+				debugger;
+				this.lstExcel = [];
+				this.dataUpExcel = []; 
+
+				var file = this.$refs.myFiles.files;// ev.target.files; 
+				var formData = new FormData(); 
+				for (var i = 0; i < file.length; i++) {
+					if (utils.CheckVietNamese(file[i].name)) {
+						bootbox.alert("Tên File tải lên không được là tiếng việt có dấu");
+						return;
+					}
+
+					this.lstExcel.push(file[i]); 
+					formData.append(file[i].name, file[i]);
+				} 
+				if (this.lstExcel.length == 0) {  
+					$("#file_excel").val("");
+					return;
+				}
+
+				var self = this;
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					url: Config.API_Login + "agency/UploadExcel",
+					type: 'POST',
+					data: formData,
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						utils.unLoading();
+						console.log("uploadExcel: ", data); 
+						if (data.ResponseCode > 0) {
+							console.log("Upload file excel thành công!!!");
+							self.dataUpExcel = data.Data; 
+						}
+						else {
+							bootbox.alert(data.Description);
+						}
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						utils.unLoading();
+					}
+				});
+			},
+			//----- 
+			SaveXLS: function (callback) {
+				if (this.lstExcel.length == 0) {
+					bootbox.alert("Bạn chưa chọn file excel");
+					return;
+				}
+				if (!this.regisScanDt) {
+					bootbox.alert("Bạn chưa chọn ngày giờ soi chiếu");
+					return;
+				}
+				this.data.regisScanDt = this.formatDate(this.regisScanDt);  
+
+				this.data.isConsignment = 0;  
+				if (this.data.atCenter == 2) {
+					this.data.atCenter = 0;
+					this.data.isConsignment = 1;
+				}
+
+				if (this.connectNevs) this.data.connectNevs = 1;
+				else this.data.connectNevs = 0;
+
+				var formData = new FormData();
+				var fileAttachXLS = '[';
+				for (var i = 0; i < this.dataUpExcel.length; i++) {
+					fileAttachXLS += '"' + this.dataUpExcel[0].verifyCode + '"';
+					if (i < this.dataUpExcel.length - 1)
+						fileAttachXLS += ',';
+				}
+				fileAttachXLS += ']';
+				formData.append("fileAttachXLS", fileAttachXLS);  
+
+				formData.append("jsonData", JSON.stringify(this.data));  
+
+				var self = this;
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					url: Config.API_Login + "agency/SubmitXLS",
+					type: 'POST',
+					data: formData,
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						utils.unLoading();
+						if (data.ResponseCode > 0) {
+							if (self.data.connectNevs == 0 && self.lstFiles.length > 0) {
+								self.UploadEDI(data.Data.Transaction.id);
+							} 
+							else {
+								var mess = "Đăng ký soi chiếu hàng thành công!<br>Mã soi chiếu: " + data.Data.Transaction.verifyCode;
+								bootbox.alert(mess, function () {
+									window.location.href = Config.Url_Root + "Scanner/ListScanner";
+								});
+							}
+							
+						}
+						else {
+							if (data.Data.error) {
+								bootbox.alert(data.Data.error.message);
+							}
+							else {
+								bootbox.alert(data.Description);
+							}
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						utils.unLoading();
+					}
+				});
+			}, 
+			SaveUpdate: function (verifyCode, callback) {
+				var self = this;
+
+				if (!this.regisScanDt) {
+					bootbox.alert("Bạn chưa chọn ngày giờ soi chiếu");
+					return;
+				}
+				this.data.regisScanDt = this.formatDate(this.regisScanDt);
+
+				this.data.isConsignment = 0;
+				if (this.data.atCenter == 2) {
+					this.data.atCenter = 0;
+					this.data.isConsignment = 1;
+				}
+
+				if (this.connectNevs) this.data.connectNevs = 1;
+				else this.data.connectNevs = 0;
+
+				var formData = new FormData();
+				if (this.dataUpExcel.length > 0) {
+					formData.append("verifyCode", this.dataUpExcel[0].verifyCode);
+				} 
+				var para = {
+					"id": self.data.id,
+					"businessId": self.data.businessId,
+					"isConsignment": self.data.isConsignment,
+					"regisScanDt": self.data.regisScanDt,
+					"atCenter": self.data.atCenter,
+					"dclType": self.data.dclType,
+					"connectNevs": self.data.connectNevs,
+				};
+				formData.append("transaction", JSON.stringify(para)); 
+				 
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					url: Config.API_Login + "agency/UpdateScan",
+					type: 'POST',
+					data: formData,
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						utils.unLoading();
+						if (data.ResponseCode > 0) { 
+							if (self.data.connectNevs == 0 && self.lstFiles.length > 0)
+								self.UploadEDI(data.Data.Transaction.id);
+							else {
+								var mess = "Đăng ký soi chiếu hàng thành công!<br>Mã soi chiếu: " + data.Data.Transaction.verifyCode;
+								bootbox.alert(mess, function () {
+									window.location.href = Config.Url_Root + "Scanner/ListScanner";
+								});
+							}
+						}
+						else {
+							if (data.Data.error) {
+								bootbox.alert(data.Data.error.message);
+							}
+							else {
+								bootbox.alert(data.Description);
+							}
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						utils.unLoading();
+					}
+				});
+			},
+			SaveInsert: function () {
+				var self = this;
+				if (this.lstExcel.length == 0) {
+					bootbox.alert("Bạn chưa chọn file excel");
+					return;
+				}
+				this.data.regisScanDt = this.formatDate(this.regisScanDt);
+
+				//this.data.isConsignment = 0;
+				//if (this.data.atCenter == 2) {
+				//	this.data.atCenter == 0;
+				//	this.data.isConsignment = 1;
+				//} 
+				//if (this.connectNevs) this.data.connectNevs = 1;
+				//else this.data.connectNevs = 0;
+
+				var formData = new FormData();
+				if (this.dataUpExcel.length > 0) {
+					formData.append("verifyCode", this.dataUpExcel[0].verifyCode);
+				}
+				var para = {
+					"id": self.data.id
+				};
+				formData.append("transaction", JSON.stringify(para));
+
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					url: Config.API_Login + "agency/UpdateScan",
+					type: 'POST',
+					data: formData,
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						utils.unLoading();
+						if (data.ResponseCode > 0) {
+							if (self.data.connectNevs == 0 && self.lstFiles.length > 0)
+								self.UploadEDI(data.Data.Transaction.id);
+							else {
+								var mess = "Đăng ký soi chiếu hàng thành công!<br>Mã soi chiếu: " + data.Data.Transaction.verifyCode;
+								bootbox.alert(mess, function () {
+									window.location.href = Config.Url_Root + "Scanner/ListScanner";
+								});
+							}
+						}
+						else {
+							if (data.Data.error && data.Data.error.length > 0) {
+								bootbox.alert(data.Data.error[0].message);
+							}
+							else {
+								bootbox.alert(data.Description);
+							}
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						utils.unLoading();
+					}
+				});
+			},
+			UploadEDI: function (id, callback) {
+				var formData = new FormData();
+				for (var i = 0; i < this.lstFiles.length; i++) {
+					formData.append(this.lstFiles[i].name, this.lstFiles[i]);
+				}
+				if (!this.regisScanDt) {
+					bootbox.alert("Bạn chưa chọn ngày giờ soi chiếu");
+					return;
+				}
+				this.data.regisScanDt = this.formatDate(this.regisScanDt);
+
+				this.data.isConsignment = 0;
+				if (this.data.atCenter == 2) {
+					this.data.atCenter = 0;
+					this.data.isConsignment = 1;
+				} 
+				this.data.id = id;
+				if (this.connectNevs) this.data.connectNevs = 1;
+				formData.append("jsonData", JSON.stringify(this.data));  
+
+				var self = this;
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					url: Config.API_Login + "agency/UploadEDI",
+					type: 'POST',
+					data: formData,
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						utils.unLoading();
+						console.log("UploadEDI: ", data);
+						if (data.ResponseCode > 0) {
+							var mess = "Đăng ký soi chiếu hàng thành công!<br>Mã soi chiếu: " + data.Data.Transaction.verifyCode;
+							bootbox.alert(mess, function () {
+								window.location.href = Config.Url_Root + "Scanner/ListScanner";
+							}); 
+						}
+						else {
+							bootbox.alert("Upload file Excel thành công <br> Upload Edi: " , data.Description);
+							return;
+						}
+
+						if (callback != 'undefined' && typeof callback == 'function')
+							callback();
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						utils.unLoading();
+					}
+				});
+			},
+
+			previewFiles: function () {
+				debugger;
+				this.lstExcel = this.$refs.myFiles.files
+			},
+		},
+		mounted() {
+			var self = this;
+			this.init(function () {
+				setTimeout(function () {
+					self.showCheck = 1;
+				}, 100);
+			});
+		},
+
+	});
+
+	// dragover and dragenter events need to have 'preventDefault' called
+	// in order for the 'drop' event to register.
+	dropContainer.ondragover = dropContainer.ondragenter = function (evt) {
+		evt.preventDefault();
+	};
+	dropContainer.ondrop = function (evt) {
+		// pretty simple -- but not for IE :(
+		fileInput.files = evt.dataTransfer.files;
+		evt.preventDefault();
+	};
+
+	 
+</script>

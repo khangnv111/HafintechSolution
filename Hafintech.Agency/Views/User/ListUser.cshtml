@@ -3,8 +3,8 @@
     ViewBag.Title = "ListUser"; 
 }
 
-<div class="container-fluid">
-    <div class="row-fluid" id="list_user">
+<div class="container-fluid" id="list_user">
+    <div class="row-fluid">
         <div class="widget-box">
             <div class="widget-title">
                 <span class="icon"><i class="icon-align-justify"></i></span>
@@ -16,21 +16,21 @@
 
                     <div class="span2">
                         <label>Từ ngày</label>
-                        <input type="text" class="span12 dDate" value="" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" v-model="data.startCreatedDate">
+                        <input type="date" class="span12 dDate" v-model="startCreatedDate">
                     </div>
                     <div class="span2">
                         <label>Đến ngày</label>
-                        <input type="text" class="span12 dDate" value="" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" v-model="data.endCreatedDate">
+                        <input type="date" class="span12 dDate" v-model="endCreatedDate">
                     </div>
 
                     <div class="span2">
                         <label>Số điện thoại</label>
-                        <input type="text" class="span12" id="phone" v-model="data.phone"/>
+                        <input type="text" class="span12" id="phone" v-model="data.phoneNumber"/>
                     </div>
 
                     <div class="span2">
                         <label>Nhóm quyền</label>
-                        <select class="span12" id="roleUser" v-model="data.permitType">
+                        <select class="span12" v-model="data.permitGroup">
                             <option value="">--Chọn quyền--</option>
                             <option value="1">Admin</option>
                             <option value="2">Duyệt trình ký</option>
@@ -42,19 +42,20 @@
                 <div class="row-fluid">
                     <div class="span2">
                         <label>Email tài khoản</label>
-                        <input type="text" id="email" class="span12" v-model="data.email"/>
+                        <input type="text" class="span12" v-model="data.email"/>
                     </div>
                     <div class="span2">
                         <label>Trạng thái</label>
-                        <select class="span12" id="status" v-model="data.status">
+                        <select class="span12" v-model="data.status">
                             <option value="">--Chọn trạng thái--</option>
                             <option value="1">Hiệu lực</option>
                             <option value="0">Hết hiệu lực</option>
                         </select>
                     </div>
+
                     <div class="span2">
                         <div style="margin-top:25px;">
-                            <a onclick="UserAgen.GetListUser();" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a> 
+                            <a v-on:click="getList(0)" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a> 
                         </div>
                     </div>
                     <div class="span2">
@@ -67,70 +68,141 @@
             </div>
         </div>
 
-        <div class="box-body" id="dvContent">
+        <div class="box-body">
             <div class="widget-box">
                 <div class="widget-title">
                     <span class="icon"><i class="icon-align-justify"></i></span>
                     <h5>Danh sách</h5>
                 </div>
 
-                <div id="divUpdate">
-                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
-                        <thead>
-                            <tr>
-                                <th class="text-center" style="min-width:70px">STT</th>
-                                <th class="text-center" style="min-width:70px">ID</th>
-                                <th class="text-center" style="min-width:100px">Họ tên</th>
-                                <th class="text-center" style="min-width:100px">Email</th>
-                                <th class="text-center">Số điện thoại</th>
-                                <th class="text-center">Nhóm quyền</th>
-                                <th class="text-center">Ngày tạo tài khoản</th> 
-                                <th class="text-center">Trạng thái</th>
-                                <th class="text-center">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody class="list-content-table">
-                            <tr>
-                                <td colspan="12" style="text-align:center">
-                                    <img width="50" src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/loading.gif" />
-                                </td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-                </div>
+				<table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+					<thead>
+						<tr>
+							<th class="text-center" style="min-width:70px">STT</th>
+							<th class="text-center" style="min-width:70px">ID</th>
+							<th class="text-center" style="min-width:100px">Họ tên</th>
+							<th class="text-center" style="min-width:100px">Email</th>
+							<th class="text-center">Số điện thoại</th>
+							<th class="text-center">Nhóm quyền</th>
+							<th class="text-center">Ngày tạo tài khoản</th>
+							<th class="text-center">Trạng thái</th>
+							<th class="text-center">Thao tác</th>
+						</tr>
+					</thead>
+					<tbody class="list-content-table">
+						<tr v-show="loading">
+							<td colspan="12" style="text-align:center">
+								<img width="50" src="@(_2017Utilities.Config.Config.UrlRoot)Content/img/loading.gif" />
+							</td>
+						</tr>
+
+						<tr v-for="(item, index) in lstData">
+							<td>{{index + 1}}</td>
+							<td>{{item.personalId}}</td>
+							<td>{{item.name}}</td>
+							<td>{{item.email}}</td>
+							<td>{{item.phoneNumber}}</td>
+							<td>{{item.permitGroup}}</td>
+							<td>{{item.createdDate}}</td>
+							<td>
+								<span v-if="item.status == 1">Hiệu lực</span>
+								<span v-if="item.status == 0">Hết hiệu lực</span>
+							</td>
+							<td>
+								<a href="javascript:;" v-on:click="viewUpdate(item)" class="btn btn-warning">Sửa</a>
+								<a href="javascript:;" v-on:click="removeUser(item)" class="btn btn-danger">Xóa</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 
             </div>
         </div>
 
     </div>
-</div>
+</div> 
 
-<div class="container-fluid">
-    <ul class="pagination">
-        @*<li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>*@
-    </ul>
-</div>
+<script> 
+	var app = new Vue({
+		el: '#list_user',
+		data: {
+			data: {}, 
+			loading: true,
 
-<script>
-    $('.dDate').datepicker({
-        //dateFormat: 'dd/mm/yyyy'
-    });
-    $(document).ready(function () {
-        var h1 = $(".dDate").offset().top + 30;
-        //var h2 = $(".datepicker").offset().top;
-        //var top = h1 - h2 - $(".datepicker").height();
+			lstData: [],
+			startCreatedDate: "",
+			endCreatedDate: "",
+		},
+		methods: {
+			init: async function () {
+				var data = this.data; 
+				data.phoneNumber = "";
+				data.permitGroup = "";
+				data.email = "";
+				data.status = "";
+				data.personalId = 0;
+				data.type = 1;
 
-        $(".datepicker").css("margin-top", h1 + "px");
+				this.getList();
+			},
+			getList: function (page) {
+				var self = this;
+				var parentId;
+				if (utils.getCookie("Type") == 1) {
+					parentId = utils.getCookie("parentId");
+				}
+				else {
+					parentId = $("#accIdLogin").val();
+				}
 
-        setTimeout(function () {
-            UserAgen.GetListUser();
-        }, 1000);
-    });
+				this.data.parentId = parentId;
+				this.data.startCreatedDate = this.formatDate(this.startCreatedDate);
+				this.data.endCreatedDate = this.formatDate(this.endCreatedDate);
+
+				var token = $('#hdfToken').val(); 
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "Agency/SearchPersonal",
+					data: JSON.stringify(this.data),
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) {
+						self.loading = false;
+						if (data.ResponseCode > 0) { 
+							self.lstData = data.Data;
+						}
+
+					},
+					error: function (data) {
+						self.loading = false;
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},  
+			formatDate: function (date) {
+				if (!date) return "";
+
+				return moment(String(date)).format('DD-MM-YYYY');
+			},
+			viewUpdate: function (item) {
+				UserAgen.ViewUpdate(item.personalId)
+			},
+			removeUser: function (item) {
+				UserAgen.DeleteUser(item.personalId)
+			},
+		},
+		mounted() {
+
+			this.init();  
+		},
+		computed: {
+		}
+
+	});
 
 </script>
 

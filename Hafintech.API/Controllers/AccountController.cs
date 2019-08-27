@@ -147,47 +147,7 @@ namespace Hafintech.API.Controllers
                 });
                 if (res.code < 0)
                     return Ok(new Response((int)ErrorCode.Failed, res.message));
-
-                //var res = _appDAO.Update((int)AccountSession.AccountID, hdfIdentityImg1Name,
-                //    hdfIdentityImg2Name, passpostID, filePassportImgName, identity, "", fullName, 0,
-                //   provinceCode, districtCode, communeCode, address, birth, dayReleased, placeReleased, gender);
-
-                ////    if (!ModelState.IsValid)
-                ////    {
-                ////        var errorStr = string.Empty;
-                ////        foreach (var v in ModelState.Values)
-                ////        {
-                ////            errorStr += v.Errors.FirstOrDefault().ErrorMessage + ". ";
-                ////        }
-                ////        return Ok(new Response(errorStr));
-                ////    }
-
-                ////    if (!UploadFileExCell(fileUpload)) return Ok(new Response("Upload file thất bại"));
-                ////    var res = _appDAO.Update((int)AccountSession.AccountID, "", "", "", "", model.Identity, model.TaxCode, model.FullName, 0,
-                ////         model.ProvinceCode, model.DistrictCode, model.CommuneCode, model.Address);
-                //if (res < 0)
-                //{
-                //    switch (res)
-                //    {
-                //        case -106:
-                //            return Ok(new Response("Đã tồn tại SĐT, mời bạn thử lại"));
-
-                //        case -108:
-                //            return Ok(new Response("Đã tồn tại CMT, mời bạn thử lại"));
-
-                //        case -1108:
-                //            return Ok(new Response("Đã tồn tại Hộ chiếu, mời bạn thử lại"));
-
-                //        case -102:
-                //            return Ok(new Response("Lỗi đầu vào, mời bạn thử lại"));
-
-                //        case -105:
-                //            return Ok(new Response("Đã tồn tại tài khoản, mời bạn thử lại"));
-
-                //        default:
-                //            return Ok(new Response("Đăng ký không thành công, mời bạn thử lại"));
-                //    }
-                //}
+                 
                 return Ok(new Response(true));
             }
             catch (Exception ex)

@@ -1,4 +1,6 @@
-﻿namespace Hafintech.API.Models.Agency
+﻿using System.Collections.Generic;
+
+namespace Hafintech.API.Models.Agency
 {
     public class Agency
     {
@@ -57,7 +59,7 @@
         public string zipCode { get; set; }
         public int? signMethod { get; set; }
         public int? status { get; set; }
-        
+        public int? accountId { get; set; }
     }
 
     public class Personal
@@ -87,5 +89,55 @@
         public string startCreatedDate { get; set; }
         public string endCreatedDate { get; set; }
         
+    }
+
+    public class Scan
+    {
+        public string fromScanDateTime { get; set; }
+        public string toScanDateTime { get; set; }
+        public int? scanStatus { get; set; }
+        public int? payStatus { get; set; }
+        public int? verifyStatus { get; set; }
+        public int? orderStatus { get; set; }
+        public string verifyCode { get; set; }
+        public string xRayName { get; set; }
+        public string scanName { get; set; }
+        public string lineIn { get; set; } 
+        public string lineOut { get; set; }
+        public int firstResult { get; set; }
+        public int maxResult { get; set; } 
+
+    }
+
+    public class ScanProduct
+    {
+        public long? id { get; set; }
+        public long businessId { get; set; }
+        public int isConsignment { get; set; } 
+        public string regisScanDt { get; set; }
+        public int atCenter { get; set; }
+        public int dclType { get; set; }
+        public int connectNevs { get; set; }
+
+        //public string fileAttach { get; set; }
+        //public int status { get; set; }
+        //public long[] lsDclId { get; set; }
+    } 
+
+    public class ScanDecla
+    {
+        public long accountId { get; set; }  
+        public int status { get; set; }
+        public string startCreatedDate { get; set; }
+        public string endCreatedDate { get; set; }
+
+        public string dclNo { get; set; }
+    }
+
+    public class ResultImportFile
+    {
+        public int code { get; set; }
+        public string message { get; set; }
+        public object results { get; set; }
     }
 }

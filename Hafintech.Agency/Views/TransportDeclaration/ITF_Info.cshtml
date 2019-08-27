@@ -1,0 +1,757 @@
+﻿<div class="row-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Thông Tin chung</h5>
+        </div>
+        <div class="widget-content nopadding">
+            <div class="form-horizontal">
+                <div class="span6">
+                    <label class="control-label">Số tờ khai vận chuyển: </label>
+                    <div class="controls" id="phan-luong">
+                        <span style="color:blue;font-weight:bold;">{{data.btDclNo}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-horizontal">
+                <div class="span12">
+                    <label class="control-label span6">Cơ quan Hải quan tiếp nhận tờ khai: </label>
+                    <div class="controls">
+                        <input type="text" class="span6" v-model="data.subCstOffice" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-horizontal">
+                <div class="span12">
+                    <label class="control-label">Cơ quan Hải quan địa điểm đích: </label>
+                    <div class="controls">
+                        <input type="text" class="span6" v-model="data.cstOffArrPlc" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="row-fluid">
+                    <div class="control-group span6">
+                        <label class="control-label">Cờ báo phân loại vận chuyển:</label>
+                        <div class="controls">
+                            @*<input type="text" class="span6" v-model="data.btTypeIn"/>*@
+                            <select class="span10" v-model="data.btTypeIn">
+                                <option value="A">A: Bonded transportation permitted cargo</option>
+                                <option value="B">B: Bond-in to Customs Warehouse/Customs Manufacturing Warehouse permitted cargo</option>
+                                <option value="C">C: Export declared cargo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group span6">
+                        <label class="control-label">Cờ báo nhập khẩu / xuất khẩu:</label>
+                        <div class="controls">
+                            <select class="span6 IEI" v-model="data.ieIndication" v-on:click="getIntroMess('OLA','IEI')">
+                                <option value="I">Import</option>
+                                <option value="E">Export</option>
+                                <option value="C">Common</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group span6">
+                        <label class="control-label">Cờ báo yêu cầu xác nhận/niêm phong:</label>
+                        <div class="controls">
+                            <input type="text" class="span6" v-model="data.cfirmReqSlIn" />
+                        </div>
+                    </div>
+                    <div class="control-group span6">
+                        <label class="control-label">Tiêu chuẩn kiểm tra đã được lựa chọn:</label>
+                        <div class="controls">
+                            <input type="text" class="span6" v-model="data.selectScrCrit" />
+                        </div>
+                    </div>
+
+                    <div class="control-group span12">
+                        <label class="control-label">Ngày lập tờ khai:</label>
+                        <div class="controls">
+                            <input type="date" class="span3 dDate" maxlength="8" v-model="data.dateOfDcl" />
+                            <input type="text" class="span2 dDate" maxlength="8" v-model="data.dclrTime" />
+                        </div>
+                    </div>
+                    <div class="control-group span6">
+                        <label class="control-label">Ngày phê duyệt:</label>
+                        <div class="controls">
+                            <input type="date" class="span8 dDate" maxlength="8" v-model="data.approvalDate" />
+                            <input type="text" class="span4 dDate" maxlength="8" v-model="data.approvalTime" />
+                        </div>
+                    </div>
+                    <div class="control-group span6">
+                        <label class="control-label">Mã Cán bộ Hải quan phê duyệt:</label>
+                        <div class="controls">
+                            <input type="text" class="span6" v-model="data.cstOffcerOfApr" />
+                        </div>
+                    </div>
+                    <div class="control-group span4">
+                        <label class="control-label">Ngày hủy bỏ:</label>
+                        <div class="controls">
+                            <input type="date" class="span8 dDate" maxlength="8" v-model="data.cancelDate" />
+                            <input type="text" class="span4 dDate" maxlength="8" v-model="data.cancelTime" />
+                        </div>
+                    </div>
+                    <div class="control-group span4">
+                        <label class="control-label">Loại hủy bỏ:</label>
+                        <div class="controls">
+                            <select class="span8 IEI" v-model="data.cancelType">
+                                <option value="CAN">CAN: Cancelled declaration</option>
+                                <option value="COR">COR: Corrected declaration</option>
+                                <option value="DIS">DIS: Disapproved declaration</option>
+                                <option value="IND">IND: Indicated declaration</option>
+                            </select>
+                            @*<input type="text" class="span6" v-model="data.cancelType" />*@
+                        </div>
+                    </div>
+                    <div class="control-group span4">
+                        <label class="control-label">Mã cán bộ Hải quan hủy bỏ:</label>
+                        <div class="controls">
+                            <input type="text" class="span6" v-model="data.cstOffcerOfCan" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Người khai:</label>
+                        <div class="controls">
+                            <input type="text" class="span5" v-model="data.dclrCode" maxlength="13" />
+                            <input type="text" class="span5" v-model="data.dclrName" maxlength="300" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Địa chỉ: </label>
+                        <div class="controls">
+                            <input type="text" class="span11" v-model="data.addrDclr" maxlength="300" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Nhà vận chuyển:<span class="error">(*)</span></label>
+                        <div class="controls">
+                            <input type="text" class="span5" v-model="data.transCd" maxlength="13" />
+                            <input type="text" class="span5" v-model="data.transNm" maxlength="300" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Địa chỉ: </label>
+                        <div class="controls">
+                            <input type="text" class="span11" v-model="data.transAddress" maxlength="300" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Số hợp đồng vận chuyển / giấy tờ tương đương: </label>
+                        <div class="controls">
+                            <input type="text" class="span6" id="txtimpCtrCd" name="txtimpCtrCd" v-model="data.transCtrctNo" maxlength="13" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <div class="form-vertical">
+                            <div class="control-group span6">
+                                <label class="control-label">Ngày hợp đồng vận chuyển / giấy tờ:</label>
+                                <div class="controls" style="position:relative;">
+                                    <input type="date" class="span11 dDate" v-model="data.dateOfTrsCtrct" maxlength="8" />
+                                </div>
+                            </div>
+                            <div class="control-group span6">
+                                <label class="control-label">Ngày hết hạn hợp đồng vận chuyển / giấy tờ:</label>
+                                <div class="controls" style="position:relative;">
+                                    <input type="date" class="span11 dDate" v-model="data.expDateOfTrans" maxlength="8" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <div class="form-vertical">
+                            <div class="control-group span4">
+                                <label class="control-label">Mã phương tiện vận chuyển:<span class="error">(*)</span></label>
+
+                                <div class="controls">
+                                    @* <input type="text" class="span6" v-model="data.meansOfTrsCd" maxlength="13" />*@
+
+                                    <select class="span10" v-model="data.meansOfTrsCd">
+                                        <option value="6">6: Máy bay</option>
+                                        <option value="11">11: Tàu thuỷ</option>
+                                        <option value="16">16: Xà lan</option>
+                                        <option value="25">25: Tàu hỏa</option>
+                                        <option value="31">31: Ô tô</option>
+                                        <option value="17">17: Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group span4">
+                                <label class="control-label">Mã mục đích vận chuyển:<span class="error">(*)</span></label>
+                                <div class="controls">
+                                    @* <input type="text" class="span6" v-model="data.transPurposeCd" maxlength="13" />*@
+                                    <select class="span10" v-model="data.transPurposeCd">
+                                        <option value="ICD">ICD: hàng hóa nhập khẩu vận chuyển từ cửa khẩu nhập đến cảng đích ghi trên vận tải đơn (I)</option>
+                                        <option value="IFS">IFS: Hàng hóa nhập khẩu được vận chuyển từ cửa khẩu nhập về địa điểm thu gom hàng lẻ (I)</option>
+                                        <option value="ILS">ILS: hàng hóa nhập khẩu vận chuyển từ cửa khẩu nhập về kho hàng không kéo dài (I)</option>
+                                        <option value="ITH">ITH:Hàng hóa nhập khẩu khác (I)</option>
+                                        <option value="ECD">ECD: Hàng hóa xuất khẩu vận chuyển&nbsp; từ cảng xuất khẩu thành lập trong nội địa đến cửa khẩu xuất;</option>
+                                        <option value="EFS">EFS: Hàng hóa xuất khẩu vận chuyển từ địa điểm thu gom&nbsp; hàng lẻ đến cửa khẩu xuất;</option>
+                                        <option value="ELS">ELS: Hàng hóa xuất khẩu từ kho hàng không kéo dài đến cửa khẩu xuất;</option>
+                                        <option value="EBD">EBD: Hàng hóa xuất khẩu vận chuyển từ kho ngoại quan đến cửa khẩu xuất;</option>
+                                        <option value="ETH">ETH: Hàng hóa xuất khẩu khác</option>
+                                        <option value="CTR">CTR: Hàng hóa quá cảnh</option>
+                                        <option value="CTH">CTH: Hàng hóa khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group span4">
+                                <label class="control-label">Loại hình vận tải:<span class="error">(*)</span></label>
+                                <div class="controls">
+                                    @*<input type="text" class="span6" v-model="data.transType" maxlength="13" />*@
+
+                                    <select class="span10" v-model="data.transType">
+                                        <option value="EA">EA: Vận tải chung (Trường hợp vận chuyển từ tàu có kiểm tra tại cảng dỡ hàng)</option>
+                                        <option value="QU">QU: Vận chuyển qua trạm kiểm dịch</option>
+                                        <option value="KR">KR: Vận chuyển hàng hóa quá cảnh / quá cảnh</option>
+                                        <option value="KS">KS: Vận chuyển đơn giản</option>
+                                        <option value="PT">PT: Port đến Port giao thông vận tải</option>
+                                        <option value="CT">CT: Giao thông với nhiều phương tiện giao thông</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Ngày dự kiến bắt đầu vận chuyển:<span class="error">(*)</span></label>
+                        <div class="controls">
+                            <input type="date" class="span3 dDate" v-model="data.esSdateOfTrans" maxlength="8" />
+                            <input type="text" class="span2 dDate" v-model="data.esStimeOfTrans" maxlength="8" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Ngày dự kiến kết thúc vận chuyển:<span class="error">(*)</span></label>
+                        <div class="controls">
+                            <input type="date" class="span3 dDate" v-model="data.esFdateOfTrans" maxlength="8" />
+                            <input type="text" class="span2 dDate" v-model="data.esFtimeOfTrans" maxlength="8" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Địa điểm xếp hàng</h5>
+        </div>
+        <div class="widget-content nopadding">
+            <div class="form-horizontal">
+                <div class="row-fluid">
+                    <div class="control-group span12">
+                        <label class="control-label">Mã  (Khu vực chịu sự giám sát Hải quan):</label>
+                        <div class="controls">
+                            <input type="text" class="span3 CH" v-model="data.deptLocTransA" />
+                            <input type="text" class="span7" autocomplete="off" />
+                            <button type="button" style="padding: 0 10px" onclick="DePop.PopCustom()">...</button>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Vị trí xếp hàng:</label>
+                        <div class="controls">
+                            <input type="text" class="span3 CH" v-model="data.deptLocTransCd" />
+                            <input type="text" id="txtcstOfficeNm" name="txtcstOfficeNm" class="span7" autocomplete="off" />
+                            <button type="button" style="padding: 0 10px" onclick="DePop.PopCustom()">...</button>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Cảng /cửa khẩu / ga xếp hàng:</label>
+                        <div class="controls">
+                            <input type="text" class="span3 CH" v-model="data.deptLocTransP" />
+                            <input type="text" class="span7" v-model="data.deptLocTransNm" autocomplete="off" />
+                            <button type="button" style="padding: 0 10px" onclick="DePop.PopCustom()">...</button>
+                        </div>
+                    </div>
+                    <div class="control-group span4">
+                        <label class="control-label">Tên:</label>
+                        <div class="controls">
+                            <input type="text" class="span12" v-model="data.deptLocTransNm" maxlength="300" />
+                        </div>
+                    </div>
+                    <div class="control-group span4">
+                        <label class="control-label">Đi (dự kiến):</label>
+                        <div class="controls">
+                            <input type="date" class="span12 dDate" v-model="data.esSdateOfTrans" maxlength="8" />
+                        </div>
+                    </div>
+                    <div class="control-group span4">
+                        <label class="control-label">Đi (Thực tế):</label>
+                        <div class="controls">
+                            <input type="date" class="span12 dDate" v-model="data.esFdateOfTrans" maxlength="8" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Địa điểm dỡ hàng</h5>
+        </div>
+        <div class="widget-content nopadding">
+            <div class="form-horizontal">
+                <div class="row-fluid">
+                    <div class="control-group span12">
+                        <label class="control-label">Mã  (Khu vực chịu sự giám sát Hải quan):</label>
+                        <div class="controls">
+                            <input type="text" class="span3 CH" v-model="data.arrLocBdTranBa" />
+                            <input type="text" class="span7" autocomplete="off" />
+                            <button type="button" style="padding: 0 10px" onclick="DePop.PopCustom()">...</button>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Vị trí dỡ hàng:</label>
+                        <div class="controls">
+                            <input type="text" class="span3 CH" v-model="data.arrLocBtransCd" />
+                            <input type="text" class="span7" autocomplete="off" />
+                            <button type="button" style="padding: 0 10px" onclick="DePop.PopCustom()">...</button>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Cảng /cửa khẩu / ga dỡ hàng:</label>
+                        <div class="controls">
+                            <input type="text" class="span3 CH" v-model="data.arrLocBtransPd" />
+                            <input type="text" class="span7" v-model="data.arrLocBtransNm" autocomplete="off" />
+                            <button type="button" style="padding: 0 10px" onclick="DePop.PopCustom()">...</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group span4">
+                        <label class="control-label">Tên:</label>
+                        <div class="controls">
+                            <input type="text" class="span12" v-model="data.arrLocBtransNm" maxlength="300" />
+                        </div>
+                    </div>
+                    <div class="control-group span4">
+                        <label class="control-label">Đến (dự kiến):</label>
+                        <div class="controls">
+                            <input type="date" class="span12 dDate" v-model="data.dateOfArr" maxlength="8" />
+                        </div>
+                    </div>
+                    <div class="control-group span4">
+                        <label class="control-label">Đến (Thực tế):</label>
+                        <div class="controls">
+                            <input type="date" class="span12 dDate" v-model="data.dateOfDept" maxlength="8" />
+                        </div>
+                    </div>
+
+                    <div class="control-group span12">
+                        <label class="control-label">Tuyến đường: </label>
+                        <div class="controls">
+                            <input type="text" class="span11 TDN" v-model="data.route" maxlength="35" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <div class="form-vertical">
+                            <div class="control-group span6">
+                                <label class="control-label">Loại bảo lãnh:</label>
+                                <div class="controls">
+                                    @*<input type="text" class="span11 TDN" v-model="data.typeOfSec" maxlength="35" />*@
+
+                                    <select class="span10" v-model="data.typeOfSec">
+                                        <option value="0">--Chọn--</option>
+                                        <option v-for="item in lstInvCls" :value="item.invClsCd">{{item.invClsCd}} || {{item.invClsNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group span6">
+                                <label class="control-label">Mã ngân hàng bảo lãnh:</label>
+                                <div class="controls">
+                                    <input type="text" id="txtsecSupplBankCd" name="txtsecSupplBankCd" class="span3 SBC" onclick="LibDec.GetIntroMess('IDA', 'SBC');" v-model="data.secSupplBankCd" />
+                                    <input type="text" id="txtsecSupplBankCd_text" name="txtsecSupplBankCd_text" class="span7 SBC" onclick="LibDec.GetIntroMess('IDA', 'SBC');" />
+                                    <button type="button" style="padding: 0 10px" onclick="DePop.PopBank(2)">...</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <div class="form-vertical">
+                            <div class="control-group span4">
+                                <label class="control-label">Năm phát hành bảo lãnh:</label>
+                                <div class="controls" style="position:relative;">
+                                    <input type="text" class="span11" v-model="data.issuedYear" maxlength="4" />
+                                </div>
+                            </div>
+                            <div class="control-group span4">
+                                <label class="control-label">Kí hiệu chứng từ bảo lãnh:</label>
+                                <div class="controls" style="position:relative;">
+                                    <input type="text" class="span11" v-model="data.secBankSign" maxlength="10" />
+                                </div>
+                            </div>
+                            <div class="control-group span4">
+                                <label class="control-label">Số chứng từ bảo lãnh:</label>
+                                <div class="controls" style="position:relative;">
+                                    <input type="text" class="span11" v-model="data.secNo" maxlength="10" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Số tiền bảo lãnh: </label>
+                        <div class="controls">
+                            <input type="text" class="span11 TDN" v-model="data.amountOfSec" maxlength="11" />VND
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Ghi chú:</label>
+                        <div class="controls" style="position:relative">
+                            <textarea class="span11 NT2" v-model="data.remarks1"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*v-for="(value,index) in data.lsCargoNo"*@
+
+<div class="row-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon"><i class="icon-th"></i></span>
+            <h5>Vận đơn ({{app.pageCargoNo}})</h5>
+        </div>
+        <div class="widget-content nopadding">
+            <div class="form-horizontal">
+                <div class="row-fluid">
+                    <div class="control-group span12">
+                        <label class="control-label">Số hàng hóa (Số B/L /AWB): <span class="error">(*)</span></label>
+                        <div class="controls">
+                            <input type="text" class="span3 EKN" v-model="CargoNo.corrType" v-show="data.status === 506" v-on:keyup="ChangeText()" style="text-transform:uppercase" v-on:click="getIntroMess('EDA','EKN')" />
+                            <input type="text" class="span9 CG_" v-model="CargoNo.cargoNo" v-on:keyup="ChangeText()" style="text-transform:uppercase" v-on:click="getIntroMess('OLA','CG_')" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Ngày phát hành vận đơn: </label>
+                        <div class="controls">
+                            <input type="date" class="span11 DB_" v-model="CargoNo.issueDateOfBl" v-on:click="getIntroMess('OLA','DB_')" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Tên hàng:<span class="error">(*)</span> </label>
+                        <div class="controls">
+                            <input type="text" class="span11 CM_" v-model="CargoNo.goodsDes" maxlength="210" v-on:click="getIntroMess('OLA','CM_')" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Mã HS (4 số): </label>
+                        <div class="controls">
+                            <input type="text" class="span11 HS_" v-model="CargoNo.hSCd" maxlength="4" v-on:click="getIntroMess('OLA', 'HS_');" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Ký hiệu số hiệu: </label>
+                        <div class="controls">
+                            <textarea class="span11 MR_" v-model="CargoNo.marksAndNos" v-on:keyup="ChangeText()" style="text-transform:uppercase" v-on:click="getIntroMess('OLA', 'MR_');"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group span12">
+                        <div class="form-vertical">
+                            <div class="control-group span6">
+                                <label class="control-label">Ngày nhập ngoại quan kho lần đầu:</label>
+                                <div class="controls" style="position:relative;">
+                                    <input type="date" class="span11 dDate IS_" v-model="CargoNo.dFstStkBndWrh" v-on:click="getIntroMess('OLA', 'IS_');" />
+                                </div>
+                            </div>
+                            <div class="control-group span6">
+                                <label class="control-label">Phân loại sản phẩm sản xuất từ hàng hóa nhập khẩu:</label>
+                                <div class="controls">
+                                    <select class="span10 RM_" v-model="CargoNo.prodBndFactId" v-on:click="getIntroMess('OLA', 'RM_');">
+                                        <option value="0">--Chọn--</option>
+                                        <option v-for="item in lstInvCls" :value="item.invClsCd">{{item.invClsCd}} || {{item.invClsNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Mã nước sản xuất hoặc nơi sản xuất:</label>
+                        <div class="controls">
+                            <input type="text" class="span3 OR_" v-model="CargoNo.placeOriginMan" v-on:keyup="ChangeText()" style="text-transform:uppercase" v-on:click="getIntroMess('OLA', 'OR_');" />
+                            <input type="text" class="span7 OR_" v-model="CargoNo.placeOrigManNm" style="text-transform:uppercase" v-on:click="OpenPop(16)" />
+                            <button type="button" style="padding: 0 10px" v-on:click="OpenPop(16)">...</button>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Mã địa điểm xuất phát:</label>
+                        <div class="controls">
+                            <input type="text" class="span3 LP_" v-model="CargoNo.deptLocOfCargo" v-on:keyup="ChangeText()" style="text-transform:uppercase" v-on:click="getIntroMess('OLA', 'LP_');" />
+                            <input type="text" class="span7 LP_" v-model="CargoNo.deptLocTransNm" v-on:click="OpenPop(17)" autocomplete="off" />
+                            <button type="button" style="padding: 0 10px" v-on:click="OpenPop(17)">...</button>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Mã địa điểm đích:</label>
+                        <div class="controls">
+                            <input type="text" class="span3 PA_" v-model="CargoNo.arrLocOfCargo" v-on:keyup="ChangeText()" style="text-transform:uppercase" v-on:click="getIntroMess('OLA', 'PA_');" />
+                            <input type="text" class="span7 PA_" v-model="CargoNo.arrLocNmOfCar" autocomplete="off" v-on:click="OpenPop(18)" />
+                            <button type="button" style="padding: 0 10px" v-on:click="OpenPop(18)">...</button>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Loại manifest (hàng hóa):</label>
+                        <div class="controls">
+                            @*<input type="text" class="span10 TM_" autocomplete="off" v-model="CargoNo.typeOfMftCargo" v-on:click="getIntroMess('OLA', 'TM_');" />*@
+                            <select class="span10 TM_" v-model="CargoNo.typeOfMftCargo" id="typeOfMftCargo">
+                                <option value="">Chọn loại Manifest</option>
+                                <option value="A">A: Hàng hóa khai manifest đường hàng không</option>
+                                <option value="R">R: Hàng hóa khai manifest đường sắt</option>
+                                <option value="S">S: Hàng hóa khai manifest đường biển</option>
+                                <option value="V">V: Hàng hóa khai manifest đường bộ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Phương tiện vận chuyển:</label>
+                        <div class="controls">
+                            <input type="text" class="span1 TE_" v-model="CargoNo.transEquipCd" maxlength="300" v-on:click="getIntroMess('OLA', 'TE_');" style="text-transform:uppercase" /> ----
+                            <input type="text" class="span6 TE_" v-model="CargoNo.vesselNm" maxlength="300" style="text-transform:uppercase" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Ngày hàng đi dự kiến:</label>
+                        <div class="controls" style="position:relative;">
+                            <input type="date" id="" name="" class="span3 dDate DD_" v-model="CargoNo.arrDateOfCargo" v-on:click="getIntroMess('OLA', 'DD_');" />
+                        </div>
+                    </div>
+                    <h5 style="margin-left:10px;">NGƯỜI NHẬP KHẨU</h5>
+                    <div class="control-group span12">
+                        <label class="control-label">Mã: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 IM_" v-model="CargoNo.imperCd" maxlength="13" v-on:click="getIntroMess('OLA', 'IM_');" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Tên: </label>
+                        <div class="controls">
+                            <input type="text" class="span11 IN_" v-model="CargoNo.imperNm" maxlength="300" v-on:click="getIntroMess('OLA', 'IN_');" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Địa chỉ: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 IA_" v-model="CargoNo.addressOfImp" maxlength="7" v-on:click="getIntroMess('OLA', 'IA_');" />
+                        </div>
+                    </div>
+                    <h5 style="margin-left:10px;">NGƯỜI XUẤT KHẨU</h5>
+                    <div class="control-group span12">
+                        <label class="control-label">Mã: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 EM_" v-model="CargoNo.experCd" maxlength="13" v-on:click="getIntroMess('OLA', 'EM_');" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Tên: </label>
+                        <div class="controls">
+                            <input type="text" class="span11 EN_" v-model="CargoNo.experNm" maxlength="300" v-on:click="getIntroMess('OLA', 'EN_');" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Địa chỉ: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 EA_" v-model="CargoNo.addressOfExp" maxlength="7" v-on:click="getIntroMess('OLA', 'EA_');" />
+                        </div>
+                    </div>
+                    <h5 style="margin-left:10px;">NGƯỜI ỦY THÁC</h5>
+                    <div class="control-group span12">
+                        <label class="control-label">Mã: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 KM_" v-model="CargoNo.trustorCd" maxlength="13" v-on:click="getIntroMess('OLA', 'KM_');" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Tên: </label>
+                        <div class="controls">
+                            <input type="text" class="span11 KN_" v-model="CargoNo.trustorNm" maxlength="300" v-on:click="getIntroMess('OLA', 'KN_');" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Địa chỉ: </label>
+                        <div class="controls">
+                            <input type="text" class="span6 KA_" v-model="CargoNo.trustorAddr" maxlength="7" v-on:click="getIntroMess('OLA', 'KA_');" />
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Luật khác: </label>
+                        <div class="controls">
+                            <div class="span2" v-for="(valueLaw, jndex) in CargoNo.lsOtherLawCode">
+                                {{jndex+1}}
+                                <input type="text" class="span8 OA_" v-model="valueLaw.otherLawCd" v-on:click="getIntroMess('OLA','OA_')" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <div class="form-vertical">
+                            <div class="control-group span6">
+                                <label class="control-label">Số lượng kiện:</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 QN1" v-model="CargoNo.qtt" v-on:click="getIntroMess('OLA','QN1')" v-on:keyup="ChangeText()" style="text-transform:uppercase" />
+                                    @*<input type="text" class="span6 OL" v-model="CargoNo.cdUnitOfM" v-on:click="getIntroMess('IDA','OL')" />*@
+                                    <select class="span6" v-model="CargoNo.cdUnitOfM">
+                                        <option value="0">--Chọn--</option>
+                                        <option v-for="item in lstSealUnit" :value="item.quanUnitCd">{{item.quanUnitCd}} || {{item.quanUnitNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group span6">
+                                <label class="control-label">Tổng trọng lượng:</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 GW" v-model="CargoNo.cargoWeigGrs" v-on:click="getIntroMess('OLA','GW')" />
+
+                                    <select class="span6" v-model="CargoNo.weigUnitCdGrs">
+                                        <option value="0">--Chọn--</option>
+                                        <option v-for="item in lstWeightUnit" :value="item.weigUnitCd">{{item.weigUnitCd}} || {{item.weigUnitNm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <div class="form-vertical">
+                            <div class="control-group span6">
+                                <label class="control-label">Thể tích:</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 VO_" v-model="CargoNo.capacity" v-on:click="getIntroMess('OLA','VO_')" />
+                                    @* <input type="text" class="span6" v-model="CargoNo.capacityUnitCd" maxlength="300" />*@
+                                    <select class="span6 VU_" v-model="CargoNo.capacityUnitCd" v-on:click="getIntroMess('OLA','VU_')">
+                                        <option value="0">--Chọn--</option>
+                                        <option value="MTQ">Mét khối</option>
+                                        <option value="FTQ">Feet khối</option>
+                                        <option value="BFT">Thước đo(gỗ)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group span6">
+                                <label class="control-label">Giá tiền:</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 PR_" v-model="CargoNo.price" v-on:click="getIntroMess('OLA','PR_')" />
+                                    <select class="span6" v-model="CargoNo.curTypeCd">
+                                        <option value="0">--Chọn--</option>
+                                        <option v-for="item in currency" :value="item.currencyCode">{{item.currencyCode}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Mã đánh dấu địa điểm khởi hành: </label>
+                        <div class="controls">
+                            <div class="span2" v-for="(valueRe, jndex) in CargoNo.lsRemarksCode">
+                                {{jndex+1}}
+                                <input type="text" class="span8 RA_" v-model="valueRe.remarkCdForDmg" v-on:click="getIntroMess('OLA','RA_')" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <div class="form-vertical">
+                            <div class="control-group span4">
+                                <label class="control-label">Số giấy phép:</label>
+                                <div class="controls">
+                                    <input type="text" class="span12 PM_" v-model="CargoNo.permitNo" v-on:click="getIntroMess('OLA','PM_')" />
+                                </div>
+                            </div>
+                            <div class="control-group span4">
+                                <label class="control-label">Ngày cấp phép:</label>
+                                <div class="controls">
+                                    <input type="date" class="span11 dDate PD_" v-model="CargoNo.permitDate" v-on:click="getIntroMess('OLA','PD_')" />
+                                </div>
+                            </div>
+                            <div class="control-group span4">
+                                <label class="control-label">Ngày hết hạn:</label>
+                                <div class="controls">
+                                    <input type="date" class="span11 dDate EP_" v-model="CargoNo.expDatePermit" v-on:click="getIntroMess('OLA','EP_')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span12">
+                        <label class="control-label">Ghi chú:</label>
+                        <div class="controls" style="position:relative">
+                            <textarea class="span11 NT_" v-model="CargoNo.remarks2" v-on:click="getIntroMess('OLA','NT_')"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row-fluid">
+    <div class="span6"></div>
+    <div class="span6" style="position:relative;">
+        <div style="position:absolute;right:0;">
+            <a href="javascript:;" v-on:click="preStartPro()">
+                <i v-if="pageCargoNo == 1" v-bind:style="{color:disableColor}" class="fa fa-fast-backward fa-2x" aria-hidden="true"></i>
+                <i v-else="pageCargoNo != 1" v-bind:style="{color:activeColor}" class="fa fa-fast-backward fa-2x" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:;" v-on:click="prePro()">
+                <i v-if="pageCargoNo == 1" v-bind:style="{color:disableColor}" class="fa fa-play fa-rotate-180 fa-2x" aria-hidden="true"></i>
+                <i v-else="pageCargoNo != 1" v-bind:style="{color:activeColor}" class="fa fa-play fa-rotate-180 fa-2x" aria-hidden="true"></i>
+            </a>
+            <input type="text" class="span2" v-model="textPage" style="text-align: center;" disabled />
+
+            <a href="javascript:;" v-on:click="nextPro()">
+                <i v-if="pageCargoNo == 5" v-bind:style="{color:disableColor}" class="fa fa-play fa-2x" aria-hidden="true"></i>
+                <i v-else="pageCargoNo == 5" v-bind:style="{color:activeColor}" class="fa fa-play fa-2x" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:;" v-on:click="nextEndPro()">
+                <i v-if="pageCargoNo == 5" v-bind:style="{color:disableColor}" class="fa fa-fast-forward fa-2x" aria-hidden="true"></i>
+                <i v-else="pageCargoNo == 5" v-bind:style="{color:activeColor}" class="fa fa-fast-forward fa-2x" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+
+    @*<div class="control-group span4">
+            <label class="control-label">Chọn dòng vận đơn: </label>
+            <div class="controls">
+                <select class="span6 IEI">
+                    <option>{{index+1}}</option>
+                </select>
+            </div>
+        </div>*@
+</div>
+
+<div class="row-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Số tờ khai xuất khẩu</h5>
+        </div>
+        <div class="widget-content nopadding">
+            <div class="form-horizontal" style="padding: 10px 0px 10px 190px;">
+                <div class="row-fluid" style="position:relative;">
+                    <div id="addRow">
+                        <div class="span10 row-item" style="margin-left:0px;margin-top:10px;max-width:870px;">
+                            <div class="span2" v-for="(value, index) in data.lsExpDcl" style="margin-bottom:5px;margin-left:22px;width:16.529915%">
+                                <input type="text" class="span8 E__" v-model="value.expDclNo" v-on:click="getIntroMess('OLA','E__')" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span2" style="position:absolute;right:200px;top:10px;">
+                        <button class="btn btn-success" v-on:click="AddRow()"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+

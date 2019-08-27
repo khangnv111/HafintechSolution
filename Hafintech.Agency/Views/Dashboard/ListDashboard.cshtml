@@ -1,48 +1,29 @@
 ﻿
 @{
-    ViewBag.Title = "ListDashboard"; 
+    ViewBag.Title = "ListDashboard";
 }
 
-<div class="container-fluid">
+<div class="container-fluid" id="lst-dashboard">
     <div class="row-fluid">
         <div class="widget-box">
             <div class="widget-title">
                 <span class="icon"><i class="icon-align-justify"></i></span>
-                <h5>DANH SÁCH CHỨNG TỪ TRÌNH KÝ</h5>
+                <h5>THÔNG ĐIỆP TỜ KHAI</h5>
             </div>
             <div class="widget-content">
                 <div class="row-fluid">
-                    <div class="span2">
+                    <div class="span3">
                         <label>Từ ngày</label>
-                        <input type="text" class="span11 dDate" value="@DateTime.Now.AddDays(-5).ToShortDateString()" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" required="">
+                        <input type="date" class="span11" placeholder="Từ ngày" v-model="data.startRecvDate">
                     </div>
-                    <div class="span2">
+                    <div class="span3">
                         <label>Đến ngày</label>
                         <div class="input-group date span12">
-                            <input type="text" class="span11 dDate" value="@DateTime.Now.ToShortDateString()" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" required="">
+                            <input type="date" class="span11" placeholder="Đến ngày" v-model="data.endRecvDate">
                         </div>
                     </div>
                     <div class="span2">
-                        <label>Thông quan</label>
-                        <select class="span12" id="slclearanStatus">
-                            <option value="">--Tất cả--</option>
-                            <option value="-1">Chưa thông quan</option>
-                            <option value="1">Thông quan</option>
-                            <option value="2">Đợi thông quan</option>
-                        </select>
-                    </div>
-                    <div class="span2">
-                        <label>Trạng thái tờ khai</label>
-                        <select class="span12" id="slstatus">
-                            <option value="0">--Tất cả--</option>
-                            <option value="-1">Hủy tờ khai</option>
-                            <option value="1">Tờ khai tạm</option>
-                            <option value="2">Tờ khai chính thức</option>
-                            <option value="3">Tờ khai sửa</option>
-                        </select>
-                    </div>
-                    <div class="span2"> 
-                        <button class="span5" style="margin-top: 25px">Tìm kiếm</button>
+                        <button v-on:click="getList()" class="span4" style="margin-top: 24px;">Tìm kiếm</button>
                     </div>
                 </div>
             </div>
@@ -71,10 +52,28 @@
                             </tr>
                         </thead>
                         <tbody class="content-table">
-                            <tr>
+                            <tr v-show="isLoading">
                                 <td colspan="11" style="text-align:center">
-                                    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                    <i class="fa fa-spinner fa-4x fa-pulse"></i>
                                 </td>
+                            </tr>
+                            <tr v-for="(item, index) in lstData" v-show="!isLoading">
+                                <td>{{index + 1}}</td>
+                                <td>
+                                    <span v-if="item.reversedArea0 != 'P'">{{item.serviceCode}}</span>
+                                    <a v-if="item.reversedArea0 == 'P'" href="javascript:;" v-on:click="printMess(item)">{{item.serviceCode}}</a>
+                                </td>
+                                <td>
+                                    <span v-if="item.reversedArea0 != 'P'">{{item.outputMsgCode}}</span>
+                                    <a v-if="item.reversedArea0 == 'P'" href="javascript:;" v-on:click="printMess(item)">{{item.outputMsgCode}}</a>
+                                </td>
+                                <td>{{item.inputMessageId}}</td>
+                                <td>{{item.msgDstCtrlCode}}</td>
+                                <td>{{item.resultCode}}</td>
+                                <td>{{item.subject}}</td>
+                                <td>{{convertDateInt(item.msgRecvDate)}}</td>
+                                <td>{{item.messageClass}}</td>
+                                <td>{{item.termination}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -82,5 +81,131 @@
             </div>
         </div>
     </div>
+
+    <template>
+        <paginate :page-count="totalPage"
+                  :click-handler="Paging"
+                  :prev-text="'Prev'"
+                  :next-text="'Next'"
+                  :container-class="'pagination'"
+                  :page-class="'page-item'">
+        </paginate>
+    </template>
+
+    <div class="container-fluid">
+        <ul class="pagination"></ul>
+    </div>
 </div>
+<script type="text/javascript">
+	//   $(document).ready(function () {
+	//       setTimeout(function () { hq2.getCustomsMessage(); }, 1000);
+	//})
+
+	Vue.component('paginate', VuejsPaginate)
+	var app = new Vue({
+		el: '#lst-dashboard',
+		data: {
+			data: {},
+			lstData: [],
+			isLoading: true,
+
+			count: 10,
+			totalPage: 0,
+		},
+		methods: {
+			init: function () {
+
+				this.getList();
+			},
+			getList: function (page) {
+				var self = this;
+
+				if (!page) page = 0;
+				var startRecvDate = this.fomartDate(this.data.startRecvDate).date;
+				var endRecvDate = this.fomartDate(this.data.endRecvDate).date;
+
+				var token = $('#hdfToken').val();
+				this.isLoading = true;
+				$.ajax({
+					type: 'POST',
+					url: Config.API_Login + "tax/GetCustomsMessage",
+					data: JSON.stringify({
+						startRecvDate: startRecvDate,
+						endRecvDate: endRecvDate,
+						page: page,
+						count: self.count,
+					}),
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (data) {
+						self.isLoading = false;
+
+						if (data.ResponseCode > 0) {
+							self.lstData = data.Data.ListOutputCommonSegment;
+							self.countTotalPage(data.Data.Total);
+						}
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			countTotalPage: function (total) {
+				var totalPage = 0;
+				if (total % this.count == 0) {
+					totalPage = total / this.count;
+				}
+				else {
+					var du = total % this.count;
+					total = total - du;
+					totalPage = total / this.count + 1;
+				}
+				this.totalPage = totalPage;
+			},
+			Paging: function (pageNum) {
+				//console.log(pageNum);
+				this.getList(pageNum - 1);
+			},
+			printMess: function (item) {
+				window.location.href = Config.Message + "MediationCustomsMessage/messages/print?messageId=" + item.messageId;
+			},
+			convertDateInt: function (date) {
+				if (!date) {
+					return "";
+				}
+				var y = date.substring(0, 4);
+				var m = date.substring(4, 6);
+				var d = date.substring(6, 8);
+				var minu = date.substring(8, 10);
+				var misec = date.substring(10, date.length);
+
+				var time = d + "/" + m + "/" + y + "  " + minu + ":" + misec;
+
+				return time;
+
+			},
+			fomartDate: function (date) {
+				if (!date)
+					return {
+						date: "",
+					};
+
+				var array = date.split('-');
+				return {
+					y: array[0],
+					m: array[1],
+					d: array[2],
+					date: array[1] + "/" + array[2] + "/" + array[0],
+				}
+			},
+		},
+		mounted() {
+			this.init();
+		},
+	});
+</script>
 

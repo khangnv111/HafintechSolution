@@ -3,11 +3,14 @@ using App.Utils.GetData;
 using App.Utils.Security;
 using Hafintech.API.DataAccess;
 using Hafintech.API.Models;
+using Hafintech.API.Models.Agency;
 using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -90,7 +93,7 @@ namespace Hafintech.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("ForgotPassword")]
-        public IHttpActionResult ForgotPassword(ForgotPasswordViewModel model)
+        public async Task<IHttpActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             try
             {
@@ -103,12 +106,16 @@ namespace Hafintech.API.Controllers
                     }
                     return Ok(new Response(errorStr));
                 }
-                if (!_appDAO.CheckEmail(model.Email))
-                {
-                    return Ok(new Response("Email chưa có trong hệ thống"));
-                }
-                var accountInfo = _appDAO.GetAccountInfoByEmail(model.Email);
-                if (accountInfo.VerifyEmailStatus < 1) return Ok(new Response((int)ErrorCode.Failed, "Bạn chưa xác thực Email"));
+                //if (!_appDAO.CheckEmail(model.Email))
+                //{
+                //    return Ok(new Response("Email chưa có trong hệ thống"));
+                //}
+                //var url = ConfigurationManager.AppSettings["APIURL"] + "account/getAccountInfoByID?accountID=" + AccountSession.AccountID;
+                //var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
+
+                //var accountController = new AccountController();
+                //var accountInfo =await accountController.GetInfo(model.Email);
+                //if (accountInfo.VerifyEmailStatus < 1) return Ok(new Response((int)ErrorCode.Failed, "Bạn chưa xác thực Email"));
 
                 var content = HttpUtility.HtmlEncode(ConfigurationManager.AppSettings["ROOT"] + "mail/verify?token=" + CreateToken(model.Email));
                 SendMailCodeToUser(model.Email, content, "Xác thực đổi mật khẩu");
@@ -300,5 +307,114 @@ namespace Hafintech.API.Controllers
         }
 
         #endregion PRIVATE
+
+        #region forgot password
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("SendMailForgotPassword")]
+        public async Task<IHttpActionResult> SendMailForgotPassword(ForgotPasswordViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errorStr = string.Empty;
+                    foreach (var v in ModelState.Values)
+                    {
+                        errorStr += v.Errors.FirstOrDefault().ErrorMessage + ". ";
+                    }
+                    return Ok(new Response(errorStr));
+                } 
+
+                var content = HttpUtility.HtmlEncode(ConfigurationManager.AppSettings["UrlRoot_Agency"] + "resetpassword?key=" + EncryptString(model.Email));
+                SendMailCodeToUser(model.Email, content, "Xác thực đổi mật khẩu");
+                return Ok(new Response((int)ErrorCode.Success, "Đã gửi mail về tài khoản"));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        [HttpPost]
+        [Route("resetPassword")]
+        public async Task<IHttpActionResult> resetPassword(LoginRequest data)
+        {
+            try
+            {
+                if(string.IsNullOrEmpty(data.username))
+                    return Ok(new Response("Đường dẫn không hợp lệ"));
+                if (string.IsNullOrEmpty(data.password))
+                    return Ok(new Response("Thiếu mật khẩu"));
+
+                var username = DecryptString(data.username);
+                var url = ConfigurationManager.AppSettings["APIURL"] + "account/forgotPassword";
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new {
+                    userName = username,
+                    passWord = data.password
+                });
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message));
+                return Ok(new Response(res.code));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        public static string EncryptString(string encryptString)
+        {
+            string EncryptionKey = "hafintech_key123";
+            byte[] clearBytes = Encoding.Unicode.GetBytes(encryptString);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] {
+            0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76
+        });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Close();
+                    }
+                    encryptString = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            return encryptString;
+        }
+
+        public string DecryptString(string cipherText)
+        {
+            string EncryptionKey = "hafintech_key123";
+            cipherText = cipherText.Replace(" ", "+");
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] {
+            0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76
+        });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                        cs.Close();
+                    }
+                    cipherText = Encoding.Unicode.GetString(ms.ToArray());
+                }
+            }
+            return cipherText;
+        }
+
+
+        #endregion
     }
 }

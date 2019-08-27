@@ -2,6 +2,9 @@
 {
     public class Declaration
     {
+        public string initType { get; set; }
+        public int agencyId { get; set; }
+        public int? businessId { get; set; }
         public int dclId { get; set; }
         public int createdAccId { get; set; }
         public int accountId { get; set; }
@@ -76,8 +79,6 @@
         public string insAmt { get; set; }
         public string regNoIns { get; set; }
         public object[] lsAdjDemar { get; set; }
-        public string adjDemarCd { get; set; }
-        public string curCdOfEvaAmt { get; set; }
         public string evaluatedAmt { get; set; }
         public string totalDisEva { get; set; }
         public string detailsOfVal { get; set; }

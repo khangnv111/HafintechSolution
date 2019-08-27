@@ -1,0 +1,249 @@
+﻿
+@{
+    ViewBag.Title = "InsertProduct"; 
+}
+<style>
+	.mx-datepicker .mx-input-wrapper input {
+		height: 30px;
+	}
+
+	.mx-input-append {
+		height: 30px
+	}
+</style>
+
+<div class="container-fluid" id="insert_product">
+	<div class="row-fluid">
+		<div class="span6">
+			<h4>
+				Thêm hàng hóa không có tờ khai
+			</h4>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="widget-box">
+			<div class="widget-content">
+				<div class="container-fluid">
+
+					<div style="margin-top: 25px">
+						<div class="row-fluid">
+							<div class="span3">
+								Mã soi chiếu
+							</div>
+							<div class="span4">
+								<input type="text" class="span5" disabled v-model="data.verifyCode"/>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span3">
+								Xuất/Nhập khẩu
+							</div>
+							<div class="span4">
+								<select class="span5" disabled v-model="data.dclType">
+									<option value="1">Nhập khẩu</option>
+									<option value="2">Xuất khẩu</option>
+								</select>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span3">
+								Ngày / giờ soi chiếu <span class="error">*</span>
+							</div>
+							<div class="span4">
+								@*<date-picker type="datetime" lang="en" format="DD-MM-YYYY HH:mm:ss"></date-picker>*@
+								<input type="text" class="span5" disabled v-model="data.regisScanDt"/>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span3">
+								Kiểu đăng ký soi chiếu
+							</div>
+							<div class="span7">
+								<select class="span6" disabled v-model="typeReg">
+									<option value="1">&nbsp;Kiểm tra tại trung tâm Hateco</option>
+									<option value="0">&nbsp;Mang hàng về kiểm tra - Soi chiều hàng hóa theo tờ khai</option>
+									<option value="2">&nbsp;Mang hàng về kiểm tra - Soi chiếu hàng hóa theo lô</option>
+								</select>
+							</div>
+						</div>
+
+					</div> 
+					  
+					<div class="row-fluid">
+						<h4>Danh sách hàng hóa</h4>
+
+						<div style="width: 60%">
+							<table class="table table-bordered data-table table-striped with-check" role="grid">
+								<thead>
+									<tr>
+										<td style="text-align: center; min-width: 120px">
+											STT
+										</td>
+										<td style="text-align: center; ">
+											Số vận đơn *
+										</td>
+										<td style="text-align: center; ">
+											Mã barcode *
+										</td>
+										<td style="text-align: center; ">
+											Lô
+										</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="(item, index) in lstProduct">
+										<td style="text-align: center">{{index + 1}}</td>
+										<td style="text-align: center">
+											<input type="text" class="span11" v-model="item.declarations[0].cargoNo"/>
+										</td>
+										<td style="text-align: center"> 
+											<input type="text" class="span11" v-model="item.barCode" />
+										</td>
+										<td style="text-align: center"> 
+											<input type="text" class="span11" v-model="item.name" />
+										</td>
+									</tr> 
+									<tr>
+										<td style="text-align: center">
+											<a href="javascript:;" v-on:click="addProduct()">
+												<i class="fa fa-plus"></i>
+												Thêm mới
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+							<a class="btn btn-info" style="float: right; margin: 20px 0; padding: 5px 30px" v-on:click="Save()"> Lưu</a>
+						</div>
+						 
+					</div> 
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	 
+</div>
+
+<script>
+	var app = new Vue({
+		el: '#insert_product',
+		data: {
+			data: {
+			}, 
+			lstProduct: [], //Danh sách hàng 
+			typeReg: 0,
+		},
+		methods: {
+			init: async function (callback) {
+				var data = this.data; 
+				 
+				this.lstProduct.push({
+					declarations: [{ cargoNo: ""}],
+					name: "",
+					barCode: "",
+				});
+
+				this.loadDetail();
+				if (callback != 'undefined' && typeof callback == 'function')
+					callback();
+			},
+			loadDetail: function () {
+				var transId = '@ViewBag.tranId';
+				if (!transId)
+					return;
+
+				var self = this;
+				var token = $('#hdfToken').val();
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/GetInfoTrans",
+					data: {
+						transId: transId,
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+
+						if (data.ResponseCode >= 0) {
+							self.data = data.Data;
+
+							if (data.Data.isConsignment == 1)
+								self.typeReg = 2;
+							else if (data.Data.atCenter == 0)
+								self.typeReg = 0;
+							else
+								self.typeReg = 1;
+						}
+						
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+			addProduct: function () {
+				this.lstProduct.push({
+					declarations: [{ cargoNo: "" }],
+					name: "",
+					barCode: "",
+				});
+			},
+			Save: function () {
+				for (var i = 0; i < this.lstProduct.length; i++) {
+					if (!this.lstProduct[i].declarations[0].cargoNo || !this.lstProduct[i].barCode || (!this.lstProduct[i].name && this.data.isConsignment == 1)) {
+						bootbox.alert("Bạn cần điền đầy đủ thông tin của 1 hàng");
+						return;
+					}
+				}
+				var formData = new FormData();
+				formData.append("consigments", JSON.stringify(this.lstProduct));
+				var transaction = { "id": this.data.id };
+				formData.append("transaction", JSON.stringify(transaction));
+
+				var self = this;
+				utils.Loading();
+				var token = $('#hdfToken').val();
+				$.ajax({
+					url: Config.API_Login + "agency/UpdateScanNoData",
+					type: 'POST',
+					data: formData,
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (data) {
+						utils.unLoading();
+						if (data.ResponseCode > 0) {
+							var mess = "Thêm hàng hóa thành công! <br> Mã soi chiếu: " + data.Data.Transaction.verifyCode;
+							bootbox.alert(mess, function () {
+								window.location.href = Config.Url_Root + "Scanner/ListScanner";
+							});
+						}
+						else {
+							bootbox.alert(data.Description);
+							return;
+						} 
+					},
+					error: function (data) {
+						utils.unLoading();
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!"); 
+					}
+				});
+			},
+		},
+		mounted() {
+			var self = this; 
+			this.init(function () { 
+			});
+		},
+
+	});
+</script>

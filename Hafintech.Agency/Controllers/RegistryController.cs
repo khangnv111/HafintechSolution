@@ -65,5 +65,17 @@ namespace Hafintech.Agency.Controllers
             return PartialView();
         }
         #endregion
+
+        #region Phản hồi
+        public ActionResult Feedback() {
+             
+            return PartialView();
+        }
+
+        public ActionResult LeftComment()
+        { 
+            return PartialView();
+        }
+        #endregion
     }
 }

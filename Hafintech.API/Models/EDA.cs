@@ -7,7 +7,12 @@ namespace Hafintech.API.Models
 {
     public class EDA
     {
+        public object sigAccId { get; set; }
+        public string initType { get; set; }
+        public int agencyId { get; set; }
+        public int businessId { get; set; }
         public int declarationId { get; set; }
+        public int createdAccId { get; set; }
         public int accountId { get; set; }
         public int type { get; set; }
         public int status { get; set; }
@@ -19,6 +24,7 @@ namespace Hafintech.API.Models
         public string noDivisDivDcl { get; set; }
         public string tentativeDclNo { get; set; }
         public string dclKindCd { get; set; }
+        public string dclKindNm { get; set; }
         public string cargoClsCd { get; set; }
         public string meansOfTrsCd { get; set; }
         public string timeLimReExp { get; set; }
@@ -84,8 +90,8 @@ namespace Hafintech.API.Models
         public object attachmentNo { get; set; }
         public string strDateTrs { get; set; }
         public object trnLocTrs { get; set; }
-        public object arrDateTrnLoc { get; set; }
-        public object strDateTrnLoc { get; set; }
+        public string arrDateTrnLoc { get; set; } // update
+        public string strDateTrnLoc { get; set; } // update
         public string destinationTrs { get; set; }
         public string arrDateOfTrs { get; set; }
         public string notes { get; set; }

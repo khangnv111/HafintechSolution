@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "IEX_GetInfo";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid" id="iex">
+    <div class="span12">
+        @*<h4>Tờ khai nhập khẩu giá trị thấp >> Lấy thông tin tờ khai</h4>*@
+
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Lấy thông tin tờ khai hải quan</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+
+                    <div class="row-fluid">
+                        <div class="span12">
+
+                            <div class="control-group span12">
+                                <label class="control-label">Số tờ khai </label>
+                                <div class="controls">
+
+                                    <input style="width:350px" type="text" class="span5" v-model="dclNo" />
+                                    <button v-if="submitTT" class="btn btn-success" style="margin-left: 20px;" v-on:click="submitIEX(20)">Lấy tờ khai</button>
+                                    <button v-if="submitUSB" class="btn btn-success" style="margin-left: 20px;" v-on:click="SubmitSign(20)">Lấy tờ khai</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<script src="~/Content/js/export-decla/iex-mec-onload.trinhky.js"></script>
+
+<script>
+    windowOnload();
+
+    var app = new Vue({
+        el: '#iex',
+		data: {
+			data: {},
+
+			dclNo: '@ViewBag.dclNo',
+			//ẩn hiện submit theo tk
+			submitTT: false,
+			submitUSB: false,
+        },
+		methods: {
+			init: function () {
+				//Check hiện button submit
+				this.submitTT = Vali.CheckButtonSubmit().submitTT;
+				this.submitUSB = Vali.CheckButtonSubmit().submitUSB;
+				this.data.dclNo = this.dclNo;
+			},
+            submitIEX: function (status) {
+                var token = $('#hdfToken').val();
+                if (!this.dclNo) {
+                    bootbox.alert("Chưa nhập tờ khai");
+                    return;
+                }
+
+                var dclNos = this.dclNo;
+                dclNos = dclNos.trim();
+                utils.Loading();
+                $.ajax({
+                    type: 'POST',
+					url: Config.API_Login + "export/SubmitCKSTT",
+                    data: JSON.stringify({
+                        "dclNo": dclNos,
+                        "status":status
+                    }),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        utils.unLoading();
+                        if (data) {
+
+							if (data.ResponseCode > 0 && data.Data != null) {
+								bootbox.alert("Thành công! ", function () {
+									window.location.href = Config.Url_Root + "ExportDeclaration/MEC_InsertUpdate?decId=" + data.Data.declarationId + "&tab=4&ishight=3";
+								});
+                                
+							}
+							else {
+								if (data.Data && data.Data.object) {
+									bootbox.alert("Không thành công! Mời bạn kiểm tra lại dữ liệu đã nhập");
+									mess_GP.lstMess = data.Data.object;
+									mess_GP.forcusMess();
+								}
+								else {
+									bootbox.alert(data.Description);
+								}
+                            }
+                        }
+                    },
+                    error: function (data) {
+                        utils.unLoading();
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        return;
+                    }
+                });
+            },
+            SubmitSign: function (status) {
+                if ($("#downSignkey").val() == 1) {
+                    bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+                        if (res) {
+                            downTK();
+                        }
+                    });
+                    return;
+                }
+
+                if (!this.dclNo) {
+                    bootbox.alert("Chưa nhập tờ khai");
+                    return;
+                }
+                this.dclNo = this.dclNo.trim();
+
+                this.statusTK = status;
+                var data = { 
+                    "dclNo": this.dclNo,
+                    "status": status
+                }
+                utils.Loading();
+                var xhttp = new XMLHttpRequest();
+                xhttp.withCredentials = true;
+                xhttp.onreadystatechange = function () { 
+                    if (this.readyState == 4 && this.status == 200) {
+                        utils.unLoading();
+                        var jsonObj = JSON.parse(xhttp.responseText);
+                        if (jsonObj["ResponseCode"] >= 0) {
+                            var ediStr = jsonObj["Data"].replace('"', '');
+
+							app.messTK = ediStr;
+                            sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+                        } 
+                        else { 
+							app.messTK = xhttp.responseText;
+                            bootbox.alert(jsonObj["Data"].mesage);
+                        }
+                    }
+                };
+                xhttp.open("POST", Config.API_Login + "Agency/GetEdiToSign", true);
+                xhttp.setRequestHeader("content-type", "application/json");
+                xhttp.send(JSON.stringify(data));
+            }
+        },
+        mounted() {
+			var self = this; 
+			this.init(); 
+        },
+    });
+</script>
+

@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "COT";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<form action="#" enctype="multipart/form-data" id="ola" name="form-input-file" :disabled="data.status==510">
+    <div class="row-fluid">
+        <div class="span12" id="divBtn">
+            <h4>Khai báo thông tin tờ khai vận chuyển</h4>
+            <a class="btn btn-warning" id="btnTab1" onclick="NextTabDecla(1)">Thông tin chung</a>
+            <a class="btn btn-success" id="btnTab2" onclick="NextTabDecla(2)">Danh sách hàng</a>
+            <a class="btn btn-success" id="btnTab3" href="javascript:;" v-on:click="ViewResult(@ViewBag.tab)">Kết quả xử lý tờ khai</a>
+
+            <div class="row-fluid" style="margin-top: 20px">
+                <div class="span12">
+                    <div v-show="data.btDclNo">
+                        <div class="span4">
+                            <label class="control-label span3" style="font-weight:bold;">Số tờ khai:</label>
+                            <div class="controls">
+                                <span style="color: blue"> {{data.btDclNo}}</span>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <label class="control-label span3">Phân luồng:</label>
+
+                            <div class="controls">
+                                {{stream}}
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <label class="control-label span3" style="font-weight:bold;">Kết quả xử lý: </label>
+                            <div class="controls" v-if="data.ClearanceStatus===-1">
+                                <span style="color:blue">Chưa cấp phép</span>
+                            </div>
+                            <div class="controls" v-else-if="data.ClearanceStatus===1">
+                                <span style="color:blue">Đã cấp phép</span>
+                            </div>
+                            <div class="controls" v-else>
+                                <span style="color:blue">Đang đợi cấp phép</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="Tab1">
+                @Html.Action("OLA_Info", "TransportDeclaration", new { Id = ViewBag.decId })
+            </div>
+            <div id="Tab2" class="noneTab">
+                @Html.Action("ListProduct", "TransportDeclaration", new { Id = ViewBag.decId })
+            </div>
+            <div id="Tab3" class="noneTab">
+
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="form-actions" style="text-align: center;">
+                <a v-show="data.btDclId" class="btn" v-on:click="exportOLA()"><i class="fa fa-print" style="color:blue;font-size:15px;"></i> In Excel</a>
+                <a href="javascript:;" v-on:click="save(0)" class="btn btn-success" v-show="!data.btDclId">Lưu tờ khai</a>
+                <a href="javascript:;" v-on:click="update(0)" class="btn btn-success" v-show="data.btDclId||data.btDclId<510">Cập nhật</a>
+                <a class="btn btn-danger" v-on:click="signDecla()" v-show="data.btDclId && data.status<2 && showTK == true">TRÌNH KÝ</a>
+                <a class="btn btn-success" v-on:click="copyOLA()">COPY TK</a>
+                <a href="javascript:;" v-on:click="submit(501)" class="btn btn-success" v-show="data.btDclId&&(!data.status||data.status==502 ||data.status==21) && showSubmit==true && isSubmit == true">GỬI OLA</a>
+                <a href="javascript:;" v-on:click="submitUSB(501)" class="btn btn-success" v-show="data.btDclId&&(!data.status||data.status==502 ||data.status==21) && showSubmit==true && isSubmitUSB == true">GỬI OLA</a>
+                <a href="javascript:;" v-on:click="submit(503)" class="btn btn-success" v-show="data.status==501 && showSubmit==true && isSubmit == true">GỬI OLC</a>
+                <a href="javascript:;" v-on:click="submitUSB(503)" class="btn btn-success" v-show="data.status==501 && showSubmit==true && isSubmitUSB == true">GỬI OLC</a>
+                <a href="javascript:;" v-on:click="submit(505)" class="btn btn-success" v-show="data.status==506 && showSubmit==true && isSubmit == true">GỬI COT</a>
+                <a href="javascript:;" v-on:click="submitUSB(505)" class="btn btn-success" v-show="data.status==506 && showSubmit==true && isSubmitUSB == true">GỬI COT</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div v-show="showPop || showPopObject" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+<div v-show="showPop" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 85%; display: none">
+    @Html.Action("PopSearch", "TransportDeclaration")
+</div>
+<div v-show="showPopObject" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 85%; display: none">
+    @Html.Action("PopSelectObject", "TransportDeclaration")
+</div>
+
+<input type="hidden" class="span5" id="dclId" name="dclId" value="@ViewBag.decId" />
+<script src="~/Content/js/ola-onload.trinhky.js"></script>
+<script src="~/Content/js/ola.js"></script>
+<script>
+    function NextTabDecla(t) {
+        debugger;
+        utils.Loading();
+        setTimeout(function () {
+            if (t == 1) {
+                $('#btnTab1').addClass("btn-warning").removeClass("btn-success");
+                $('#btnTab2').addClass("btn-success").removeClass("btn-warning");
+                $('#btnTab3').addClass("btn-success").removeClass("btn-warning");
+                $('#Tab1').removeClass("noneTab");
+                $('#Tab2').addClass("noneTab");
+                $('#Tab3').addClass("noneTab");
+            } else if (t == 2) {
+                $('#btnTab1').addClass("btn-success").removeClass("btn-warning");
+                $('#btnTab2').addClass("btn-warning").removeClass("btn-success");
+                $('#btnTab3').addClass("btn-success").removeClass("btn-warning");
+                $('#Tab1').addClass("noneTab");
+                $('#Tab2').removeClass("noneTab");
+                $('#Tab3').addClass("noneTab");
+            } else if (t == 3) {
+                $('#btnTab1').addClass("btn-success").removeClass("btn-warning");
+                $('#btnTab2').addClass("btn-success").removeClass("btn-warning");
+                $('#btnTab3').addClass("btn-warning").removeClass("btn-success");
+                $('#Tab1').addClass("noneTab");
+                $('#Tab2').addClass("noneTab");
+                $('#Tab3').removeClass("noneTab");
+            }
+            $('body,html').animate({ scrollTop: 0 }, 800);
+            utils.unLoading();
+        }, 200);
+    }
+</script>
+<style>
+    .dropdown-input, .dropdown-content, .dropdown-item {
+        font-size: 1em !important;
+    }
+
+    .dropdown-input {
+        width: 350px;
+    }
+</style>
+

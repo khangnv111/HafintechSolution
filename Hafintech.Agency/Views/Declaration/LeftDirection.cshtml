@@ -1,0 +1,277 @@
+﻿@{
+	var url = Request.Url.ToString();
+	Uri MyUrl = new Uri(url);
+	//var ishight = HttpUtility.ParseQueryString(MyUrl.Query).Get("ishight");
+	//var tab = HttpUtility.ParseQueryString(MyUrl.Query).Get("tab");
+	//var IdDec = HttpUtility.ParseQueryString(MyUrl.Query).Get("IdDec");
+	//var decId = HttpUtility.ParseQueryString(MyUrl.Query).Get("decId");
+	//var attNo = HttpUtility.ParseQueryString(MyUrl.Query).Get("attNo");
+	//var olaId = HttpUtility.ParseQueryString(MyUrl.Query).Get("olaid");
+}
+
+<div id="left_direction_action">
+
+	@*MIC ishight = 1*@
+	<ul v-if="data.ishight == 1">
+
+		<li v-bind:class="{'act': data.tab == 1}">
+			<a href="javascript:;" v-on:click="ViewMIC()">1.Khai báo thông tin tờ khai (MIC)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 2}">
+			<a href="javascript:;" v-on:click="ViewMID()">2.Lấy thông tin tờ khai sau khai báo (MID)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 3}">
+			<a>3.Khai báo sửa thông tin tờ khai (MIE)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 4}">
+			<a href="javascript:;" v-on:click="ViewIID_MIC()">4. Xem thông tin tờ khai đã khai báo (IID)</a>
+		</li>
+	</ul>
+
+	@*IDA ishight = 2*@
+	<ul v-if="data.ishight == 2">
+		<li v-bind:class="{'act': data.tab == 1}">
+			<a href="javascript:;" v-on:click="ViewIDA()">1.Khai trước thông tin tờ khai (IDA)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 2}">
+			<a href="javascript:;" v-on:click="ViewIDB()">2.Lấy thông tin tờ khai từ hải quan (IDB)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 3}">
+			<a>3.Khai chính thức tờ khai (IDC)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 4}">
+			<a href="javascript:;" v-on:click="ViewIDD()">4.1 Lấy thông tin tờ khai để sửa (IDD)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 5}">
+			<a>4.2 .Khai trước thông tin tờ khai sửa(IDA01)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 6}">
+			<a>4.3.Khai chính thức tờ khai sửa (IDE)</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 7}">
+			<a href="javascript:;" v-on:click="ViewIID_IDA()">6.Xem thông tin tờ khai hải quan (IID)</a>
+		</li>
+	</ul>
+
+	@*MEC ishight = 3*@
+	<ul v-if="data.ishight == 3">
+		<li v-bind:class="{'act': data.tab == 1}">
+			<a href="javascript:;" v-on:click="ViewMEC()">1. Khai báo thông tin tờ khai MEC</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 2}">
+			<a href="javascript:;" v-on:click="ViewMED()">2. Lấy thông tin tờ khai sau khai báo MED</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 3}">
+			<a>3. Khai báo sửa thông tin tờ khai MEE</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 4}">
+			<a href="javascript:;" v-on:click="ViewIEX_MEC()">4. Xem thông tin tờ khai đã khai báo IEX</a>
+		</li>
+	</ul>
+
+	@*HYS ishight = 5*@
+	<ul v-if="data.ishight == 5">
+		<li v-bind:class="{'act': data.tab == 1}">
+			<a href="javascript:;" v-on:click="ViewHYS()">1. Khai báo đính kèm điện tử HYS</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 2}">
+			<a href="javascript:;" v-on:click="ViewHYE()">2. Thay đổi file đính kèm HYE</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 3}">
+			<a href="javascript:;" v-on:click="ViewIHY()">3. Xem file đính kèm IHY</a>
+		</li>
+	</ul>
+
+	@*AMA ishight = 6*@
+	<ul v-if="data.ishight == 6">
+		<li v-bind:class="{'act': data.tab == 1}">
+			<a href="javascript:;" v-on:click="ViewAMA()">1. Đăng ký thông tin bổ xung tờ khai - AMA</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 2}">
+			<a href="javascript:;" v-on:click="ViewAMB()">2. Gọi thông tin tờ khai bổ xung - AMB</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 3}">
+			<a>3. Đăng ký tờ khai bổ sung - AMC</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 4}">
+			<a href="javascript:;" v-on:click="ViewIAD()">4. Tham chiếu Tờ khai bổ sung - IAD</a>
+		</li>
+	</ul>
+
+	@*EDA ishight = 4*@
+	<ul v-if="data.ishight == 4">
+		<li v-bind:class="{'act': data.tab == 1}">
+			<a href="javascript:;" v-on:click="ViewEDA()">1.Khai báo tờ khai EDA</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 2}">
+			<a href="javascript:;" v-on:click="ViewEDB()">2. Lấy thông tin tờ khai từ hải quan EDB</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 3}">
+			<a href="javascript:;" v-on:click="ViewEDC()">3. Khai chính thức tờ khai EDC</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 4}">
+			<a href="javascript:;" v-on:click="ViewEDD()">4. Lấy lại thông tin tờ khai để sửa EDD</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 5}">
+			<a href="javascript:;" v-on:click="ViewEDA01()">5. Lấy thông tin tờ khai sửa EDA01</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 6}">
+			<a href="javascript:;" v-on:click="ViewEDE()">6. Khai trước thông tin tờ khai sửa EDE</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 7}">
+			<a href="javascript:;" v-on:click="ViewIEX_EDA()">7. Xem thông tin tờ khai hải quan (IEX)</a>
+		</li>
+	</ul>
+
+	@*OLA ishight == 7*@
+	<ul v-if="data.ishight == 7">
+		<li v-bind:class="{'act': data.tab == 1}">
+			<a href="javascript:;" v-on:click="ViewOLA()">OLA - Đăng ký thông tin tờ khai vận tải</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 2}">
+			<a href="javascript:;" v-on:click="ViewOLB()">OLB - Lấy thông tin tờ khai vận tải</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 3}">
+			<a href="javascript:;" v-on:click="ViewOLC()">OLC - Khai báo thông tin tờ khai</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 4}">
+			<a href="javascript:;" v-on:click="ViewCOT11()">COT11 - Gọi sửa đổi thông tin</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 5}">
+			<a href="javascript:;" v-on:click="ViewCOT()">COT - Khai báo chỉnh sửa thông tin</a>
+		</li>
+		<li v-bind:class="{'act': data.tab == 8}">
+			<a href="javascript:;" v-on:click="ViewITF()">ITF - Xem chi tiết tờ khai</a>
+		</li>
+	</ul>
+</div>
+
+<script>
+	var leftDirection = new Vue({
+		el: '#left_direction_action',
+		data: {
+			data: {},
+		},
+		methods: {
+			init: function () {
+
+				var url_string = window.location.href;
+				var url = new URL(url_string);
+
+				this.data.ishight = url.searchParams.get("ishight");
+				this.data.tab = url.searchParams.get("tab");
+				this.data.IdDec = url.searchParams.get("IdDec");
+				this.data.decId = url.searchParams.get("decId");
+				this.data.attNo = url.searchParams.get("attNo");
+				this.data.olaid = url.searchParams.get("olaid");
+
+				this.$forceUpdate();
+			},
+			//MIC
+			ViewMIC: function () {
+				window.location.href = Config.Url_Root + 'Declaration/LowValueDeInsert' + "?IdDec=" + this.data.IdDec + "&ishight=" + this.data.ishight + "&tab=1";
+			},
+			ViewMID: function () {
+				var dclNo = app.data.dclNo ? app.data.dclNo : "";
+				window.location.href = Config.Url_Root + 'Declaration/MIDForm' + "?IdDec=" + this.data.IdDec + "&ishight=" + this.data.ishight + "&tab=2&dclNo=" + dclNo;
+			},
+			ViewIID_MIC: function () {
+				var dclNo = app.data.dclNo ? app.data.dclNo : "";
+				window.location.href = Config.Url_Root + 'Declaration/IIDForm' + "?IdDec=" + this.data.IdDec + "&ishight=" + this.data.ishight + "&tab=4&dclNo=" + dclNo;
+			},
+			//IDA
+			ViewIDA: function () {
+				window.location.href = Config.Url_Root + 'Declaration/LowValueDeInsert' + "?IdDec=" + this.data.IdDec + "&ishight=" + this.data.ishight + "&tab=1";
+			},
+			ViewIDB: function () {
+				var dclNo = app.data.dclNo ? app.data.dclNo : "";
+				window.location.href = Config.Url_Root + 'Declaration/IDBForm' + "?IdDec=" + this.data.IdDec + "&ishight=" + this.data.ishight + "&tab=2&dclNo=" + dclNo;
+			},
+			ViewIDD: function () {
+				var dclNo = app.data.dclNo ? app.data.dclNo : "";
+				window.location.href = Config.Url_Root + 'Declaration/IDDForm' + "?IdDec=" + this.data.IdDec + "&ishight=" + this.data.ishight + "&tab=4&dclNo=" + dclNo;
+			},
+			ViewIID_IDA: function () {
+				var dclNo = app.data.dclNo ? app.data.dclNo : "";
+				window.location.href = Config.Url_Root + 'Declaration/IIDForm' + "?IdDec=" + this.data.IdDec + "&ishight=" + this.data.ishight + "&tab=7&dclNo=" + dclNo;
+			},
+			//MEC
+			ViewMEC: function () {
+				window.location.href = Config.Url_Root + 'ExportDeclaration/MEC_InsertUpdate' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=1";
+			},
+			ViewMED: function () {
+				var dclNo = app.data.dclNo ? app.data.dclNo : "";
+				window.location.href = Config.Url_Root + 'ExportDeclaration/MED_GetInfo' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=2&dclNo=" + dclNo;
+			},
+			ViewIEX_MEC: function () {
+
+				var dclNo = app.data.dclNo ? app.data.dclNo : "";
+				window.location.href = Config.Url_Root + 'ExportDeclaration/IEX_GetInfo' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=4&dclNo=" + dclNo;
+			},
+			//HYS
+			ViewHYS: function () {
+				window.location.href = Config.Url_Root + 'HYS/InsertHYS' + "?decId=" + this.data.decId + "&attNo=" + this.data.attNo + "&ishight=" + this.data.ishight + "&tab=1";
+			},
+			ViewHYE: function () {
+				window.location.href = Config.Url_Root + 'HYS/HYE_Declaration' + "?decId=" + this.data.decId + "&attNo=" + this.data.attNo + "&ishight=" + this.data.ishight + "&tab=2";
+			},
+			ViewIHY: function () {
+				window.location.href = Config.Url_Root + 'HYS/SearchIHY' + "?decId=" + this.data.decId + "&attNo=" + this.data.attNo + "&ishight=" + this.data.ishight + "&tab=3";
+			},
+			//AMA
+			ViewAMA: function () {
+				window.location.href = Config.Url_Root + 'AMA/InsertUpdateAMA' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=1";
+			},
+			ViewAMB: function () {
+				window.location.href = Config.Url_Root + 'AMA/AMBGetInfo' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=2";
+			},
+			ViewIAD: function () {
+				window.location.href = Config.Url_Root + 'AMA/IDAGetInfo' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=4";
+			},
+			//EDA
+			ViewEDA: function () {
+				window.location.href = Config.Url_Root + 'ExportDeclaration/EDA_InsertUpdate' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=1";
+			},
+			ViewEDB: function () {
+				window.location.href = Config.Url_Root + 'ExportDeclaration/EDBDeclaration' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=2";
+			},
+			ViewEDC: function () {
+				window.location.href = Config.Url_Root + 'ExportDeclaration/EDCDeclaration' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=3";
+			},
+			ViewEDD: function () {
+				window.location.href = Config.Url_Root + 'ExportDeclaration/EDDDeclaration' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=4";
+			},
+			ViewEDA01: function () {
+				window.location.href = Config.Url_Root + 'ExportDeclaration/EDA01Declaration' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=5";
+			},
+			ViewEDE: function () {
+				window.location.href = Config.Url_Root + 'ExportDeclaration/EDEDeclaration' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=6";
+			},
+			ViewIEX_EDA: function () {
+				window.location.href = Config.Url_Root + 'ExportDeclaration/IEX_ViewResult' + "?decId=" + this.data.decId + "&ishight=" + this.data.ishight + "&tab=7";
+			},
+			//OLA
+			ViewOLA: function () {
+				window.location.href = Config.Url_Root + 'TransportDeclaration/OLA' + "?olaid=" + this.data.olaid + "&ishight=" + this.data.ishight + "&tab=1";
+			},
+			ViewOLB: function () {
+				window.location.href = Config.Url_Root + 'TransportDeclaration/OLB' + "?olaid=" + this.data.olaid + "&ishight=" + this.data.ishight + "&tab=2";
+			},
+			ViewOLC: function () {
+				window.location.href = Config.Url_Root + 'TransportDeclaration/OLC' + "?olaid=" + this.data.olaid + "&ishight=" + this.data.ishight + "&tab=3";
+			},
+			ViewCOT11: function () {
+				window.location.href = Config.Url_Root + 'TransportDeclaration/COT11' + "?olaid=" + this.data.olaid + "&ishight=" + this.data.ishight + "&tab=4";
+			},
+			ViewCOT: function () {
+				window.location.href = Config.Url_Root + 'TransportDeclaration/COT' + "?olaid=" + this.data.olaid + "&ishight=" + this.data.ishight + "&tab=5";
+			},
+			ViewITF: function () {
+				window.location.href = Config.Url_Root + 'TransportDeclaration/ITF_GetInfo' + "?olaid=" + this.data.olaid + "&ishight=" + this.data.ishight + "&tab=8";
+			},
+		},
+		mounted() {
+			this.init();
+		},
+	});
+</script>

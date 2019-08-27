@@ -18,14 +18,15 @@
                 <div class="form-horizontal">
 
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span12">
 
                             <div class="control-group span12">
                                 <label class="control-label">Số tờ khai </label>
                                 <div class="controls">
 
                                     <input style="width:350px" type="text" class="span5" id="" name="" placeholder="" required v-model="dclNo" />
-                                    <button class="btn btn-success" style="margin-left: 20px;" v-on:click="submit(22)">Lấy thông tin</button>
+                                    <button v-if="submitTT" class="btn btn-success" style="margin-left: 20px;" v-on:click="submit(22)">Lấy thông tin</button>
+                                    <button v-if="submitUSB" class="btn btn-success" style="margin-left: 20px;" v-on:click="SubmitSign(22)">Lấy thông tin</button>
                                 </div>
                             </div>
                         </div>
@@ -34,20 +35,37 @@
             </div>
         </div>
     </div>
-</div>
+</div> 
+<script src="~/Content/js/signkey/iid-onload.trinhky.js"></script>
+
 <script>
-    var iid = new Vue({
+    windowOnload();
+    var app = new Vue({
         el: '#iid',
-        data: {
-            dclNo: ''
+		data: {
+			data: {},
+            dclNo: '@ViewBag.dclNo',
+            statusTK: 0,
+			messTK: '',
+			//ẩn hiện submit theo tk
+			submitTT: false,
+			submitUSB: false,
         },
-        methods: {
+		methods: {
+			init: function () {
+				//Check hiện button submit
+				this.submitTT = Vali.CheckButtonSubmit().submitTT;
+				this.submitUSB = Vali.CheckButtonSubmit().submitUSB;
+				this.data.dclNo = this.dclNo;
+			},
             submit: function (status) {
-                utils.Loading();
+                
                 var token = $('#hdfToken').val();
                 if (!this.dclNo) {
                     bootbox.alert("Chưa nhập tờ khai");
-                }
+                    return;
+				}
+				utils.Loading();
                 $.ajax({
                     type: 'POST',
                     url: Config.API_Login + "agency/submit",
@@ -65,22 +83,30 @@
                         utils.unLoading();
                         if (data) {
 
-                            if (data.ResponseCode > 0 && data.Data != null) {
+							if (data.ResponseCode > 0 && data.Data != null) {
 
-                                var url_string = window.location.href
-                                var url = new URL(url_string);
-                                var ishight = url.searchParams.get("ishight");
+								var url_string = window.location.href
+								var url = new URL(url_string);
+								var ishight = url.searchParams.get("ishight");
 
-                                if (ishight == "1") {
-                                    window.location.href = Config.Url_Root + "declaration/LowValueDeInsert?IdDec=" + data.Data.dclId + "&ishight=1&tab=4";
-                                }
-                                else {
-                                    window.location.href = Config.Url_Root + "declaration/HightValueDeInsert?IdDec=" + data.Data.dclId + "&ishight=2&tab=7";
-                                }
-                            }
-                            else if (data.ResponseCode == -100001) {
-                                bootbox.alert("Tờ khai không tồn tại");
-                            }
+								bootbox.alert("Thành công", function () {
+									if (ishight == "1") {
+										window.location.href = Config.Url_Root + "declaration/LowValueDeInsert?IdDec=" + data.Data.dclId + "&ishight=1&tab=4";
+									}
+									else {
+										window.location.href = Config.Url_Root + "declaration/HightValueDeInsert?IdDec=" + data.Data.dclId + "&ishight=2&tab=7";
+									}
+								});
+							}
+							else {
+								bootbox.alert(data.Description);
+
+								if (data.Data.object) { 
+									mess_GP.lstMess = data.Data.object;
+									mess_GP.forcusMess();
+									return;
+								} 
+							}
                         }
                     },
                     error: function (data) {
@@ -89,7 +115,55 @@
                         return;
                     }
                 });
-            }
-        }
+            },
+            SubmitSign: function (status) {
+                //debugger;
+                if ($("#downSignkey").val() == 1) {
+                    bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+                        if (res) {
+                            downTK();
+                        }
+                    });
+                    return;
+                }
+
+                if (!this.dclNo) {
+                    bootbox.alert("Chưa nhập tờ khai");
+                    return;
+                }
+
+                this.statusTK = status;
+                var data = {
+                    //"dclId": this.data.dclId,
+                    "dclNo": this.dclNo.trim(),
+                    "status": status
+                }
+                utils.Loading();
+                var xhttp = new XMLHttpRequest();
+                xhttp.withCredentials = true;
+                xhttp.onreadystatechange = function () { 
+                    if (this.readyState == 4 && this.status == 200) {
+                        utils.unLoading();
+
+                        var jsonObj = JSON.parse(xhttp.responseText);
+                        if (jsonObj["ResponseCode"] >= 0) {
+                            var ediStr = jsonObj["Data"].replace('"', '');
+							app.messTK = ediStr;
+                            sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+                        } 
+                        else {
+							app.messTK = xhttp.responseText;
+                        }
+                    }
+                };
+				xhttp.open("POST", Config.API_Login + "Agency/GetEdiToSign", true);
+                xhttp.setRequestHeader("content-type", "application/json");
+                xhttp.send(JSON.stringify(data));
+            },
+		},
+		mounted() {
+			var self = this;
+			this.init(); 
+		},
     });
 </script>

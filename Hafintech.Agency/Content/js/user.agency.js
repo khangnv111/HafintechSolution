@@ -68,7 +68,7 @@ window.UserAgen = {
                             html += '<td>' + item.email + '</td>';
                             html += '<td>' + (item.phoneNumber == undefined ? "" : item.phoneNumber) + '</td>';
                             html += '<td>' + item.permitGroup + '</td>';
-                            html += '<td></td>';
+							html += '<td>' + item.createdDate + '</td>';
                             html += '<td>' + item.status + '</td>';
 
                             html += '<td><a href="javascript:;" onclick="UserAgen.ViewUpdate(' + item.personalId + ')" class="btn btn-warning">Sửa</a>';
@@ -313,7 +313,9 @@ window.UserAgen = {
             $("#LogError").html("Mật khẩu nhập lại không đúng");
             $("#LogError").show();
             return;
-        }
+		}
+
+		password = MD5(password);
 
         var role1 = $("#roleId1:checked").val();
         var role2 = $("#roleId2:checked").val();
@@ -620,16 +622,14 @@ window.Obj = {
 
     SelectTab: function(){
         var tab = $("input[name=selectObject]:checked").val();
-        if (tab == "1") {
-            //$("#title-code-search-pop").html("Số CMT");
-            //$("#actSearchObject").attr("onclick", "Obj.SearchPersonal()");
-            Obj.SearchPersonal();
-        }
-        else {
-            $("#title-code-search-pop").html("Mã số thuế");
-            $("#actSearchObject").attr("onclick", "Obj.SearchBusiness()");
-            Obj.SearchBusiness();
-        }
+		if (tab == "1") {
+			Obj.SearchPersonal();
+		}
+		else if (tab == "2") {
+			$("#title-code-search-pop").html("Mã số thuế");
+			$("#actSearchObject").attr("onclick", "Obj.SearchBusiness()");
+			Obj.SearchBusiness();
+		} 
     },
 
     SearchPersonal: function () {
@@ -655,6 +655,7 @@ window.Obj = {
                 personalId: 0, 
                 identity: identity,
                 parentId: parentId,
+                type: 0
             }),
             headers: {
                 "Authorization": "Bearer " + token
@@ -683,7 +684,7 @@ window.Obj = {
                         html += '<td id="Col_2' + (i + 1) + '">' + item.name + '</td>';
                         html += '<td id="Col_3' + (i + 1) + '">' + (item.phoneNumber == undefined ? "" : item.phoneNumber) + '</td>';
                         html += '<td id="Col_4' + (i + 1) + '">' + (item.address == null ? "" : item.address) + '</td>';
-                        html += '<td><a href="javascript:;" onclick="Obj.PickDefault(' + (i + 1) + ')" class="btn btn-warning">Chọn</a></td>';
+                        html += '<td><a href="javascript:;" onclick="Obj.PickDefault(' + (i + 1) + ',' + item.accountId + ', 1)" class="btn btn-warning">Chọn</a></td>';
                         html += '</tr>';
 
                     }
@@ -752,7 +753,7 @@ window.Obj = {
                         html += '<td id="Col_2' + (i + 1) + '">' + item.name + '</td>';
                         html += '<td id="Col_3' + (i + 1) + '">' + item.phoneNumber + '</td>';
                         html += '<td id="Col_4' + (i + 1) + '">' + item.address + '</td>';
-                        html += '<td><a href="javascript:;" onclick="Obj.PickDefault(' + ( i + 1) + ')" class="btn btn-warning">Chọn</a></td>';
+                        html += '<td><a href="javascript:;" onclick="Obj.PickDefault(' + (i + 1) + ',' + item.accountId + ', 2, ' + item.signMethod + ')" class="btn btn-warning">Chọn</a></td>';
                         html += '</tr>';
                        
                     }
@@ -770,7 +771,7 @@ window.Obj = {
         });
     },
 
-    PickDefault: function (a, callback) {
+    PickDefault: function (a, id, type, signMethod, callback) {
         var ele_1 = $("#Col_1" + a + "").text();
         var ele_2 = $("#Col_2" + a + "").text();
         var ele_3 = $("#Col_3" + a + "").text();
@@ -779,6 +780,33 @@ window.Obj = {
         $("#txtimperNm").val(ele_2);
         $("#txtphoneNoOfImp").val(ele_3);
         $("#txtaddressOfImp").val(ele_4);
+        
+		try {
+			if (app) {
+				console.log("app...");
+				app.data.phoneNoOfImp = ele_3;
+				app.data.imperNm = ele_2;
+				app.data.addressOfImp = ele_4;
+
+				if (type == 1) {
+					app.data.accountId = id;
+					//app.data.initType = 4;
+				}
+				else {
+					//app.data.initType = 3;
+					$("#txtimperCd").val(ele_1);
+					app.data.imperCd = ele_1;
+					app.data.businessId = id;
+					app.signMethodSelect = signMethod;
+					app.tabObj = 2;
+				}
+				app.data.agencyId = utils.getCookie("isAgency");
+			}
+		}
+		catch (err) {
+			console.log(err);
+		}
+         
 
         setTimeout(function () {
             utils.closeAll();

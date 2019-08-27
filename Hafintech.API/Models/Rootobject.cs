@@ -121,5 +121,24 @@ namespace Hafintech.API.Models
         public T ListAmendedTaxInfomation { get; set; }
         public T Ola { get; set; }
         public T ListOla { get; set; }
+        public T Voucher { get; set; }
+        public T ListVoucher { get; set; }
+        public T EDI_String { get; set; }
+        public T ExportDeclarations { get; set; }
+        public T Data { get; set; }
+
+        public T Dictionaries { get; set; }
+        public T QueryResultModel { get; set; }
+        public T Consignments { get; set; }
+        public T Transaction { get; set; }
+        public T INVOICE_PRICE { get; set; }
+        public T WeighInfo { get; set; }
+        public T ExportKind { get; set; }
+        public T TransactionStatistics { get; set; }
+
+        public T Mic { get; set; }
+        public T ListMic { get; set; }
+        public T listResult { get; set; }
+        public T totalResult { get; set; }
     }
 }

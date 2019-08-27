@@ -5,6 +5,7 @@
         public string confirmOfDcl { get; set; }
         public string processingType { get; set; }
         public int btDclId { get; set; }
+        public string initType { get; set; }
         public string accountId { get; set; }
         public string btDclNo { get; set; }
         public string ieIndication { get; set; }
@@ -41,6 +42,11 @@
         public LsCargoNoOLA[] lsCargoNo { get; set; }
         public Lsexpdcl[] lsExpDcl { get; set; }
         public Lscofrcarpkgno[] lsCoFrCarPkgNo { get; set; }
+        public int sigAccId { get; set; }
+        public int acceptAccId { get; set; }
+        public int createdAccId { get; set; }
+        public int agencyId { get; set; }
+        public int businessId { get; set; }
     }
 
     public class LsCargoNoOLA
@@ -83,6 +89,7 @@
         public string permitDate { get; set; }
         public string expDatePermit { get; set; }
         public string remarks2 { get; set; }
+        public string corrType { get; set; }
     }
 
     public class Lsremarkscode
@@ -97,7 +104,7 @@
 
     public class Lscofrcarpkgno
     {
-        public string CoFrCarPkgNo { get; set; }
+        public string coFrCarPkgNo { get; set; }
         public string lineNoOnDcl { get; set; }
         public Lssealno[] lsSealNo { get; set; }
     }

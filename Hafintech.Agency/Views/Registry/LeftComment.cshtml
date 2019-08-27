@@ -1,0 +1,124 @@
+﻿
+<div class="row-fluid" id="left-comment-feedback">
+	<div class="widget-box">
+		<div class="widget-content">
+
+			<div class="row-fluid" style="margin: 10px 0; padding-top: 10px; border-bottom: 1px solid #808080">
+				<div class="span8">
+					<b>Lịch sử trao đổi</b>
+				</div>
+				<div class="span4">
+					<button v-on:click="feedBack()">Phản hồi</button>
+				</div>
+			</div>
+			<div class="row-fluid" style="overflow-y: auto; max-height: 70px">
+
+				<div class="row" style="padding: 10px 0;" v-for="(item, index) in lstComment">
+					<div class="row">
+						<i class="fa fa-comment"></i> <span>{{item.createdDate}}</span>
+					</div>
+					<div class="row">
+						{{item.content}}
+					</div>
+
+					<div v-if="index < lstComment.length - 1" class="row" style="border: 1px dotted #c2bebe; margin-top: 10px"></div>
+				</div>
+
+			</div>
+		</div>
+	</div> 
+
+
+</div>
+
+<script>
+	var lstComment = new Vue({
+		el: '#left-comment-feedback',
+		data: {
+			data: {},
+
+			lstComment: [],
+
+			showPopFeedBack: false,
+			IdDec: 0,
+			createdAccId: 0,
+		},
+		methods: {
+			init: function () {
+				var data = this.data;
+
+				var url_string = window.location.href
+				var url = new URL(url_string);
+
+				var IdDec = url.searchParams.get("IdDec");
+				var createdAccId = url.searchParams.get("createdAccId"); 
+
+				this.IdDec = IdDec;
+				this.createdAccId = createdAccId;
+				this.getListComment(IdDec);
+			},
+			getListComment: function (IdDec) { 
+				if (!IdDec)
+					return;
+
+				var token = $('#hdfToken').val(); 
+				var self = this;
+				$.ajax({
+					type: 'GET',
+					url: Config.API_Login + "agency/getListFeedBack",
+					data: {
+						dclId: IdDec, 
+						//fromAccId: "",
+						//toAccId: "",
+					},
+					headers: {
+						"Authorization": "Bearer " + token
+					},
+					success: function (data) {
+						//console.log(data); 
+						if (data.ResponseCode >= 0) {
+							self.lstComment = data.Data;
+						}
+						 
+					},
+					error: function (data) { 
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},  
+			feedBack: function () {
+				var self = this;
+				$.ajax({
+					type: 'GET',
+					url: Config.Url_Root + "Registry/Feedback",
+					data: {
+					},
+					success: function (data) {
+						//console.log(data);
+						var html = '<div id="pop_feedback_background" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6;"></div>';
+						html += '<div id="pop_feedback_left" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 50%;"></div >';
+						$("BODY").append(html);
+						$("#pop_feedback_left").html(data);
+						if (self.lstComment.length == 0) {
+							pop.infoDcl.createdAccId = self.createdAccId;
+						}
+						else {
+							pop.infoDcl.createdAccId = self.lstComment[0].fromAccId;
+						}
+						
+						pop.infoDcl.dclId = self.IdDec;
+					},
+					error: function (data) {
+						bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+						return;
+					}
+				});
+			},
+		},
+		mounted() {
+			this.init();
+		},
+
+	});
+</script>

@@ -2,11 +2,15 @@
 @{
     ViewBag.Title = "CustomerBusinessInsert";
 }
-
+<style>
+	#loginbox input.error {
+		border: 1px solid red;
+	}
+</style>
 
 <div id="loginbox" style="width: 60%; z-index: 99; position: fixed;transform: translate(-50%, -50%);top: 50%; left: 50%">
     <div class="control-group normal_text">
-        <b style="font-size:18px;">TẠO THÔNG TIN KHÁCH HÀNG DOANH NGHIỆP</b>
+        <b style="font-size:18px;" id="title_pop">TẠO THÔNG TIN KHÁCH HÀNG DOANH NGHIỆP</b>
         <b onclick="utils.closeAll();" class="icClose">X</b>
     </div>
 
@@ -49,7 +53,7 @@
                     <div class="control-group1">
                         <label>Số điện thoại: <span class="error">(*)</span></label>
                         <div class="main_input_box">
-                            <input type="text" class="span12" id="phoneBusiness" name="phoneBusiness" style="width:100%;" placeholder="Số điện thoại của doanh nghiệp" />
+                            <input type="text" class="span12" id="phoneBusiness" name="phoneBusiness" onkeyup="Vali.OnlyNumber2('phoneBusiness')" style="width:100%;" placeholder="Số điện thoại của doanh nghiệp" maxlength="11"/>
                         </div>
                     </div>
                 </div>
@@ -164,7 +168,7 @@
                     </div>
 
                     <div class="span6">
-                        <input type="radio" id="signMethod_2" name="setSignature" value="20"/>
+                        <input type="radio" id="signMethod_2" name="setSignature" value="21"/>
                         Trình ký cho doanh nghiệp xuất nhập khẩu duyệt tờ khai
                     </div>
                 </div>

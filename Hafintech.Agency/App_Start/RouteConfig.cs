@@ -14,6 +14,16 @@ namespace Hafintech.Agency
                 url: "dang-nhap",
                 defaults: new { controller = "Home", action = "Login", id = UrlParameter.Optional }
             );
+            routes.MapRoute(
+                name: "Đổi mật khẩu",
+                url: "resetpassword",
+                defaults: new { controller = "Home", action = "ResetPassword", id = UrlParameter.Optional }
+            );
+            routes.MapRoute(
+                name: "cài đặt vnaccs",
+                url: "setup-vnaccs",
+                defaults: new { controller = "System", action = "SetupVNACCS", id = UrlParameter.Optional }
+            );
 
             routes.MapRoute(
                 name: "dashboard",

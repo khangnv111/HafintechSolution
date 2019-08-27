@@ -11,82 +11,71 @@
                 <h5>DANH SÁCH TỜ KHAI TRÌNH KÝ</h5>
             </div>
             <div class="widget-content">
-                <div class="row-fluid">
+				<div class="row-fluid">
 
-                    <div class="span2">
-                        <label>Từ ngày</label>
-                        <input type="date" class="span12 dDate" value="" id="datepickerFromD" name="datepickerFrom" placeholder="Từ ngày" required="" v-model="data.startCreatedDate">
-                    </div>
-                    <div class="span2">
-                        <label>Đến ngày</label>
-                        <input type="date" class="span12 dDate" value="" id="datepickerToD" name="datepickerTo" placeholder="Đến ngày" required="" v-model="data.endCreatedDate">
-                    </div>
+					<div class="span2">
+						<label>Từ ngày</label>
+						<input type="date" class="span12 dDate" v-model="startCreatedDate">
+					</div>
+					<div class="span2">
+						<label>Đến ngày</label>
+						<input type="date" class="span12 dDate" v-model="endCreatedDate">
+					</div>
 
-                    <div class="span2">
-                        <label>Loại tờ khai</label>
-                        <select class="span12" id="slType">
-                            <option value="1">--Tất cả--</option>
-                            <option value="1">Nhập khẩu</option>
-                            <option value="2">Xuất khẩu</option>
-                        </select>
-                    </div>
+					<div class="span2">
+						<label>Trạng thái ký</label>
+						<select class="span12" id="statusReg" v-model="data.approvalStatus">
+							<option value="">--Chọn trạng thái--</option>
+							<option value="2">Đã ký</option>
+							<option value="1">Chờ ký (sau khi gửi trình ký)</option>
+							<option value="-1">Từ chối</option>
+							<option value="0">Chưa xác định</option>
 
-                  
+						</select>
+					</div>
+					<div class="span2">
+						<label>Doanh nghiệp XNK</label>
+						<input type="text" id="nameBusiness" class="span12" v-model="data.businessId"/>
+					</div>
+					<div class="span2">
+						<div style="margin-top:25px;">
+							<a v-on:click="search()" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
+						</div>
+					</div>
 
-                    <div class="span2">
-                        <label>Trạng thái ký</label>
-                        <select class="span12" id="statusReg" v-model="data.status">
-                            <option value="21">--Chọn trạng thái--</option>
-                            <option value="1">Đã ký</option>
-                            <option value="2">Chưa ký</option>
-                            <option value="3">Sửa</option>
-                        </select>
-                    </div>
-
-                </div>
-                <div class="row-fluid">
-                    <div class="span4">
-                        <label>Doanh nghiệp XNK</label>
-                        <input type="text" id="nameBusiness" class="span7"/>
-                    </div>
-                    <div class="span2">
-                        <div style="margin-top:25px;">
-                            <a v-on:click="getList(0)" class="btn btn-success"><i class="icon icon-search"></i> Tìm kiếm</a>
-                            @*<a onclick="hq.getListDeclaration()" class="btn btn-warning"><i class="icon icon-file"></i> Xuất Excel</a>*@
-                        </div>
-                    </div>
-                    @*<div class="span2">
-                        <div style="margin-top:25px;">
-                            <a onclick="" class="btn btn-warning"><i class="fa fa-plus-square"></i> Tạo TK trình ký</a>
-                             
-                        </div>
-                    </div>*@
-                </div>
+				</div> 
             </div>
         </div>
 
         <div class="box-body" id="dvContent">
+            <button v-on:click="SelectTab(1)" v-bind:class="{'btn-warning': typeDecla == 1, 'btn-success': typeDecla != 1}" class="span2 btn" style="padding: 7px">Tờ khai nhập khẩu</button>
+            <button v-on:click="SelectTab(2)" v-bind:class="{'btn-warning': typeDecla == 2, 'btn-success': typeDecla != 2}" class="span2 btn" style="padding: 7px; margin-left:29px">Tờ khai xuất khẩu</button>
+            <button v-on:click="SelectTab(3)" v-bind:class="{'btn-warning': typeDecla == 3, 'btn-success': typeDecla != 3}" class="span2 btn" style="padding: 7px; margin-left:29px">Tờ khai AMA</button>
+            <button v-on:click="SelectTab(4)" v-bind:class="{'btn-warning': typeDecla == 4, 'btn-success': typeDecla != 4}" class="span2 btn" style="padding: 7px; margin-left:29px">Tờ khai HYS</button>
+            <button v-on:click="SelectTab(5)" v-bind:class="{'btn-warning': typeDecla == 5, 'btn-success': typeDecla != 5}" class="span2 btn" style="padding: 7px; margin-left:29px">Tờ khai OLA</button>
+            <button v-on:click="SelectTab(6)" v-bind:class="{'btn-warning': typeDecla == 6, 'btn-success': typeDecla != 6}" class="span2 btn" style="padding: 7px; margin-left:29px">Chứng từ điện tử</button>
             <div class="widget-box">
                 <div class="widget-title">
                     <span class="icon"><i class="icon-align-justify"></i></span>
-                    <h5>Danh sách Tờ Khai nhập khẩu</h5>
+                    <h5>Danh sách</h5>
                 </div>
 
                 <div id="divUpdate">
-                    <table id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                    <table v-if="!isVoucher" id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
                         <thead>
                             <tr>
                                 <th class="text-center" style="min-width:70px">STT</th>
-                                <th class="text-center" style="min-width:70px">ID</th>
+                                <th class="text-center" style="min-width:70px">Mã tờ khai</th>
                                 <th class="text-center" style="min-width:100px">Mã nghiệp vụ</th>
                                 <th class="text-center" style="min-width:100px">Số tờ khai</th>
-                                <th class="text-center">Ngày đăng ký</th> 
+                                <th class="text-center" v-if="typeDecla == 3" style="min-width:100px">Số tờ khai bổ xung</th>
+                                <th class="text-center">Ngày đăng ký</th>
                                 <th class="text-center">Loại hình</th>
                                 <th class="text-center">Trạng thái ký</th>
                                 <th class="text-center">Phân luồng</th>
                                 <th class="text-center">Thông quan</th>
                                 <th class="text-center">CQ Hải quan</th>
-                                <th class="text-center">Mật khẩu trình ký</th>
+                                @*<th class="text-center">Mật khẩu trình ký</th>*@
                                 <th class="text-center">Thao tác</th>
                             </tr>
                         </thead>
@@ -95,19 +84,35 @@
                             <tr v-for="(item, index) in lstDeclaration">
                                 <td>{{index+1}}</td>
                                 <td>
-                                    <a v-on:click="viewDeclaration(item.dclId, item.type)">{{item.dclId}}</a>
+                                    <a v-if="typeDecla == 1" v-on:click="viewDeclaration(item.dclId, item.type)">{{item.dclId}}</a>
+                                    <a v-if="typeDecla == 2" v-on:click="viewDeclaration(item.declarationId, item.type)">{{item.declarationId}}</a>
+                                    <a v-if="typeDecla == 3 || typeDecla == 4" v-on:click="viewDeclaration(item.id, item.type)">{{item.id}}</a>
+                                    <a v-if="typeDecla == 5" v-on:click="viewDeclaration(item.btDclId, item.type)">{{item.btDclId}}</a>
+                                    @*<a v-if="typeDecla == 6" v-on:click="">{{item.voucherId}}</a>*@
                                 </td>
                                 <td>{{item.statusCode}}</td>
-                                <td>{{item.dclNo}}</td>
-                                <td>{{item.regDate}}</td>
-                                <td>{{item.impCtrCd}}</td>
-                                <td>{{item.impCtrNm}}</td>
                                 <td>
-                                    <span v-if="item.dclKindCd == 1">Kinh doanh, đầu tư</span>
-                                    <span v-if="item.dclKindCd == 2">Sản xuất, xuất khẩu</span>
-                                    <span v-if="item.dclKindCd == 3">Gia công</span>
-                                    <span v-if="item.dclKindCd == 4">Chế xuất</span>
+                                    <a v-if="typeDecla == 1" v-on:click="viewDeclaration(item.dclId, item.type)">{{item.dclNo}}</a>
+                                    <a v-if="typeDecla == 2" v-on:click="viewDeclaration(item.declarationId, item.type)">{{item.dclNo}}</a>
+                                    <a v-if="typeDecla == 3" v-on:click="viewDeclaration(item.id, item.type)">{{item.dclNo}}</a>
+                                    <a v-if="typeDecla == 4" v-on:click="viewDeclaration(item.id, item.type)">{{item.attachmentNo}}</a>
+                                    <a v-if="typeDecla == 5" v-on:click="viewDeclaration(item.btDclId, item.type)">{{item.btDclNo}}</a>
+                                    @*<a v-if="typeDecla == 6" v-on:click="viewDeclaration(item.btDclId, item.type)">{{item.dclId}}</a>*@
+
                                 </td>
+                                <td v-if="typeDecla == 3">
+                                    <a v-on:click="viewDeclaration(item.id, item.type)">{{item.amendDclNo}}</a>
+                                </td>
+								<td>
+									{{item.createdDate}} 
+								</td>
+                                <td>{{item.dclKindCd}}</td>
+								<td> 
+									<span v-show="item.approvalStatus == -1">Từ chối</span>
+									<span v-show="item.approvalStatus == 0">Chưa xác định</span>
+									<span v-show="item.approvalStatus == 1">Chờ ký (sau khi gửi trình ký)</span>
+									<span v-show="item.approvalStatus == 2">Đã ký</span>
+								</td>
                                 <td>
                                     <span v-if="item.insClsCd == 1">Xanh</span>
                                     <span v-if="item.insClsCd == 2">Vàng</span>
@@ -118,11 +123,61 @@
                                     <span v-if="item.clearanStatus == 1"> Thông quan</span>
                                     <span v-if="item.clearanStatus == 2">Đợi thông quan</span>
                                 </td>
-                                <td>{{item.cstOfficeNm}}</td>
-                                <td>{{item.dateOfPermit}}</td>
+                                <td>{{item.cstOffice}} - {{item.cstOfficeNm}}</td>
+
                                 <td>
-                                    <a class="btn btn-warning" v-on:click="viewEdit(item.dclId, item.type)">Sửa</a>
-                                    <a class="btn btn-danger" v-on:click="removeDe(item.dclId)">Xóa</a>
+                                    <a class="btn btn-warning" v-if="typeDecla == 1" v-on:click="viewDeclaration(item.dclId, item.type)">Sửa</a>
+                                    <a class="btn btn-warning" v-if="typeDecla == 2" v-on:click="viewDeclaration(item.declarationId, item.type)">Sửa</a>
+                                    <a class="btn btn-warning" v-if="typeDecla == 3 || typeDecla == 4" v-on:click="viewDeclaration(item.id, item.type)">Sửa</a>
+                                    <a class="btn btn-warning" v-if="typeDecla == 5" v-on:click="viewDeclaration(item.btDclId, item.type)">Sửa</a>
+
+                                    <a class="btn btn-danger" v-if="typeDecla == 1" v-on:click="removeDe(item.dclId)">Xóa</a>
+                                    <a class="btn btn-danger" v-if="typeDecla == 2" v-on:click="removeDe(item.declarationId)">Xóa</a>
+                                    <a class="btn btn-danger" v-if="typeDecla == 3 || typeDecla == 4" v-on:click="removeDe(item.id)">Xóa</a>
+                                    <a class="btn btn-danger" v-if="typeDecla == 5" v-on:click="removeDe(item.btDclId)">Xóa</a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <table v-if="isVoucher" id="listContainer" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Mã chứng từ</th>
+                                <th class="text-center">Loại chứng từ</th>
+                                <th class="text-center">Mã tham chiếu</th>
+                                <th class="text-center">Ngày tải lên chứng từ</th>
+                                <th class="text-center">Ngày tiếp nhận</th>
+                                <th class="text-center">Số tiếp nhận</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">File đính kèm</th>
+                                <th class="text-center">Thao tác</th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="content-search-table">
+
+                            <tr v-for="(item, index) in ListVoucher">
+                                <td>{{index+1}}</td>
+                                <td>{{item.voucherId}}</td>
+                                <td>{{cusTextIssuer(item.issuer)}}</td>
+                                <td>
+                                    <a v-on:click="viewDeclarationVoucher(item,item.type)">{{item.reference}}</a>
+                                </td>
+                                @*<td>{{item.DeclarationDocument.natureOfTransaction}}</td>*@
+                                <td>{{item.createdDate}}</td>
+                                <td>{{item.issue}}</td>
+                                <td>{{item.customsReference}}</td>
+                                <td>
+                                    <span v-if="item.status > 1">Cho phép</span>
+                                    <span v-else="item.status <= 1">Không cho phép</span>
+                                </td>
+                                @*<td>{{cusStatus(item.function)}}</td>*@           @*<td>{{item.status}}  doi status -> function</td>*@
+                                <td>{{item.fileName}}</td>
+                                <td>
+                                    <a class="btn btn-warning" v-on:click="viewDeclarationVoucher(item, item.type)">Sửa</a>
+                                    <a class="btn btn-danger" v-on:click="removeDe(item)">Xóa</a>
                                 </td>
                             </tr>
 
@@ -136,54 +191,98 @@
 </div>
 
 <div class="container-fluid">
-    <ul class="pagination">
-        @*<li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>*@
-    </ul>
+    <ul class="pagination"></ul>
 </div>
-
-<script>
-    //$('.dDate').datepicker({
-    //    //dateFormat: 'dd/mm/yyyy'
-    //});
-    //$(document).ready(function () {
-    //    var h1 = $(".dDate").offset().top + 30;
-    //    //var h2 = $(".datepicker").offset().top;
-    //    //var top = h1 - h2 - $(".datepicker").height();
-
-    //    $(".datepicker").css("margin-top", h1 + "px");
-    //});
-
-</script>
-
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="~/Content/js/vue.min.js"></script>
-<script src="~/Content/js/lib.js"></script>
 <script type="text/javascript">
     var calltable = 0;
-    var lstDeImport = new Vue({
+    var app = new Vue({
         el: '#listDe',
         data: {
             data: {},
-            lstDeclaration: []
+            lstDeclaration: [],
+            ListVoucher:[],
+            totalRow: 0,
+            showLoading: true,
+			isVoucher: false,
+			startCreatedDate: "",
+			endCreatedDate: "",
 
+            typeDecla: 1, //1: import, 2: export, 3: ama, 4: hys
+            voucherId: "",
+            issuer: "",  
         },
         methods: {
             init: async function () {
-                var data = this.data;  
-                data.status = 21;
-                data.startCreatedDate = "";
-                data.endCreatedDate = "";
-
+                var data = this.data;
+				data.businessId = ""; 
+				data.approvalStatus = "";
             },
-            getList: async function (page, callback) {
+            search: function () {
+				this.isVoucher = false;
+				this.showLoading = true;
+				this.lstDeclaration = [];
+				$(".pagination").html('');
+
+				if (this.typeDecla == 1) {
+					this.getListImport(0);
+				}
+				else if (this.typeDecla == 2) {
+					this.getListExport(0);
+				}
+				else if (this.typeDecla == 3) {
+					this.getListAMA();
+				}
+				else if (this.typeDecla == 4) {
+					this.getListHYS();
+				}
+				else if (this.typeDecla == 6) {
+					this.isVoucher = true;
+					this.getListVoucher(0);
+				} else {
+					this.getListOLA(0);
+				}
+            },
+            getListExport: async function (page, callback) {
                 try {
                     var token = $('#hdfToken').val();
                     var createdAccId = $("#accIdLogin").val();
-                    if(page == undefined || page == null) page = 1;
+                    if (page == undefined || page == null) page = 0;
+
+                    var accountId;
+                    if (utils.getCookie("Type") == "1") {
+                        accountId = utils.getCookie("parentId");
+                    }
+                    else {
+                        accountId = $("#accIdLogin").val();
+                    } 
+
+					var dt = this.data;
+					dt.startCreatedDate = this.convertDate(this.startCreatedDate);
+					dt.endCreatedDate = this.convertDate(this.endCreatedDate);
+
+					const response = await axios.get(Config.API_Login + "agency/SearchEXDeclaration?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&page=" + page + "&accountId=" + accountId + "&approvalStatus=" + dt.approvalStatus + "&businessId=" + dt.businessId,
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0) {
+                        this.lstDeclaration = res.Data.ListDeclarations;
+                        //this.totalRow = response.data.Data.length;
+                        this.showPage(page, res.Data.Total);
+
+                        if (typeof callback != 'undefined' && typeof callback == 'function')
+                            callback()
+                    }
+                    else return null;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            getListImport: async function (page, callback) {
+                try {
+                    var token = $('#hdfToken').val();
+                    var createdAccId = $("#accIdLogin").val();
+                    if (!page) page = 0;
 
                     var accountId;
                     if (utils.getCookie("Type") == "1") {
@@ -193,17 +292,21 @@
                         accountId = $("#accIdLogin").val();
                     }
 
-                    var dt = this.data;
-                    const response = await axios.get(Config.API_Login + "agency/SearchDeclaration?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&status=" + dt.status + "&page=" + page + "&count=100&createdAccId=" + createdAccId,
+					var dt = this.data;
+					dt.startCreatedDate = this.convertDate(this.startCreatedDate);
+					dt.endCreatedDate = this.convertDate(this.endCreatedDate);
+
+					const response = await axios.get(Config.API_Login + "agency/SearchDeclaration?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&page=" + page + "&count=10&accountId=" + accountId + "&approvalStatus=" + dt.approvalStatus + "&businessId=",
                         {
                             headers: { "Authorization": "Bearer " + token },
                         });
                     var res = response.data;
-                    if (res.ResponseCode >= 0)
-                    {
+                    if (res.ResponseCode >= 0) {
                         this.lstDeclaration = response.data.Data.ListDeclarations;
+                        this.totalRow = response.data.Data.Total;
+                        this.showPage(page, this.totalRow);
 
-                        if(typeof callback != 'undefined' && typeof callback == 'function')
+                        if (typeof callback != 'undefined' && typeof callback == 'function')
                             callback()
                     }
                     else return null;
@@ -211,38 +314,358 @@
                     console.error(error);
                 }
             },
-            viewEdit: async function (id, type) {
-                if(type == 1){
-                    var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + id + "&ishight=1&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-                else if(type == 2){
-                    var urlLink = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + id + "&ishight=2&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-            },
-            viewDeclaration: function(id, type){
-                if(type == 1){
-                    var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + id + "&ishight=1&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-                else if(type == 2){
-                    var urlLink = Config.Url_Root + "Declaration/HightDeclarationDetail?IdDec=" + id + "&ishight=2&tab=1";
-                    window.open(urlLink,'_blank');
-                }
-            },
-            removeDe:  function(idDe){
+            getListAMA: function (page) {
 
-                Decla.DeleteDecla(idDe, function(){
-                    lstDeImport.getList(1);
+                if (!page) page = 0;
+                var accountId;
+                if (utils.getCookie("Type") == "1") {
+                    accountId = utils.getCookie("parentId");
+                }
+                else {
+                    accountId = $("#accIdLogin").val();
+                }
+
+                var token = $('#hdfToken').val();
+				var dt = this.data;
+				dt.startCreatedDate = this.convertDate(this.startCreatedDate);
+				dt.endCreatedDate = this.convertDate(this.endCreatedDate);
+
+                var self = this;
+                $.ajax({
+                    type: 'POST',
+                    url: Config.API_Login + "agency/SearchAMA",
+                    data: {
+                        startCreatedDate: dt.startCreatedDate,
+						endCreatedDate: dt.endCreatedDate,
+						approvalStatus: dt.approvalStatus,
+						businessId: dt.businessId,
+                        page: page,
+                        count: 10,
+                        accountId: accountId
+                    },
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    success: function (data) {
+                        //console.log(data);
+                        self.showLoading = false;
+                        if (data.ResponseCode >= 0) {
+                            self.lstDeclaration = data.Data.ListAmendedTaxInfomation;
+                            self.showPage(page, data.Data.Total);
+                        }
+
+                    },
+                    error: function (data) {
+                        self.showLoading = false;
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        return;
+                    }
+                });
+            },
+            getListHYS: async function (page, callback) {
+                try {
+
+                    if (!page) page = 0;
+                    var accountId;
+                    if (utils.getCookie("Type") == "1") {
+                        accountId = utils.getCookie("parentId");
+                    }
+                    else {
+                        accountId = $("#accIdLogin").val();
+                    }
+
+					var data = this.data;
+					data.startCreatedDate = this.convertDate(this.startCreatedDate);
+					data.endCreatedDate = this.convertDate(this.endCreatedDate);
+
+                    var token = $('#hdfToken').val();
+					const response = await axios.get(Config.API_Login + "agency/SearchAttachment?startDate=" + data.startCreatedDate + "&endDate=" + data.endCreatedDate + "&status=21&sigAccId=" + utils.getCookie("accountIdBuss") + "&approvalStatus=" + data.approvalStatus + "&businessId=" + data.businessId,
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    this.showLoading = false;
+                    var res = response.data;
+                    if (res.ResponseCode >= 0) {
+                        this.lstDeclaration = response.data.Data.ListAttachment;
+                        this.showPage(page, data.Data.Total);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            getListOLA: function (page, callback) {
+
+                var token = $('#hdfToken').val();
+                var accountId = $("#accIdLogin").val();
+                var dt = this.data;
+                var self = this;
+                $.ajax({
+                    type: 'GET',
+                    url: Config.API_Login + "TransportDeclaration/SearchSignatureOLA",
+                    data: {
+                        startCreatedDate: dt.startCreatedDate,
+                        endCreatedDate: dt.endCreatedDate,
+                        //status: 21,
+                        accountId: accountId,//utils.getCookie("accountIdBuss"),
+                        page: page,
+                        count: 10
+                    },
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    success: function (data) {
+                        //console.log(data);
+                        self.showLoading = false;
+                        if (data.ResponseCode >= 0) {
+                            self.lstDeclaration = data.Data.ListOla;
+                            self.showPage(page, data.Data.Total);
+                        }
+
+                        if (typeof callback != 'undefined' && typeof callback == 'function')
+                            callback()
+                    },
+                    error: function (data) {
+                        self.showLoading = false;
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        return;
+                    }
+                });
+            },
+            getListVoucher: async function (page, callback) {
+                try {
+                    var token = $('#hdfToken').val();
+                    var createdAccId = $("#accIdLogin").val();
+                    if (page == undefined || page == null) page = 0;
+
+                    var accountId;
+                    //if (utils.getCookie("Type") == "1") {
+                    //    accountId = utils.getCookie("parentId");
+                    //}
+                    //else {
+                    //    accountId = $("#accIdLogin").val();
+                    //}
+                    accountId = utils.getCookie("accountIdBuss");
+                    var dt = this.data;
+                    var dclId = "";
+                    var dclNo = "";
+                    const response = await axios.get(Config.API_Login + "Evoucher/SearchVoucherSign?startCreatedDate=" + dt.startCreatedDate + "&endCreatedDate=" + dt.endCreatedDate + "&page=" + page + "&count=10&accountId=" + accountId + "&voucherId=" + this.voucherId + "&issuer=" + this.issuer + "&dclId=" + dclId + "&dclNo=" + dclNo +"&status=2",
+                        {
+                            headers: { "Authorization": "Bearer " + token },
+                        });
+                    var res = response.data;
+                    if (res.ResponseCode >= 0) {
+                        this.ListVoucher = response.data.Data.ListVoucher;
+                        this.totalRow = response.data.Data.Total;
+                        this.showPage(page, this.totalRow);
+
+                        if (typeof callback != 'undefined' && typeof callback == 'function')
+                            callback()
+                    }
+                    else return null;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            showPage: function (page, total) {
+
+                var totalPage = 0;
+                if (total % 10 == 0) {
+                    totalPage = total / 10;
+                }
+                else {
+                    var du = total % 10;
+                    total = total - du;
+                    totalPage = total / 10 + 1;
+                }
+                var CurPage = page + 1;
+
+                var htmlP = '';
+
+                if (totalPage > 1) {
+                    htmlP += '<li><a href="javascript:;" onclick="app.paging(0)"><i class="fa fa-angle-double-left"></i></a></li>';
+                    htmlP += '<li><a href="javascript:;" onclick="app.paging(' + (page - 1 <= 0 ? 0 : page - 1) + ')"><i class="fa fa-angle-left"></i></a></li>';
+
+                    for (var i = CurPage - 3; i < CurPage + 3; i++) {
+                        if (i > 0 && i <= totalPage) {
+                            if (CurPage == i) {
+                                htmlP += '<li class="active"><a href="javascript:;" onclick="app.paging(' + (i - 1) + ')" >' + i + '</a></li>';
+                            }
+                            else {
+                                htmlP += '<li><a href="javascript:;" onclick="app.paging(' + (i - 1) + ')" >' + i + '</a></li>';
+                            }
+                        }
+                    }
+                    htmlP += '<li><a href="javascript:;" onclick="app.paging(' + (page + 1 >= totalPage ? page : page + 1) + ')" ><i class="fa fa-angle-right"></i></a></li>';
+                    htmlP += '<li><a href="javascript:;" onclick="app.paging(' + (totalPage - 1) + ')" ><i class="fa fa-angle-double-right"></i></a></li>';
+
+                }
+
+                $(".pagination").html(htmlP);
+
+            },
+            paging: function (page) {
+
+                if (this.typeDecla == 1) {
+                    this.getListImport(page);
+                }
+                else if (this.typeDecla == 2) {
+                    this.getListExport(page);
+                }
+                else if (this.typeDecla == 3) {
+                    this.getListAMA(page);
+                }
+                else if (this.typeDecla == 4) {
+                    this.getListHYS(page);
+                }
+                else if (this.typeDecla == 6) {
+                    this.getListVoucher(page);
+                }
+                else {
+                    this.getListOLA(page);
+                }
+            },
+            //=======================
+            SelectTab: function (tab) {
+                this.isVoucher = false;
+                this.typeDecla = tab;
+                this.showLoading = true;
+                this.lstDeclaration = [];
+                $(".pagination").html('');
+                if (tab == 1) {
+                    this.getListImport(0);
+                }
+                else if (tab == 2) {
+                    this.getListExport(0);
+                }
+                else if (tab == 3) {
+                    this.getListAMA();
+                }
+                else if (tab == 4) {
+                    this.getListHYS();
+                }
+                else if (tab == 6) {
+                    this.isVoucher = true;
+                    this.getListVoucher(0);
+                }else {
+                    this.getListOLA(0);
+                }
+            },
+            //=======================
+            viewEdit: async function (item) {
+                if(item.type == 1){
+					var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + item.dclId + "&ishight=1&tab=1";
+                    window.open(urlLink, '_blank');
+                }
+                else if(item.type == 2){
+					var urlLink = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + item.declarationId + "&ishight=2&tab=1";
+                    window.open(urlLink, '_blank');
+                }
+            },
+            viewDeclaration: function (id, type) {
+                if (this.typeDecla == 3) {
+                    window.location.href = Config.Url_Root + "ama/InsertUpdateAMA?decId=" + id + "&tab=1&ishight=6";
+                }
+                else if (this.typeDecla == 4) {
+                    window.location.href = Config.Url_Root + "hys/InsertHYS?decId=" + id + "&tab=1&ishight=5";
+                }
+                else if (this.typeDecla == 5) {
+                    window.location.href = Config.Url_Root + "TransportDeclaration/ola?olaid=" + id + "&ishight=7&tab=1"
+                }
+                else if (type == 1) {
+                    var urlLink = Config.Url_Root + "Declaration/LowValueDeInsert?IdDec=" + id + "&ishight=1&tab=1";
+                    window.location.href = urlLink;
+                }
+                else if (type == 2) {
+                    var urlLink = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + id + "&ishight=2&tab=2";
+                    window.location.href = urlLink;
+                }
+                else if (type == 3) {
+                    window.location.href = Config.Url_Root + "ExportDeclaration/MEC_InsertUpdate?decId=" + id + "&tab=1&ishight=3";
+                }
+                else if (type == 4) {
+                    window.location.href = Config.Url_Root + "ExportDeclaration/EDA_InsertUpdate?decId=" + id + "&tab=1&ishight=4";
+                }  
+            },
+            viewDeclarationVoucher: function (item, type) {
+                switch (parseInt(item.issuer)) {
+                    case 308:
+                        window.location.href = Config.Url_Root + "Electronic/license?id=" + item.voucherId + "&type=" + type + "&tab=1";
+                        break;
+                    case 309:
+                        window.location.href = Config.Url_Root + "Electronic/contract?id=" + item.voucherId + "&type=" + type + "&tab=1";
+                        break;
+                    case 310:
+                        window.location.href = Config.Url_Root + "Electronic/invoice?id=" + item.voucherId + "&type=" + type + "&tab=1";
+                        break;
+                    case 311:
+                        window.location.href = Config.Url_Root + "Electronic/co?id=" + item.voucherId + "&type=" + type + "&tab=1";
+                        break;
+                    case 312:
+                        window.location.href = Config.Url_Root + "Electronic/cargo?id=" + item.voucherId + "&type=" + type + "&tab=1";
+                        break;
+                    case 313:
+                        window.location.href = Config.Url_Root + "Electronic/container?id=" + item.voucherId + "&type=" + type + "&tab=1";
+                        break;
+                    case 314:
+                        window.location.href = Config.Url_Root + "Electronic/other?id=" + item.voucherId + "&type=" + type + "&tab=1";
+                        break;
+                    default:
+                }
+
+            },
+            removeDe: function (idDe) {
+
+                Decla.DeleteDecla(idDe, function () {
+                    app.getListImport(1);
                 });
 
             },
+            cusTextIssuer: function (issuer) {
+                var txtIssuer = "";
+                switch (issuer) {
+                    case "308": txtIssuer = "giấy phép điện tử";
+                        break;
+                    case "309": txtIssuer = "hợp đồng điện tử";
+                        break;
+                    case "310": txtIssuer = "hóa đơn điện tử";
+                        break;
+                    case "311": txtIssuer = "CO điện tử";
+                        break;
+                    case "312": txtIssuer = "vận đơn điện tử";
+                        break;
+                    case "313": txtIssuer = "container đính kèm";
+                        break;
+                    case "314": txtIssuer = "chứng từ khác";
+                        break;
+                    default: txtIssuer = "";
+                        break;
+                }
+                return txtIssuer;
+            },
+            cusStatus: function (statusFunction) {
+                var txtStatus = "";
+                switch (statusFunction) {
+                    case "29": txtStatus = "cấp số thành công";
+                        break;
+                    case "27": txtStatus = "27";
+                        break;
+                    case "8": txtStatus = "8";
+                        break;
+                    default: txtStatus = "---";
+                        break;
+                }
+                return txtStatus;
+			},
+			convertDate: function (date) {
+				if (!date)
+					return "";
+
+				return moment(String(date)).format('DD-MM-YYYY');
+			},
         },
         mounted() {
             this.init();
-            this.getList(0);
-
+            this.getListImport(0);
         },
 
     });

@@ -29,3 +29,9 @@
 <input type="hidden" id="accIdLogin" value="@_2017Utilities.Session.AccountSession.AccountID"/>
 <input type="hidden" id="businessIdAcc" value="0" />
 <input type="hidden" id="taxIdNumberAcc" value="" />
+<input type="hidden" value="" id="downSignkey" />
+<script>
+    $(document).ready(() => {
+        $("#hdfToken").val(window.localStorage.getItem("token"));
+    });
+</script>

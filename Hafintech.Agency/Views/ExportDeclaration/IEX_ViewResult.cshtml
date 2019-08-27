@@ -1,0 +1,183 @@
+﻿
+@{
+    ViewBag.Title = "IEX_ViewResult";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div class="row-fluid" id="eda">
+    <div class="span12">
+        <div class="widget-box">
+            <div class="widget-title">
+                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Xem thông tin tờ khai hải quan</h5>
+            </div>
+            <div class="widget-content nopadding">
+                <div class="form-horizontal">
+
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="control-group span12">
+                                <label class="control-label" style="width: 220px;">Số Tờ khai: </label>
+                                <div class="controls">
+
+                                    <input style="width:350px; margin-left: 20px" type="text" class="span5" id="txtdclNo" name="txtdclNo"
+                                           placeholder="Số tờ khai hải quan" v-model="dclNo" />
+                                </div>
+                            </div>
+
+                            <div class="control-group span12">
+
+                                <div class="controls">
+                                    <button class="btn btn-success" style="margin-left: 20px;" v-show="isSubmit == true" v-on:click="submitIEX(20)">Tìm kiếm</button>
+                                    <button class="btn btn-success" style="margin-left: 20px;" v-show="isSubmitUSB == true" v-on:click="submitUSB(20)">Tìm kiếm</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/js/export-decla/eda-onload.trinhky.js"></script>
+<script>
+    var app = new Vue({
+        el: '#eda',
+        data: {
+            dclNo: '',
+			jobCode: "IEX",
+			isSubmitUSB: false,
+			isSubmit: false
+        },
+		methods: {
+            ShowSubmit: async function () {
+                var url = new URL(window.location.href);
+				var dclId = url.searchParams.get("decId");
+				var accId = $("#accIdLogin").val();
+				var accountInfo;
+				if (!dclId || dclId <= 0) {
+					accountInfo = await Lib.GetAccountInfo();
+				} else {
+					accountInfo = await Lib.GetInfoByAccountID(accId);
+				}
+				if (accountInfo.Business.submitMethod == null) {
+                    this.isSubmitUSB = true;
+                    this.isSubmit = true;
+                } else if (accountInfo.Business.submitMethod == 0) {
+                    this.isSubmitUSB = true;
+                }
+                else if (accountInfo.Business.submitMethod == 1) {
+					this.isSubmit = true;
+				}
+			},
+            submitIEX: function (status) {
+                utils.Loading();
+                var token = $('#hdfToken').val();
+                if (!this.dclNo) {
+                    bootbox.alert("Chưa nhập tờ khai");
+                    utils.unLoading();
+                    return;
+                }
+                var dclNos = this.dclNo;
+                dclNos = dclNos.trim();
+
+                $.ajax({
+                    type: 'POST',
+                    url: Config.API_Login + "export/SubmitCKSTT",
+                    data: JSON.stringify({
+                        "dclNo": dclNos,
+                        "status": status
+                    }),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode > 0 && data.Data != null) {
+                                bootbox.alert('Thành công!', function () {
+                                    window.location.href = Config.Url_Root + "ExportDeclaration/IEXDeclaration?decId=" + data.Data.declarationId + "&ishight=4&tab=7";
+                                });
+                            }
+                            else if (data.ResponseCode == -100001) {
+                                bootbox.alert("Tờ khai không tồn tại");
+                            } else {
+                                if (data.Data && data.Data.object) {
+                                    bootbox.confirm({
+                                        title: "THÔNG BÁO",
+                                        message: "Description: " + data.Data.object[0].Description + "<br>Name: " + data.Data.object[0].Name,
+                                        buttons: {
+                                            confirm: {
+                                                label: '<i class="fa fa-check"></i> Confirm'
+                                            }
+                                        },
+                                        callback: function () {
+                                        }
+                                    });
+                                }
+                                else {
+                                    bootbox.alert(data.Description);
+                                }
+                            }
+                        }
+                    },
+                    error: function (data) {
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                        return;
+                    }
+                });
+            },
+            submitUSB: function (status) {
+                if ($("#downSignkey").val() == 1) {
+                    bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+                        if (res) {
+                            downTK();
+                        }
+                    });
+                    return;
+                }
+                this.statusTK = status;
+                var data = {
+                    "dclNo": this.dclNo.trim(),
+                    "status": status
+                }
+                utils.Loading();
+                var xhttp = new XMLHttpRequest();
+                xhttp.withCredentials = true;
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        utils.unLoading();
+                        var jsonObj = JSON.parse(xhttp.responseText);
+                        if (jsonObj["ResponseCode"] >= 0) {
+                            var ediStr = jsonObj["Data"].replace('"', '');
+                            sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+                        }
+                        else {
+                            if (jsonObj.Data) {
+                                bootbox.alert(jsonObj.Data.message);
+                            }
+                            else {
+                                bootbox.alert(jsonObj.Description);
+                            }
+                        }
+                    }
+                };
+                xhttp.open("POST", Config.API_Login + "Agency/GetEdiToSign", true);
+                xhttp.setRequestHeader("content-type", "application/json");
+                xhttp.send(JSON.stringify(data));
+            },
+        },
+        mounted() {
+            var self = this;
+            this.ShowSubmit();
+        },
+    });
+</script>
+

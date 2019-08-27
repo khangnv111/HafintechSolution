@@ -45,6 +45,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Cells, Version=7.5.2.0, Culture=neutral, PublicKeyToken=00725b1ceb58d0a9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Aspose.Cells.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -78,9 +82,19 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>DLL\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>DLL\Office.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -154,11 +168,20 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AMAController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DeclarationController.cs" />
+    <Compile Include="Controllers\ElectronicController.cs" />
+    <Compile Include="Controllers\ElectronicVoucherController.cs" />
+    <Compile Include="Controllers\ExpImpDataController.cs" />
+    <Compile Include="Controllers\ExportDeclarationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HYSController.cs" />
     <Compile Include="Controllers\RegistryController.cs" />
+    <Compile Include="Controllers\ScannerController.cs" />
+    <Compile Include="Controllers\SystemController.cs" />
+    <Compile Include="Controllers\TransportDeclarationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -166,9 +189,15 @@
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountLogin.cs" />
     <Compile Include="Models\CookieManager.cs" />
+    <Compile Include="Models\Declaration.cs" />
+    <Compile Include="Models\OLADetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\js\import\import-onload.trinhky.js" />
+    <Content Include="Content\resetpass\animate-css\animate.css" />
+    <Content Include="Content\resetpass\animate-css\animate.min.css" />
+    <Content Include="Content\js\autocomplete.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css" />
@@ -228,14 +257,39 @@
     <Content Include="Content\img\start.png" />
     <Content Include="Content\img\stop.png" />
     <Content Include="Content\img\zalo.png" />
+    <Content Include="Content\js.update\utils.js" />
+    <Content Include="Content\js.update\voucher.js" />
     <Content Include="Content\js\accounts.js" />
+    <Content Include="Content\js\ama-decla\ama-onload.trinhky.js" />
+    <Content Include="Content\js\ama-decla\ida-ama-onload.trinhky.js" />
+    <Content Include="Content\js\ama-decla\amc-onload.trinhky.js" />
+    <Content Include="Content\js\ama-decla\amb-onload.trinhky.js" />
+    <Content Include="Content\js\ama-decla\ida-view-ama.js" />
+    <Content Include="Content\js\ama-decla\ama-insertupdate.js" />
     <Content Include="Content\js\angecy.js" />
     <Content Include="Content\js\bootbox.min.js" />
     <Content Include="Content\js\common.js" />
     <Content Include="Content\js\config.js" />
+    <Content Include="Content\js\export-decla\eda-declaration.js" />
+    <Content Include="Content\js\export-decla\eda-onload.trinhky.js" />
+    <Content Include="Content\js\export-decla\iex-mec-onload.trinhky.js" />
+    <Content Include="Content\js\export-decla\list-export-declaration.js" />
+    <Content Include="Content\js\export-decla\mec-declaration.js" />
+    <Content Include="Content\js\export-decla\mec-onload.trinhky.js" />
+    <Content Include="Content\js\export-decla\mec-results.js" />
+    <Content Include="Content\js\export-decla\med-onload.trinhky.js" />
+    <Content Include="Content\js\hys-decla\hye-decla.js" />
+    <Content Include="Content\js\hys-decla\hye-result.js" />
+    <Content Include="Content\js\hys-decla\ihy-onload.trinhky.js" />
+    <Content Include="Content\js\hys-decla\hys-onload.trinhky.js" />
+    <Content Include="Content\js\hys-decla\ihy-decla.js" />
+    <Content Include="Content\js\hys-decla\insert-hys.js" />
+    <Content Include="Content\js\hys-decla\lst-hys.js" />
+    <Content Include="Content\js\hys-decla\results-hys.js" />
     <Content Include="Content\js\ida.js" />
     <Content Include="Content\js\idaproduct.js" />
     <Content Include="Content\js\index.js" />
+    <Content Include="Content\js\jquery.twbsPagination.js" />
     <Content Include="Content\js\lib.js" />
     <Content Include="Content\js\lightbox\css\lightbox.css" />
     <Content Include="Content\js\lightbox\css\lightbox.min.css" />
@@ -249,10 +303,37 @@
     <Content Include="Content\js\lightbox\js\lightbox.min.js" />
     <Content Include="Content\js\md5.js" />
     <Content Include="Content\js\mic.js" />
+    <Content Include="Content\js\ola-onload.trinhky.js" />
+    <Content Include="Content\js\ola.js" />
+    <Content Include="Content\js\olaproduct.js" />
+    <Content Include="Content\js\onload.trinhky.js" />
+    <Content Include="Content\js\permission.js" />
     <Content Include="Content\js\registry.js" />
+    <Content Include="Content\js\signkey\idb-onload.trinhky.js" />
+    <Content Include="Content\js\signkey\idd-onload.trinhky.js" />
+    <Content Include="Content\js\signkey\iid-onload.trinhky.js" />
+    <Content Include="Content\js\signkey\lib.trinhky.js" />
+    <Content Include="Content\js\signkey\inport-onload.trinhky.js" />
+    <Content Include="Content\js\signkey\mid-onload.trinhky.js" />
     <Content Include="Content\js\user.agency.js" />
     <Content Include="Content\js\vue.min.js" />
+    <Content Include="Content\resetpass\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Content\resetpass\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="Content\resetpass\bootstrap\css\bootstrap.css" />
+    <Content Include="Content\resetpass\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Content\resetpass\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\resetpass\bootstrap\js\bootstrap.js" />
+    <Content Include="Content\resetpass\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Content\resetpass\bootstrap\js\npm.js" />
+    <Content Include="Content\resetpass\node-waves\waves.css" />
+    <Content Include="Content\resetpass\node-waves\waves.js" />
+    <Content Include="Content\resetpass\node-waves\waves.min.css" />
+    <Content Include="Content\resetpass\node-waves\waves.min.js" />
+    <Content Include="Content\resetpass\style.css" />
+    <Content Include="Content\vue.js.datepicker.min.css" />
+    <Content Include="DLL\Microsoft.Office.Interop.Excel.dll" />
     <Content Include="DLL\NLog.dll" />
+    <Content Include="DLL\Office.dll" />
     <Content Include="DLL\System.Web.Optimization.dll" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -260,6 +341,10 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
     <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="Scripts\autocomplete\jquery.auto-complete.css" />
+    <Content Include="Scripts\autocomplete\jquery.auto-complete.js" />
+    <Content Include="Scripts\autocomplete\jquery.auto-complete.min.js" />
+    <Content Include="Scripts\axios.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -301,6 +386,22 @@
     <Content Include="Content\fontawesome\scss\_stacked.scss" />
     <Content Include="Content\fontawesome\scss\_variables.scss" />
     <Content Include="NLog.config" />
+    <Content Include="files\file_template.xlsx" />
+    <Content Include="Content\resetpass\node-waves\waves.min.js.map" />
+    <Content Include="Content\resetpass\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\resetpass\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\resetpass\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\resetpass\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="files\File Import Template.xlsx" />
+    <Content Include="files\Template tool Mic.xlsx" />
+    <Content Include="files\ToKhaiOLA_Template.xls" />
+    <Content Include="files\Import MIC Tool.xlsx" />
+    <Content Include="files\ToKhaiOLA_BanSao.xls" />
+    <Content Include="files\ExportOLA\358\ToKhaiOLA_20190319_50159.xls" />
+    <Content Include="files\ExportPdfOLA\358\ToKhaiOLA_20190319_50159.pdf" />
+    <Content Include="files\Template\ToKhaiHQMEC_Receipt.xls" />
+    <None Include="files\ToKhaiOLA_Chuan.xls" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\khangnv.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -324,6 +425,7 @@
     <Content Include="Scripts\js\jquery-1.10.2.min.js" />
     <Content Include="Scripts\js\jquery-2.1.1.min.js" />
     <Content Include="Scripts\js\jquery-migrate-1.2.1.js" />
+    <Content Include="Scripts\js\jquery-ui.js" />
     <Content Include="Scripts\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\jquery.flot.min.js" />
     <Content Include="Scripts\js\jquery.flot.pie.min.js" />
@@ -355,6 +457,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\vue2-datepicker.2.6.3.index.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -419,6 +522,121 @@
     <Content Include="Views\Declaration\IDBForm.cshtml" />
     <Content Include="Views\Declaration\SelectObjecDeclared.cshtml" />
     <Content Include="Views\Dashboard\ListDashboard.cshtml" />
+    <Content Include="Views\ExportDeclaration\ListDeclaration.cshtml" />
+    <Content Include="Views\ExportDeclaration\MEC_InsertUpdate.cshtml" />
+    <Content Include="Views\ExportDeclaration\PopSearch.cshtml" />
+    <Content Include="Views\ExportDeclaration\PopSelectObject.cshtml" />
+    <Content Include="Views\ExportDeclaration\MED_GetInfo.cshtml" />
+    <Content Include="Views\ExportDeclaration\IEX_GetInfo.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDA_InsertUpdate.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDA_Info.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDA_Container.cshtml" />
+    <Content Include="Views\HYS\ListHYS.cshtml" />
+    <Content Include="Views\HYS\InsertHYS.cshtml" />
+    <Content Include="Views\HYS\ResultsHYS.cshtml" />
+    <Content Include="Views\HYS\HYE_Declaration.cshtml" />
+    <Content Include="Views\HYS\ResultsHYE.cshtml" />
+    <Content Include="Views\HYS\ViewIHY.cshtml" />
+    <Content Include="Views\HYS\SearchIHY.cshtml" />
+    <Content Include="Views\ExportDeclaration\ResultMEC.cshtml" />
+    <Content Include="Views\Declaration\MIC_Result.cshtml" />
+    <Content Include="Views\Declaration\IDA_Result.cshtml" />
+    <Content Include="Views\TransportDeclaration\OLA.cshtml" />
+    <Content Include="Views\TransportDeclaration\Product.cshtml" />
+    <Content Include="Views\TransportDeclaration\BOA.cshtml" />
+    <Content Include="Views\TransportDeclaration\BIA.cshtml" />
+    <Content Include="Views\TransportDeclaration\OLB.cshtml" />
+    <Content Include="Views\TransportDeclaration\COT11.cshtml" />
+    <Content Include="Views\TransportDeclaration\BIA11.cshtml" />
+    <Content Include="Views\TransportDeclaration\Index.cshtml" />
+    <Content Include="Views\TransportDeclaration\ITF.cshtml" />
+    <Content Include="Views\AMA\ListAMA.cshtml" />
+    <Content Include="Views\AMA\InsertUpdateAMA.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDEDeclaration.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDDDeclaration.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDCDeclaration.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDBDeclaration.cshtml" />
+    <Content Include="Views\AMA\ResultAMA.cshtml" />
+    <Content Include="Views\ExportDeclaration\ListProduct.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDADetail.cshtml" />
+    <Content Include="Views\AMA\AMBGetInfo.cshtml" />
+    <Content Include="Views\AMA\AMCGetInfo.cshtml" />
+    <Content Include="Views\AMA\IDAGetInfo.cshtml" />
+    <Content Include="Views\AMA\IDAView.cshtml" />
+    <Content Include="Views\Declaration\ViewProductIID.cshtml" />
+    <Content Include="Views\Scanner\ListScanner.cshtml" />
+    <Content Include="Views\Scanner\PopRegisScanner.cshtml" />
+    <Content Include="Views\Scanner\PopDeclaNEVS.cshtml" />
+    <Content Include="Views\Scanner\VerifyCodeInfo.cshtml" />
+    <Content Include="Views\Scanner\VerifyCodeInfo_ListDecla.cshtml" />
+    <Content Include="Views\Scanner\ListInfoPayment.cshtml" />
+    <Content Include="Views\Scanner\PopInfoPayment.cshtml" />
+    <Content Include="Views\Scanner\ListBillPayment.cshtml" />
+    <Content Include="Views\Scanner\BillPaymentDetail.cshtml" />
+    <Content Include="Views\Scanner\WeighInfo.cshtml" />
+    <Content Include="Views\Scanner\ViewFiles.cshtml" />
+    <Content Include="Views\Scanner\InsertProduct.cshtml" />
+    <Content Include="Views\Scanner\ViewDecla.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDA01Declaration.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDC_Info.cshtml" />
+    <Content Include="Views\ExportDeclaration\IEX_Info.cshtml" />
+    <Content Include="Views\ExportDeclaration\IEXDeclaration.cshtml" />
+    <Content Include="Views\ExportDeclaration\MECDeclarationView.cshtml" />
+    <Content Include="Views\ExportDeclaration\TabResultXLTK.cshtml" />
+    <Content Include="Views\TransportDeclaration\ListTransport.cshtml" />
+    <Content Include="Views\TransportDeclaration\OLA_Info.cshtml" />
+    <Content Include="Views\ExportDeclaration\EDCDetail.cshtml" />
+    <Content Include="Views\ExportDeclaration\IEX_ViewResult.cshtml" />
+    <Content Include="Views\TransportDeclaration\ListProduct.cshtml" />
+    <Content Include="Views\TransportDeclaration\OLC.cshtml" />
+    <Content Include="Views\TransportDeclaration\OLC_Info.cshtml" />
+    <Content Include="Views\TransportDeclaration\COT.cshtml" />
+    <Content Include="Views\Declaration\InfoIDA1.cshtml" />
+    <Content Include="Views\Declaration\InfoIDA2.cshtml" />
+    <Content Include="Views\TransportDeclaration\ITF_GetInfo.cshtml" />
+    <Content Include="Views\TransportDeclaration\ITF_Info.cshtml" />
+    <Content Include="Views\ElectronicVoucher\CommerceDeclare.cshtml" />
+    <Content Include="Views\ElectronicVoucher\ContainerDeclare.cshtml" />
+    <Content Include="Views\ElectronicVoucher\ContractDeclare.cshtml" />
+    <Content Include="Views\ElectronicVoucher\CO_Declare.cshtml" />
+    <Content Include="Views\ElectronicVoucher\LicenseDeclare.cshtml" />
+    <Content Include="Views\ElectronicVoucher\ListVoucherCustom.cshtml" />
+    <Content Include="Views\ElectronicVoucher\OtherDeclare.cshtml" />
+    <Content Include="Views\ElectronicVoucher\PopupBillDeclare.cshtml" />
+    <Content Include="Views\ElectronicVoucher\PopupDeclare.cshtml" />
+    <Content Include="Views\ElectronicVoucher\PopupVoucher.cshtml" />
+    <Content Include="Views\Electronic\Cargo.cshtml" />
+    <Content Include="Views\Electronic\CO.cshtml" />
+    <Content Include="Views\Electronic\Container.cshtml" />
+    <Content Include="Views\Electronic\Contract.cshtml" />
+    <Content Include="Views\Electronic\Index.cshtml" />
+    <Content Include="Views\Electronic\Invoice.cshtml" />
+    <Content Include="Views\Electronic\License.cshtml" />
+    <Content Include="Views\Electronic\Other.cshtml" />
+    <Content Include="Views\Account\InfoBusiness.cshtml" />
+    <Content Include="Views\ElectronicVoucher\PopSelectObject.cshtml" />
+    <Content Include="Views\TransportDeclaration\ResultXLTK_OLA.cshtml" />
+    <Content Include="Views\TransportDeclaration\RegisterTKOnly.cshtml" />
+    <Content Include="Views\Registry\Feedback.cshtml" />
+    <Content Include="Views\Registry\LeftComment.cshtml" />
+    <Content Include="Views\ElectronicVoucher\GetListVoucherByDecl.cshtml" />
+    <Content Include="Views\ElectronicVoucher\ListVoucherSearch.cshtml" />
+    <Content Include="Views\ElectronicVoucher\PopSearchVoucher.cshtml" />
+    <Content Include="Views\Home\ResetPassword.cshtml" />
+    <Content Include="Views\ExpImpData\ListImportExport.cshtml" />
+    <Content Include="Views\ExpImpData\ImpExpPopup.cshtml" />
+    <Content Include="Views\TransportDeclaration\PopSearch.cshtml" />
+    <Content Include="Views\TransportDeclaration\PopSelectObject.cshtml" />
+    <Content Include="Views\ExpImpData\Loading.cshtml" />
+    <Content Include="Views\ExpImpData\ExportXLS_MIC.cshtml" />
+    <Content Include="Views\Declaration\LeftDirection.cshtml" />
+    <Content Include="Views\System\ReportSystem.cshtml" />
+    <Content Include="Views\System\ReportMIC_MEC.cshtml" />
+    <Content Include="Views\System\SetupVNACCS.cshtml" />
+    <Content Include="Views\System\Signature.cshtml" />
+    <Content Include="Views\TransportDeclaration\ITF_Change.cshtml" />
+    <Content Include="Views\TransportDeclaration\ITF_Product.cshtml" />
+    <Content Include="Views\System\ReportNoValueBusiness.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

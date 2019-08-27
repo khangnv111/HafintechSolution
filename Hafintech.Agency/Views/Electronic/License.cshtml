@@ -1,0 +1,1489 @@
+﻿@{
+    ViewBag.Title = "Other";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div action="#" enctype="multipart/form-data" id="send" name="form-input-file">
+    <div class="row-fluid">
+        <div class="span12">
+            <a id="linkManagerVoucher" href="#" class="btn btn-success">Quản lý chứng từ điện tử</a>
+            <a id="detailDeclaration" href="#" class="btn btn-success">Chi tiết tờ khai</a>
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Thông tin khai báo</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="span6">
+                            <div class="form-horizontal">
+                                <div class="span12">
+                                    <label class="control-label">Số TK: </label>
+                                    <div class="controls" id="phan-luong">
+                                        <input type="text" class="span12" v-model="data.dclId" maxlength="300" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="span12">
+                                    <label class="control-label">Ngày ĐK: </label>
+                                    <div class="controls" id="phan-luong">
+                                        @*<vuejs-datepicker :format="customFormatter" v-model="data.issue" :typeable="true"></vuejs-datepicker>*@
+                                        <date-picker v-model="data.issue" lang="en" type="datetime" format="YYYY-MM-DD HH:mm:ss"></date-picker>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="span6">
+                                    <label class="control-label">MÃ LH: </label>
+                                    <div class="controls" id="phan-luong">
+                                        <input type="text" class="span12" v-on:change="changeMLH()" v-model="data.DeclarationDocument.natureOfTransaction" maxlength="10" />
+                                    </div>
+                                </div>
+                                <div class="control-group span6">
+                                    <label class="control-label">Mã HQ:</label>
+                                    <div class="controls">
+                                        <input type="text" class="span12" v-model="data.declarationOffice" maxlength="13" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-horizontal">
+                        <div class="span6">
+                            <div class="form-horizontal">
+                                <div class="span12">
+                                    <label class="control-label">Trạng thái submit:</label>
+                                    <div class="controls">
+                                        <input id="function" type="text" class="span12" v-model="data.function" disabled maxlength="300" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="span6">
+                                    <label class="control-label">Số TN: </label>
+                                    <div class="controls" id="phan-luong">
+                                        <input id="customsReference" type="text" class="span12" v-model="data.customsReference" maxlength="300" disabled />
+                                    </div>
+                                </div>
+                                <div class="control-group span6">
+                                    <label class="control-label">Ngày TN:</label>
+                                    <div class="controls">
+                                        <input id="acceptance" type="text" class="span12" v-model="data.acceptance" maxlength="13" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-horizontal">
+                                <div class="span12">
+                                    <label class="control-label">Số tham chiếu: </label>
+                                    <div class="controls" id="phan-luong">
+                                        <input id="reference" type="text" class="span12" v-model="data.reference" maxlength="300" disabled />
+                                        <button type="button" style="padding: 1px 20px" v-if="id && data.function >12 && data.function != 29" v-on:click="refreshReference()">Copy chứng từ</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>
+                        Danh sách chứng từ giấy phép
+                    </h5>
+                    <button v-if="(data.function <12 && showDelete) || !id " style="float: right; padding: 5px 30px" v-on:click="addLading()"> Thêm</button>
+                </div>
+                <div id="table-commodity" class="row" style="height: 400px; overflow-y: auto">
+                    <table class="table table-bordered" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Số giấy phép</th>
+                                <th class="text-center">Ngày giấy phép</th>
+                                <th class="text-center">Ngày hết hạn</th>
+                                <th class="text-center">Người cấp phép</th>
+                                <th class="text-center">Nơi cấp phép</th>
+                                <th class="text-center">Loại giấy phép</th>
+                                <th class="text-center">File đính kèm</th>
+                                <th class="text-center">Ghi chú</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-list-stock">
+                            <tr v-for="(item,index) in data.Licenses">
+                                <td style="text-align:center">
+                                    {{index + 1}}
+                                </td>
+                                <td style="text-align:center">
+                                    {{item.reference}}
+                                </td>
+                                <td style="text-align:center">
+                                    {{item.issue}}
+                                </td>
+                                <td style="text-align:center">
+                                    {{item.expire}}
+                                </td>
+                                <td style="text-align:center">
+                                    {{item.issuer}}
+                                </td>
+                                <td style="text-align:center">
+                                    {{item.issueLocation}}
+                                </td>
+                                <td style="text-align:center">
+                                    {{item.category}}
+                                </td>
+                                <td style="text-align:center">
+                                    {{item.AttachedFile.fileName}}
+                                </td>
+                                <td style="text-align:center">
+                                    {{item.AdditionalInformation.content}}
+                                </td>
+                                <td style="text-align:center">
+                                    <a href="javascript:;" style="color: black" v-on:click="removeLading(index)" v-if="data.function <12" v-show="!isUpdateLading && !isInsertLading && showDelete"><i class="fa fa-2x fa-remove" style="color: red"></i> Xóa</a>
+                                    <a v-if="(item.showEdit && data.function <12) ||( !id)" href="javascript:;" style="color: black" v-on:click="editLading(item)" v-show="!isUpdateLading&&!isInsertLading">
+                                        <i class="fa fa-2x fa-edit" style="color: red"></i> Sửa
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr v-show="isInsertLading">
+                                <td style="text-align:center">{{data.Licenses != null? data.Licenses.length + 1:1}}</td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.reference" maxlength="35" />
+                                </td>
+                                <td style="text-align:center">
+                                    @*<input type="text" class="span11" v-model="license.issue" />*@
+                                    <date-picker v-model="license.issue" lang="en" type="datetime" format="YYYY-MM-DD HH:mm:ss"></date-picker>
+                                </td>
+                                <td style="text-align:center">
+                                    @*<input type="text" class="span11" v-model="license.expire" />*@
+                                    <date-picker v-model="license.expire" lang="en" type="datetime" format="YYYY-MM-DD HH:mm:ss"></date-picker>
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.issuer" maxlength="255" />
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.issueLocation" maxlength="255" />
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.category" maxlength="4" />
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="file" id="fileAttach"  name="fileAttach" />
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.AdditionalInformation.content" />
+                                </td>
+
+                                <td style="text-align:center">
+                                    <button v-if="data.function <12" style="padding: 1px 20px" v-on:click="saveLading()">Thêm</button>
+                                </td>
+                            </tr>
+                            <tr v-show="isUpdateLading">
+                                <td style="text-align:center">{{data.Licenses != null? data.Licenses.length + 1:1}}</td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.reference" />
+                                </td>
+                                <td style="text-align:center">
+                                    <date-picker v-model="license.issue" lang="en" type="datetime" format="YYYY-MM-DD HH:mm:ss"></date-picker>
+                                </td>
+                                <td style="text-align:center">
+                                    <date-picker v-model="license.expire" lang="en" type="datetime" format="YYYY-MM-DD HH:mm:ss"></date-picker>
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.issuer" />
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.issueLocation" />
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.category" />
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="file" id="fileAttachUpdate"  name="fileAttach" />
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="text" class="span11" v-model="license.AdditionalInformation.content" />
+                                </td>
+                                <td style="text-align:center">
+                                    <button v-if="data.function <12" style="padding: 1px 20px" v-on:click="updateLading()">Lưu</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        Lưu ý: Tổng dung lượng không được vượt quá  2MB. Chỉ được nhập các file có đuôi sau (*TXT, *DOC. CSV. JBG. *BMP. *TIF. *XML. *DOCX. *JPEG. *GIF. *)
+                        <br />
+                        Các file đính kèm được hỗ trợ ký số trực tiếp trên phần mềm phải là File có đuôi  *PDF.. *DOCX. *XLSX
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid" style="margin-bottom: 150px">
+                <div class="span12">
+                    <button v-if="data.function <12" style="padding: 5px 30px; float: right" v-on:click="save()"  v-show="!id">Thêm</button>
+                    <button style="padding: 5px 30px; float: right" v-if="showUpdate && data.function <12 && showDelete" v-on:click="update()" v-show="id">Cập nhật</button>
+                    @*<button style="padding: 5px 30px; float: right" v-on:click="submit()" v-show="id">Submit</button>*@
+                    <button style="padding: 5px 30px; float: right" v-on:click="submitUSB()" v-if="showSubmit && id && data.function <=8">Submit USB</button>
+                    <button style="padding: 5px 30px; float: right" v-on:click="watchUSB()" v-if="showSubmit && id && !(data.function!=12)">Xem thông tin trả về từ Hải quan</button>
+                    <button style="padding: 5px 30px; float: right" v-on:click="signVoucher()" v-if="id && data.status < 21 && data.status !=2 && showTK">Trình ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-show="showPop || showPopObject" style="width: 100%; height: 100%; left: 0; top: 0; position: fixed; z-index: 12; background-color: black; opacity: 0.6; display: none"></div>
+    <div v-show="showPopObject" style="top: 50%; left: 50%; position: fixed; z-index: 15; transform: translate(-50%, -50%);width: 85%; display: block">
+        @Html.Action("PopSelectObject", "ElectronicVoucher")
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+         $("#fileAttach").change(function (event) {
+            send.ReadNameFile(event)
+         });
+        $("#fileAttachUpdate").change(function (event) {
+            send.ReadNameFile(event)
+        });
+        setTimeout(function () {
+            //type = 2
+            var urlParams = new URLSearchParams(window.location.search);
+            idDec = send.data.dclId; //urlParams.get('idDec');
+            dclNo = send.data.dclId;//urlParams.get('dclNo');
+            type = urlParams.get('type');
+            if (type == "" || type == undefined || type == null || type == "null") type = 2;
+            IsHight = urlParams.get('IsHight');
+            if (IsHight == "" || IsHight == undefined || IsHight == null) IsHight = 4;
+            var linkVoucher = Config.Url_Root + "ElectronicVoucher/ListVoucherCustom?idDec=" + idDec + "&dclNo=" + dclNo + "&type=" + type + "&IsHight=" + IsHight;
+            $("#linkManagerVoucher").attr("href", linkVoucher);
+            if (type == 5) {
+                var urlLink = Config.Url_Root + "ExportDeclaration/EDA_InsertUpdate?decId=" + idDec + "&ishight=" + IsHight + "&tab=1";
+                $("#detailDeclaration").attr("href", urlLink);
+            }
+            else if (type == 2) {
+                var urlLink = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + idDec + "&ishight=" + IsHight + "&tab=1";
+                $("#detailDeclaration").attr("href", urlLink);
+            }
+        }, 300)
+      
+    })
+</script>
+<script>
+    var dclId = "@ViewBag.dclNo";
+    var send = new Vue({
+        el: '#send',
+        //components: {
+        //    vuejsDatepicker
+        //},
+        data: {
+            data: {
+                Licenses: [],
+                DeclarationDocument: {}
+            },
+            lstFiles: [],
+            license: {
+                issuer:"",
+                reference:"",
+                issue: "",
+                issueLocation: "",
+                category: "",
+                expire: "", 
+                AdditionalInformation: {
+                    content:"",
+                },
+                AttachedFile: {
+                    fileName: "",
+                    content: "",
+                },
+                file: null,
+            },
+            showPop: false, //mặc định k show pop
+            isInsertLading: false, //mặc định đang có dòng thêm mới vận đơn,
+            isUpdateLading: false, //mặc định đang có dòng thêm mới vận đơn,
+            id: null,
+            isInsertContainer: false,
+            isUpdateContainer: false,
+            fileData: {},
+            showSubmit: false,
+            showTK: false,
+            showRadio: true,
+            showDelete: false,
+            showUpdate: false,
+
+            ListCurrency: [], //Mã tiền tệ của tiền thuế 
+            //popup
+            showPop: false,
+            typeSearch: 0,
+            lstDataPop: [],
+            showLoading: true,
+            txtCodePop: "",
+            txtNamePop: "",
+
+            //Popup chọn đối tượng
+            loadingObj: true,
+            showPopObject: false,
+            lstDataObj: [],
+            tabObj: 1,
+            textSearchObj: "",
+
+            ///Hàng hóa
+            totalProduct: 1,
+            pageProduct: 1,
+            textPage: "1/50",
+            listProducts: [], //danh sách hàng hóa
+            //chi tiết hàng hóa
+            Product: {
+                lsProREInfo: [], //Ds thuế và thu khác
+            },
+
+            //Chữ ký số
+            statusTK: 0,
+            jobCode: "AMA",
+        },
+        methods: {
+            changeMLH: function () {
+                send.showUpdate = true;
+            },
+            init: async function (type) {
+                var self = this;
+                var url = new URL(window.location.href);
+                this.id = url.searchParams.get("id");
+                if (!this.id) {
+                    try {
+                        const response = await axios.get(Config.API_Login + "Evoucher/getSample?type=" + type);
+                        var data = response.data;
+                        send.data = data.Data;
+
+                        if (dclId == undefined || dclId == "") {
+                            dclId = window.localStorage.getItem("dclNo");
+                            if (dclId == undefined || dclId == "") {
+                                dclId = "";
+                            }
+                        }
+
+                        send.data.dclId = dclId;
+                        if (send.data.Licenses[0].AdditionalInformation == null) {
+                            send.data.Licenses[0].AdditionalInformation = {
+                                content: ""
+                            }
+                        }
+
+                        this.data.Licenses = []
+                        this.data.Licenses = []
+                        self.$forceUpdate();
+                    } catch (error) {
+                        console.log("getSample: Hệ thống bận, vui lòng quay lại sau!");
+                        console.log(error);
+                    }
+                }
+                else {
+                    try {
+                        const response = await axios.get(Config.API_Login + "Evoucher/view?voucherId=" + this.id);
+                        var data = response.data;
+                        if (data.ResponseCode >= 0) {
+                            send.data = data.Data;
+                            if (send.data.Licenses == null) send.data.Licenses = [];
+                            if (send.data.ContractDocuments == null) send.data.ContractDocuments = [];
+                            if (send.data.CommercialInvoices == null) send.data.CommercialInvoices = [];
+                            if (send.data.CertificateOfOrigins == null) send.data.CertificateOfOrigins = [];
+                            if (send.data.BillOfLadings == null) send.data.BillOfLadings = [];
+                            if (send.data.AdditionalDocuments == null) send.data.AdditionalDocuments = [];
+
+                            if (send.data.AdditionalDocuments[0].AdditionalDocument.content == null) {
+                                send.data.AdditionalDocuments[0].AdditionalDocument = {
+                                    content: ""
+                                }
+                            }
+
+                            var currentAccountId = $("#accIdLogin").val();
+                            for (var i = 0; i < send.data.Licenses.length; i++) {
+                                send.data.Licenses[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                            }
+                            for (var i = 0; i < send.data.ContractDocuments.length; i++) {
+                                send.data.ContractDocuments[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                            }
+                            for (var i = 0; i < send.data.CommercialInvoices.length; i++) {
+                                send.data.CommercialInvoices[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                            }
+                            for (var i = 0; i < send.data.CertificateOfOrigins.length; i++) {
+                                send.data.CertificateOfOrigins[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                            }
+                            for (var i = 0; i < send.data.BillOfLadings.length; i++) {
+                                send.data.BillOfLadings[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                            }
+                            for (var i = 0; i < send.data.AdditionalDocuments.length; i++) {
+                                send.data.AdditionalDocuments[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                            }
+                            self.showDelete = false;
+                            if (data.Data.createdAccId == currentAccountId) {
+                                self.showDelete = true;
+                            }
+                            self.showSubmit = false;
+                            switch (data.Data.initType) {
+                                case 1: self.showSubmit = true;
+                                    break;
+                                case 2: if (utils.getCookie("isAgency") == 1 && (utils.getCookie("permitGroup") == 3 || utils.getCookie("permitGroup") == "")) {
+                                    self.showSubmit = true;
+                                }
+                                    break;
+                                case 3:
+                                    if (utils.getCookie("permitGroup") == 2) self.showTK = true;        //=> GroupPermit = 2 : Hiển thị nút trình ký(261)
+                                    if (utils.getCookie("permitGroup") == 3) self.showSubmit = true;    //=> GroupPermit = 3 : Hiển thị nút submit(262)
+                                    if (utils.getCookie("Type") == 2) self.showSubmit = true;           //=> Nếu  Account.type = 2 => Hiển thị nút submit(260)"  
+                                    break;
+                                case 4:
+                                    if ((utils.getCookie("isAgency") == 2) && (utils.getCookie("permitGroup") == 1 || utils.getCookie("permitGroup") == 3 || utils.getCookie("permitGroup") == 4)) self.showSubmit = true;
+                                    //=> Business.isAgency = 2(đại lý) và Account.groupPermit = 1 hoặc 3 hoặc 4 : Hiển thị submit
+                                    //=> Còn lại không hiển thị cả submit và trình ký"
+                                    break;
+                                case 5:
+                                    if (utils.getCookie("permitGroup") == 2) self.showTK = true;     //=> GroupPermit = 2 : Hiển thị nút trình ký(?)
+                                    if (utils.getCookie("permitGroup") == 3) self.showSubmit = true; //=> GroupPermit = 3 : Hiển thị nút submit(?)
+                                    if (utils.getCookie("Type") == 2) self.showSubmit = true;        //=> Nếu Account.type = 2 => Hiển thị nút submit(?)"
+                                    break;
+                                case 6:
+                                    if ((utils.getCookie("isAgency") == 2) && (utils.getCookie("permitGroup") == 1 || utils.getCookie("permitGroup") == 3 || utils.getCookie("permitGroup") == 4 || utils.getCookie("permitGroup") == "")) self.showSubmit = true;
+                                    //    => Business.isAgency = 2(đại lý) và Account.groupPermit = 1 hoặc 3 hoặc 4 : Hiển thị submit
+                                    //    => Còn lại không hiển thị cả submit và trình ký 
+                                    break;
+                                case 7:
+                                    if (utils.getCookie("isAgency") == 2) {                                     //=> Business.isAgency = 2(đại lý) : 
+                                        if (utils.getCookie("Type") == 2) { self.showSubmit = true; }               //=> Account.type = 2: Hiển thị submit
+                                        if (utils.getCookie("Type") == 1) {                                         //=> Account.type = 1, 
+                                            if (utils.getCookie("permitGroup") != 2) { self.showSubmit = true; }         //=> groupPermit khác 2 : Hiển thị submit
+                                            if (utils.getCookie("permitGroup") == 2) { self.showTK = true; }              //=> groupPermit = 2(TK tạo) Hiển thị trình ký
+                                        }
+                                    }
+                                    if (utils.getCookie("isAgency") == 1) {                        // => Business.isAgency = 1(doanh nghiệp):  
+                                        self.showTK = false;                                              //=> Chỉ xem, không hiển thị Trình ký hay submit"  
+                                        self.showSubmit = false;
+                                    }
+                                    break;
+                                case 8:
+                                    if (utils.getCookie("isAgency") == 2) self.showTK = true;    //=> Business.isAgency = 2(đại lý) : Luôn hiển thị nút trình ký(?)
+                                    if (utils.getCookie("isAgency") == 1) {                      //=> Business.isAgency = 1(doanh nghiệp):  
+                                        if ((utils.getCookie("Type") == 2) || (utils.getCookie("permitGroup") == 1 || utils.getCookie("permitGroup") == 3 || utils.getCookie("permitGroup") == 4)) self.showSubmit = true;//      Check tiếp Account.type = 2 hoặc Account.permitGroup = 1 || 3 || 4: Hiển thị submit
+                                    }                                                            //        (người tạo của doanh nghiệp không được xem)" 
+
+                                    break;
+                                case 9:
+                                    if (utils.getCookie("permitGroup") == 2) self.showTK = true;        //        => GroupPermit = 2 : Hiển thị nút trình ký(261)
+                                    if (utils.getCookie("permitGroup") == 3) self.showSubmit = true;    //=> GroupPermit = 3 : Hiển thị nút submit(262)
+                                    if (utils.getCookie("Type") == 2) self.showSubmit = true;           //=> Nếu  Account.type = 2 => Hiển thị nút submit(260)" 
+                                    break;
+                            }
+                        }
+                            
+                        self.$forceUpdate();
+                    } catch (error) {
+                        console.log("getSample: Hệ thống bận, vui lòng quay lại sau!");
+                        console.log(error);
+                    }
+                }
+            },
+            PopInsertContainer: function () {
+                this.showPop = true;
+                this.isInsertContainer = true
+                console.log(this.data)
+            },
+            ResetLading: function () {
+                this.license = {
+                    issuer: "",
+                    reference: "",
+                    issue: "",
+                    issueLocation: "",
+                    category: "",
+                    expire: "",
+                    AdditionalInformation: {
+                        content: "",
+                    },
+                    AttachedFile: {
+                        fileName: "",
+                        content: "",
+                    },
+                    file: null,
+                };
+            },
+            ReadNameFile: function (ev) { 
+                var file = ev.target.files; 
+                for (var i = 0; i < file.length; i++) {
+                    this.license.file = file[i];
+                    this.lstFiles.push(file[i]);
+                }
+            }, 
+            saveLading: function () {
+                var self = this;
+
+                if (!self.license.reference || !self.license.issue || !self.license.issueLocation || !self.license.expire || !self.license.category) {
+                    bootbox.alert("Bạn cần điền đầy đủ thông tin giấy phép");
+                    return;
+                }
+
+                input = document.getElementById('fileAttach');
+
+                var that = this;
+                if (that.license.file) {
+                    var file = that.license.file;
+
+                    self.license.AttachedFile.content = "";
+                    self.license.AttachedFile.fileName = file.name;
+                    self.license.issue = self.customFormatter(self.license.issue);
+                    self.license.expire = self.customFormatter(self.license.expire);
+
+                    self.license.showEdit = true;
+                    self.isUpdateLading = false;                    
+
+                    self.data.Licenses.push(self.license);
+
+                    self.isInsertLading = false;
+                    send.showUpdate = true;
+                    that.ResetLading();
+                }
+                else {
+                    bootbox.alert("Bạn chưa chọn file đính kèm");
+                    return;
+                }
+                 
+                
+            },
+            addLading: function () {
+                $("#fileAttach").parent().find(".filename").html("");
+                this.isInsertLading = true;
+                this.isUpdateLading = false;
+                this.showDelete = true;
+                this.ResetLading();
+            },
+            editLading: function (item) { 
+                this.isInsertLading = false;
+                this.isUpdateLading = true; 
+
+                $("#fileAttachUpdate").parent().find(".filename").html(item.AttachedFile.fileName);
+                 
+                this.license = item;
+                this.license.file = item.file;
+                this.$forceUpdate();
+            },
+            updateLading: function (num) {  
+                var that = this;
+                that.license.issue = that.customFormatter(that.license.issue);
+                that.license.expire = that.customFormatter(that.license.expire); 
+                if (this.license.file != null && this.license.file != undefined) {
+                    this.license.AttachedFile.fileName = this.license.file.name;
+                }
+                 
+                this.$forceUpdate();
+                //this.BillOfLadings[num] = this.Lading;
+                this.ResetLading();
+                this.isUpdateLading = false; 
+                send.showUpdate = true;
+            },
+            removeLading: async function (num) {
+                var _this = this;
+                bootbox.confirm("Bạn có chắc xóa bản ghi này!", function (res) {
+                    if (res) {
+                        var voucherId = _this.data.Licenses[num].voucherId;
+                        var itemId = _this.data.Licenses[num].id;
+                        if (itemId > 0 && voucherId > 0) {
+
+                            var token = $('#hdfToken').val();
+                            utils.Loading();
+
+                            $.ajax({
+                                url: Config.API_Login + "Evoucher/DeleteItem?VoucherID=" + voucherId + "&ItemId=" + itemId,
+                                type: 'GET',
+                                data: {},
+                                headers: {
+                                    "Authorization": "Bearer " + token
+                                },
+                                cache: false,
+                                contentType: "application/json; charset=utf-8",
+                                processData: false,
+                                success: function (data) {
+                                    if (data) {
+                                        if (data.ResponseCode > 0) {
+                                            _this.data.Licenses.splice(num, 1);
+                                            _this.$forceUpdate();
+                                            //utils.Message("Thành công!");
+                                            bootbox.alert("Thành công!");
+
+                                        } else {
+                                            bootbox.alert(data.Description);
+                                        }
+                                    }
+                                    else {
+                                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                    }
+                                    utils.unLoading();
+                                },
+                                error: function (data) {
+                                    utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                                    utils.unLoading();
+                                }
+                            });
+                        }
+                        else {
+                            _this.data.Licenses.splice(num, 1);
+                            //utils.Message("bạn chưa chọn chứng từ để xóa!");
+                        }
+                    }
+                });
+            },
+            deleteRecord: function (id) {
+                var self = this;
+                var token = $('#hdfToken').val();
+                accounts.ShowLoading();
+                console.log("VoucherId=" + id);
+
+                var item = { "VoucherID": id };
+
+                if (id > 0) {
+                    $.ajax({
+                        url: Config.API_Voucher + "DeleteVoucher?VoucherID=" + id,
+                        type: 'GET',
+                        data: {},
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        },
+                        cache: false,
+                        contentType: "application/json; charset=utf-8",
+                        processData: false,
+                        success: function (data) {
+                            if (data) {
+                                if (data.ResponseCode > 0) {
+                                    //accounts.Message("Thành công!");
+                                    bootbox.alert("Thành công!");
+                                    self.data = data.Data;
+                                } else {
+                                    bootbox.alert(data.Description);
+                                }
+                            }
+                            else {
+                                accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                            }
+                            accounts.Unloading();
+                        },
+                        error: function (data) {
+                            accounts.Message("Hệ thống bận, vui lòng quay lại sau!");
+                            accounts.Unloading();
+                        }
+                    });
+                }
+                else {
+                    accounts.Message("bạn chưa chọn chứng từ để xóa!");
+                }
+            },
+            removeContainer: function (num) {
+                this.TransportEquipments.splice(num, 1);
+                console.log("TransportEquipments: ", this.TransportEquipments);
+            },
+            save: function () {
+                var self = this;
+                var token = $('#hdfToken').val();
+                utils.Loading();
+                if (!this.data.DeclarationDocument || !this.data.DeclarationDocument.reference) {
+                    this.data.DeclarationDocument.reference = this.data.dclId
+                    this.data.DeclarationDocument.issue = this.data.issue
+                    this.data.DeclarationDocument.declarationOffice = this.data.declarationOffice
+                }
+                if (utils.getCookie("isAgency") == 1 && utils.getCookie("Type") == 2) {
+                    this.data.initType = 2;
+                    this.data.accountId = $("#accIdLogin").val();
+                    this.data.createdAccId = $("#accIdLogin").val();
+                    this.data.agencyId = $("#accIdLogin").val();
+                    this.data.businessId = $("#accIdLogin").val();
+                    this.data.sigAccId = $("#accIdLogin").val();
+                }
+                else if (utils.getCookie("isAgency") == 1 && utils.getCookie("Type") == 1 && (utils.getCookie("permitGroup") == 2 || utils.getCookie("permitGroup") == 3)) {
+                    this.data.initType = 3;
+                    this.data.accountId = utils.getCookie("parentId");
+                    this.data.createdAccId = $("#accIdLogin").val();
+                    this.data.agencyId = utils.getCookie("parentId");
+                    this.data.businessId = utils.getCookie("parentId");
+                    this.data.sigAccId = utils.getCookie("parentId");
+                }
+                else if (utils.getCookie("isAgency") == 2 && this.tabObj == 2 && this.signMethodSelect == 21) {
+                    this.data.initType = 8;
+                    this.data.accountId = this.data.businessId;
+                    this.data.createdAccId = $("#accIdLogin").val();
+                    this.data.agencyId = utils.getCookie("accountIdBuss");//$("#accIdLogin").val();
+                    this.data.sigAccId = this.data.businessId;
+                }
+                else if (utils.getCookie("isAgency") == 2 && utils.getCookie("Type") == 1 && utils.getCookie("permitGroup") == 2 && this.signMethodSelect == 3) {
+                    this.data.initType = 7;
+                    this.data.accountId = this.data.businessId;
+                    this.data.createdAccId = $("#accIdLogin").val();
+                    this.data.agencyId = utils.getCookie("accountIdBuss");
+                    this.data.sigAccId = utils.getCookie("accountIdBuss");
+                }
+                else if (utils.getCookie("isAgency") == 2 && utils.getCookie("Type") == 1 && (utils.getCookie("permitGroup") == 2 || utils.getCookie("permitGroup") == 3)) {
+                    //k cần truyền businessId
+                    this.data.initType = 5;
+                    if (!this.data.accountId) this.data.accountId = utils.getCookie("accountIdBuss");
+                    this.data.createdAccId = $("#accIdLogin").val();
+                    this.data.agencyId = utils.getCookie("parentId");
+                    this.data.sigAccId = utils.getCookie("parentId");
+                }
+                else if (utils.getCookie("isAgency") == 2 && utils.getCookie("Type") == 2 && this.signMethodSelect == 3) {
+                    this.data.initType = 6;
+                    this.data.accountId = this.data.businessId;
+                    this.data.createdAccId = $("#accIdLogin").val();
+                    this.data.agencyId = $("#accIdLogin").val();
+                    this.data.sigAccId = this.data.businessId;
+                }
+                else if (utils.getCookie("isAgency") == 2 && utils.getCookie("Type") == 2) {
+                    //k cần truyền businessId
+                    this.data.initType = 4;
+                    if (!this.data.accountId) this.data.accountId = utils.getCookie("accountIdBuss");
+                    this.data.createdAccId = $("#accIdLogin").val();
+                    this.data.agencyId = $("#accIdLogin").val();
+                    this.data.sigAccId = $("#accIdLogin").val();
+                }
+                else {
+                    bootbox.alert("Tài khoản của bạn không có quyền tạo");
+                    utils.unLoading();
+                    return;
+                }
+                 
+                var totalSize = 0;
+                self.lstFiles = [];
+                for (var i = 0; i < this.data.Licenses.length; i++) {
+                    self.lstFiles.push(self.data.Licenses[i].file);
+                }
+
+
+                for (var i = 0; i < this.lstFiles.length; i++) {
+                    var size = parseFloat(this.lstFiles[i].size / 1024).toFixed(2);
+                    totalSize = +totalSize + +size;
+                }
+                if (totalSize <= 0 || totalSize > 2000) {
+                    bootbox.alert("Tổng dung lượng file phải > 0 và không được quá 2 MB");
+                    utils.unLoading();
+                    return;
+                }
+                 
+                var formData = new FormData();
+                for (var i = 0; i < this.lstFiles.length; i++) {
+                    formData.append(this.lstFiles[i].name, this.lstFiles[i]);
+                }
+                var dataSend = this.data;
+                if (!dataSend.DeclarationDocument.natureOfTransaction) {
+                    bootbox.alert("Bạn chưa nhập Mã Loại Hình");
+                    utils.unLoading();
+                    return;
+                }
+                //var dataTest = { "aa": "John", "bb": "30" }
+                formData.append("jsonData", JSON.stringify(dataSend));  //formData.append(name, value);
+
+                this.lstFiles = [];
+
+
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/create",
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                //utils.Message("Thành công!");
+                                bootbox.alert("Thành công!", () => {
+                                    var urlParams = new URLSearchParams(window.location.search);
+                                    idDec = urlParams.get('idDec');
+                                    dclNo = urlParams.get('dclNo');
+                                    type = urlParams.get('type');
+                                    IsHight = urlParams.get('IsHight'); 
+                                    window.location.href = Config.Url_Root + "Electronic/license?id=" + data.Data.voucherId + "&idDec=" + idDec + "&dclNo=" + dclNo + "&type=" + type + "&IsHight=" + IsHight; 
+                                });
+                                self.data = data.Data;
+                            } else {
+                                bootbox.alert(data.Description);
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                        utils.unLoading();
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            update: function () {
+                send.showUpdate = false;
+                var self = this;
+                var token = $('#hdfToken').val();
+
+                switch (send.data.issuer) {
+                    case "308": if (send.data.Licenses == null || send.data.Licenses == [] || send.data.Licenses.length == 0) {
+                        bootbox.alert("bạn chưa có file đính kèm.");
+                        return;
+                    }
+                        break;
+                    case "309": if (send.data.ContractDocuments == null || send.data.ContractDocuments == [] || send.data.ContractDocuments.length == 0) {
+                        bootbox.alert("bạn chưa có file đính kèm.");
+                        return;
+                    }
+                        break;
+                    case "310": if (send.data.CommercialInvoices == null || send.data.CommercialInvoices == [] || send.data.CommercialInvoices.length == 0) {
+                        bootbox.alert("bạn chưa có file đính kèm.");
+                        return;
+                    }
+                        break;
+                    case "311": if (send.data.CertificateOfOrigins == null || send.data.CertificateOfOrigins == [] || send.data.CertificateOfOrigins.length == 0) {
+                        bootbox.alert("bạn chưa có file đính kèm.");
+                        return;
+                    }
+                        break;
+                    case "312": if (send.data.BillOfLadings == null || send.data.BillOfLadings == [] || send.data.BillOfLadings.length == 0) {
+                        bootbox.alert("bạn chưa có file đính kèm.");
+                        return;
+                    }
+                        break;
+                    case "314": if (send.data.AdditionalDocuments == null || send.data.AdditionalDocuments == [] || send.data.AdditionalDocuments.length == 0) {
+                        bootbox.alert("bạn chưa có file đính kèm.");
+                        return;
+                    }
+                        break;
+                    default: return;
+                        break;
+                }
+
+                utils.Loading();
+                this.data.issue = this.customFormatter(this.data.issue);
+                if (this.data.DeclarationDocument) {
+                    this.data.DeclarationDocument.reference = this.data.dclId
+                    this.data.DeclarationDocument.issue = this.data.issue
+                    this.data.DeclarationDocument.declarationOffice = this.data.declarationOffice
+                }
+
+
+                var totalSize = 0;
+                self.lstFiles = [];
+                for (var i = 0; i < this.data.Licenses.length; i++) {
+                    if (self.data.Licenses[i].file != null && self.data.Licenses[i].file != undefined) {
+                        self.lstFiles.push(self.data.Licenses[i].file);
+                    }
+                    else {
+                        var fileNull = new File([""], self.data.Licenses[i].AttachedFile.fileName);
+                        self.lstFiles.push(fileNull);
+                    }
+                }
+
+
+                for (var i = 0; i < this.lstFiles.length; i++) {
+                    var size = parseFloat(this.lstFiles[i].size / 1024).toFixed(2);
+                    totalSize = +totalSize + +size;
+                }
+                if (totalSize > 2000) {
+                    bootbox.alert("Tổng dung lượng file không được quá 2 MB");
+                    utils.unLoading();
+                    return;
+                }
+
+                var formData = new FormData();
+                for (var i = 0; i < this.lstFiles.length; i++) {
+                    if (this.lstFiles[i] != null) {
+                        formData.append(this.lstFiles[i].name, this.lstFiles[i]);
+                    }
+
+                }
+                var dataSend = this.data;
+
+                if (!dataSend.DeclarationDocument.natureOfTransaction) {
+                    bootbox.alert("Bạn chưa nhập Mã Loại Hình");
+                    utils.unLoading();
+                    return;
+                }
+
+                //var dataTest = { "aa": "John", "bb": "30" }
+                formData.append("jsonData", JSON.stringify(dataSend));  //formData.append(name, value);
+
+                this.lstFiles = [];
+
+
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/update",
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                bootbox.alert("Thành công!");
+                                self.data = data.Data;
+                                if (send.data.Licenses == null) send.data.Licenses = [];
+                                if (send.data.ContractDocuments == null) send.data.ContractDocuments = [];
+                                if (send.data.CommercialInvoices == null) send.data.CommercialInvoices = [];
+                                if (send.data.CertificateOfOrigins == null) send.data.CertificateOfOrigins = [];
+                                if (send.data.BillOfLadings == null) send.data.BillOfLadings = [];
+                                if (send.data.AdditionalDocuments == null) send.data.AdditionalDocuments = [];
+
+                                if (send.data.AdditionalDocuments[0].AdditionalDocument.content == null) {
+                                    send.data.AdditionalDocuments[0].AdditionalDocument = {
+                                        content: ""
+                                    }
+                                }
+
+                                var currentAccountId = $("#accIdLogin").val();
+                                for (var i = 0; i < send.data.Licenses.length; i++) {
+                                    send.data.Licenses[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                                }
+                                for (var i = 0; i < send.data.ContractDocuments.length; i++) {
+                                    send.data.ContractDocuments[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                                }
+                                for (var i = 0; i < send.data.CommercialInvoices.length; i++) {
+                                    send.data.CommercialInvoices[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                                }
+                                for (var i = 0; i < send.data.CertificateOfOrigins.length; i++) {
+                                    send.data.CertificateOfOrigins[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                                }
+                                for (var i = 0; i < send.data.BillOfLadings.length; i++) {
+                                    send.data.BillOfLadings[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                                }
+                                for (var i = 0; i < send.data.AdditionalDocuments.length; i++) {
+                                    send.data.AdditionalDocuments[i].showEdit = send.checkShowEdit(currentAccountId, send.data.createdAccId, utils.getCookie("permitGroup"));
+                                }
+                            }
+                            else {
+                                bootbox.alert(data.Description);
+                            }
+                        }
+
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                        utils.unLoading();
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            submit: function () {
+                var self = this;
+                var token = $('#hdfToken').val();
+                utils.Loading();
+                this.data.issue = this.customFormatter(this.data.issue);
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/submit",
+                    type: 'POST',
+                    data: JSON.stringify(this.data),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                bootbox.alert("Thành công!");
+                                self.data = data.Data;
+                            }
+                            else {
+                                bootbox.alert(data.Description);
+                            }
+                        }
+
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                        utils.unLoading();
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            customFormatter(date) {
+                return moment(date).format('YYYY-MM-DD HH:mm:ss');
+            },
+            watch: function () {
+                var self = this;
+                var token = $('#hdfToken').val();
+                utils.Loading();
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/submit",
+                    type: 'POST',
+                    data: JSON.stringify(this.data),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                if (data.Data.AdditionalInformation && data.Data.AdditionalInformation.content) {
+                                    utils.Message(data.Data.AdditionalInformation.content);
+                                }
+                                else
+                                    utils.Message("Chưa có thông tin");
+                                self.data = data.Data;
+                            }
+                        }
+
+                        else {
+                            utils.Message("Chưa có thông tin");
+                        }
+                        utils.unLoading();
+                    },
+                    error: function (data) {
+                        utils.Message("Chưa có thông tin");
+                        utils.unLoading();
+                    }
+                });
+            },
+            watchUSB: function () {
+                this.trinhky = new Trinhky(this.watchUSB_Callback);
+                var self = this;
+                var token = $('#hdfToken').val();
+                //var data = this.data;
+                if ($("#downSignkey").val() == 1 && utils.getCookie("signMethod") == 0) {
+                    bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+                        if (res) {
+                            downTK();
+                        }
+                    });
+                    return;
+                }
+
+                this.statusTK = status;
+                var data = {
+                    voucherId: this.id,
+                    function: 13
+                }
+                utils.Loading();
+
+                var confirmOfDcl = "";
+                if (status === 503 || status === 505) {
+                    confirmOfDcl = this.confirmOfDcl ? 1 : 0;
+                }
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/GetDataToSign",//"Evoucher/GetEdiToSign",
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode >= 0) {
+                                var ediStr = data.Data.replace('"', '');
+                                self.messTK = ediStr;
+                                self.trinhky.sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+                            }
+                            else {
+                                utils.Message(JSON.stringify(data.Data));
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            watchUSB_Callback: function (edi, signData, keyData) {
+                var signedData = {
+                    "data": edi,
+                    "signature": signData,
+                    "certInfo": keyData,
+                    "isSendFile": false,
+                    "isSign": true,
+                    "voucherId": this.data.voucherId,
+                    "dclNo": this.data.dclNo,
+                    "status": parseInt(this.statusTK),
+                    "function": "13"
+                }
+                utils.Loading();
+                var token = $('#hdfToken').val();
+                var self = this;
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/SendSignedData",
+                    type: 'POST',
+                    data: JSON.stringify(signedData),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                self.data = data.Data;
+                                self.$forceUpdate();
+                                bootbox.alert(data.Data.AdditionalInformation.content, function () {
+                                    self.data = data.Data;
+                                    self.$forceUpdate();
+                                    window.location.reload();
+                                });
+                            }
+                            else if (data.ResponseCode == -99) {
+                                bootbox.alert(data.Data.message);
+                            }
+                            else if (data.ResponseCode == -100001 || data.ResponseCode == -1) {
+                                bootbox.alert(data.Description);
+                            }
+                            else {
+                                var mess = JSON.parse(data.Data.message);
+                                var textMess = "ErrorCode: " + mess.error[0].ErrorCode + "<br>Description: " + mess.error[0].Description + "<br>Disposition: " + mess.error[0].Disposition;
+                                bootbox.alert(textMess, function () {
+                                    //Err.showError(iex.jobCode, mess.error[0].Field, 1);
+                                });
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            submitUSB: function (status) {
+
+                var self = this;
+                var token = $('#hdfToken').val();
+                //var data = this.data;
+                if ($("#downSignkey").val() == 1 && utils.getCookie("signMethod") == 0) {
+                    bootbox.confirm("Bạn chưa có Chữ ký số hoặc Chữ số ký chưa cập nhật. <br> Mời bạn tải Chữ ký số", function (res) {
+                        if (res) {
+                            downTK();
+                        }
+                    });
+                    return;
+                }
+
+                this.statusTK = status;
+                var data = {
+                    voucherId: this.id,
+                    "function": "8"
+                }
+                utils.Loading();
+
+                var confirmOfDcl = "";
+                if (status === 503 || status === 505) {
+                    confirmOfDcl = this.confirmOfDcl ? 1 : 0;
+                }
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/GetDataToSign",//"Evoucher/GetEdiToSign",
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode >= 0) {
+                                var ediStr = data.Data.replace('"', '');
+                                self.messTK = ediStr;
+                                self.trinhky.sendWsJs(CMD.SIGN_TXT, FORMAT.BINARY, [ediStr]);
+                            }
+                            else {
+                                utils.Message(JSON.stringify(data.Data));
+                            }
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            signedDataCallback: function (edi, signData, keyData) {
+                var signedData = {
+                    "data": edi,
+                    "signature": signData,
+                    "certInfo": keyData,
+                    "isSendFile": false,
+                    "isSign": true,
+                    "voucherId": this.data.voucherId,
+                    "dclNo": this.data.dclNo,
+                    "status": parseInt(this.statusTK),
+                    "function": "8"
+                }
+                utils.Loading();
+                var token = $('#hdfToken').val();
+                var self = this;
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/SendSignedData",
+                    type: 'POST',
+                    data: JSON.stringify(signedData),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        if (data) {
+                            if (data.ResponseCode > 0) {
+                                bootbox.alert(data.Data.AdditionalInformation.content, function () {
+                                    self.data = data.Data;
+                                    window.location.reload();
+                                });
+                            }
+                            else if (data.ResponseCode == -99) {
+                                bootbox.alert(data.Data.message);
+                            }
+                            else if (data.ResponseCode == -100001) {
+                                bootbox.alert(data.Description);
+                            }
+                            else if (data.Data == null || data.Data == undefined) {
+                                bootbox.alert(data.Description);
+                            }
+                            else {
+                                bootbox.alert(data.Description);
+                            }
+                            //else {
+                            //    var mess = JSON.parse(data.Data.message);
+                            //    var textMess = "ErrorCode: " + mess.error[0].ErrorCode + "<br>Description: " + mess.error[0].Description + "<br>Disposition: " + mess.error[0].Disposition;
+                            //    bootbox.alert(textMess, function () {
+                            //        //Err.showError(iex.jobCode, mess.error[0].Field, 1);
+                            //    });
+                            //}
+                        }
+                        else {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+
+            signVoucher: function () {
+
+                if (utils.getCookie("Type") == 1 && utils.getCookie("permitGroup") == 3) {
+                    bootbox.alert(" Doanh nghiệp chưa cho phép đại lý trình ký!");
+                    return;
+                }
+
+                var self = this;
+                var token = $('#hdfToken').val();
+                utils.Loading();
+                $.ajax({
+                    url: Config.API_Login + "Evoucher/getSignatureVoucher",
+                    type: 'POST',
+                    data: JSON.stringify(this.data),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    cache: false,
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    success: function (data) {
+                        utils.unLoading();
+                        debugger;
+                        if (data) {
+                            if (data.ResponseCode >= 0) {
+                                 
+                                console.log(data.Data);
+                                self.data = data.Data;
+                                bootbox.alert("Thành công!", () => {
+                                    window.location.reload();
+                                });
+                            }
+                            else {
+                                //bootbox.alert(JSON.stringify(data.Data.message));
+                                bootbox.alert(JSON.stringify(data.Data.AdditionalInformation.content));
+                            }
+                        }
+                        else {
+                            bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        }
+                    },
+                    error: function (data) {
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                        utils.unLoading();
+                    }
+                });
+            },
+            refreshReference: async function () {
+                utils.Loading();
+                var id = this.id;
+                var token = $('#hdfToken').val();
+                if (id > 0) {
+                    $.ajax({
+                        url: Config.API_Login + "Evoucher/CloneVoucher?VoucherID=" + id,
+                        type: 'POST',
+                        data: {},
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        },
+                        cache: false,
+                        contentType: "application/json; charset=utf-8",
+                        processData: false,
+                        success: function (data) {
+                            if (data) {
+                                if (data.ResponseCode > 0) {
+                                    bootbox.alert("Đổi số tham chiếu thành công!");
+                                    var oldUrl = window.location.href;
+                                    var newUrl = oldUrl.replace(id, data.Data.voucherId);
+                                    window.location.href = newUrl;
+                                } else {
+                                    bootbox.alert(data.Description);
+                                }
+                            }
+                            else {
+                                utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                            }
+                            utils.unLoading();
+                        },
+                        error: function (data) {
+                            utils.Message("Hệ thống bận, vui lòng quay lại sau!");
+                            utils.unLoading();
+                        }
+                    });
+                }
+                else {
+                    utils.Message("bạn chưa chọn chứng từ để copy!");
+                }
+            },
+            /////////////////////////////////////////
+            searchObject: function () {
+
+                var parentId;
+                if (utils.getCookie("Type") == "1") {
+                    parentId = utils.getCookie("parentId");
+                }
+                else {
+                    parentId = $("#accIdLogin").val();
+                }
+
+                var urlSearch = Config.API_Login + "Agency/SearchPersonal";
+                var dataSearch = {
+                    personalId: 0,
+                    identity: this.textSearchObj,
+                    parentId: parentId,
+                    type: 0
+                }
+
+                if (this.tabObj == 2) {
+                    urlSearch = Config.API_Login + "Business/SearchBusiness";
+                    dataSearch = {
+                        parentId: parentId,
+                        businessId: null,
+                        taxIdNumber: this.textSearchObj,
+                        status: 1,
+                    }
+                }
+
+                var self = this;
+                this.loadingObj = true;
+                var token = $('#hdfToken').val();
+                $.ajax({
+                    type: 'POST',
+                    url: urlSearch,
+                    data: JSON.stringify(dataSearch),
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        self.loadingObj = false;
+                        if (data) {
+                            self.lstDataObj = data.Data;
+                        }
+                    },
+                    error: function (data) {
+                        self.loadingObj = false;
+                        bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                    }
+                });
+            },
+            selectTabObj: function (tab) {
+                this.textSearchObj = "";
+                this.tabObj = tab;
+                this.searchObject()
+            },
+            closeObj: function () {
+                this.showPopObject = false;
+                this.loadingObj = true;
+                this.textSearchObj = "";
+            },
+            pickObj: function (item) {
+
+                this.data.experNm = item.name;
+                this.data.phoneNoOfExp = item.phoneNumber;
+                this.data.addressOfExp = item.address;
+
+                if (this.tabObj == 1) {
+                    this.data.accountId = item.accountId;
+                }
+                else {
+                    //app.data.initType = 3;
+                    this.data.experCd = item.taxIdNumber;
+                    this.data.businessId = item.accountId;
+                    this.signMethodSelect = item.signMethod;
+                }
+                this.data.agencyId = utils.getCookie("isAgency");
+
+                this.closeObj();
+            },
+            checkShowEdit: function (accountId, createdAccId, permitGroup) {
+                var showEdit = true;
+                if (accountId != createdAccId || permitGroup == 3) showEdit = false;
+                return showEdit;
+            },
+
+        },
+        mounted() {
+            //var self = this;
+            this.init(308);
+            this.trinhky = new Trinhky(this.signedDataCallback);
+            var self = this;
+            var url = new URL(window.location.href);
+            this.id = url.searchParams.get("id");
+            if (this.id == 0 || !this.id) {
+
+                if ((utils.getCookie("isAgency") == "2" && utils.getCookie("Type") == "2") || (utils.getCookie("agency") == "1" && utils.getCookie("permitGroup") != "3")) {
+                    this.showPopObject = true;
+                    this.searchObject();
+                }
+            }
+        },
+        computed: {
+        }
+    });
+</script>

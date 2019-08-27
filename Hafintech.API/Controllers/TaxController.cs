@@ -7,7 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace Hafintech.API.Controllers
@@ -73,7 +75,7 @@ namespace Hafintech.API.Controllers
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, data);
                 if (res == null || res.code < 0)
                     return Ok(new Response(res.code, res.message, res.results.error));
-                return Ok(new Response(res.results));
+                return Ok(new Response(res.results.Declarations));
             }
             catch (Exception ex)
             {
@@ -95,24 +97,13 @@ namespace Hafintech.API.Controllers
                     Directory.CreateDirectory(folderPath);
                 }
 
-                var fileIncludePath = string.Empty;
-                var fileCount = 0;
-                for (int i = 0; i < httpRequest.Files.Count; i++)
+                var lstAttachment = new List<Attachment>();
+                for (int i = 1; i <= 3; i++)
                 {
-                    var file = httpRequest.Files[i];
-                    var name = file.FileName;
-                    if (string.IsNullOrWhiteSpace(name)) continue;
-                    file.SaveAs(folderPath + name);
-                    fileCount++;
-                    if (httpRequest["hdfdataFileDocsInput1"].Contains(name)) hdfdataFileDocsInput[0] = name;
-                    if (httpRequest["hdfdataFileDocsInput2"].Contains(name)) hdfdataFileDocsInput[1] = name;
-                    if (httpRequest["hdfdataFileDocsInput3"].Contains(name)) hdfdataFileDocsInput[2] = name;
-                }
-
-                for (int i = 1; i <= fileCount; i++)
-                {
-                    fileIncludePath += "0," + (httpRequest["slTypefile" + (i).ToString()] == string.Empty ? "0" : httpRequest["slTypeFile" + (i).ToString()]) + "," +
-                        (httpRequest["hdfNumberFile" + (i).ToString()] == string.Empty ? "0" : httpRequest["hdfNumberFile" + (i).ToString()]) + "," + hdfdataFileDocsInput[i - 1] + ";";
+                    var att = new Attachment();
+                    att.clsAttachment = httpRequest["slTypefile" + (i).ToString()] == null ? "" : httpRequest["slTypefile" + (i).ToString()];
+                    att.attachmentNo = httpRequest["txtNumberFile" + (i).ToString()] == null ? "" : httpRequest["txtNumberFile" + (i).ToString()];
+                    lstAttachment.Add(att);
                 }
 
                 var otherLawCd = new List<dynamic>();
@@ -141,7 +132,7 @@ namespace Hafintech.API.Controllers
                 }
 
                 var cargoNo = new List<dynamic>();
-                for (int i = 1; i <= 4; i++)
+                for (int i = 1; i <= 5; i++)
                 {
                     if (!string.IsNullOrWhiteSpace(httpRequest["txtcargoNo" + i.ToString()]))
                     {
@@ -180,17 +171,21 @@ namespace Hafintech.API.Controllers
                         });
                     }
                 }
+
+                string itemNameStr = Regex.Replace(httpRequest["txtitemName"], @"\t|\n|\r", " ");
+                string noteStr = Regex.Replace(httpRequest["txtnotes"], @"\t|\n|\r", " ");
+
                 var data = new HighValue
                 {
                     dclId = Convert.ToInt64(string.IsNullOrWhiteSpace(httpRequest["hdfdclNo"]) ? "0" : httpRequest["hdfdclNo"]),
-                    itemName = httpRequest["txtitemName"],
+                    itemName = itemNameStr,//httpRequest["txtitemName"],
                     cstValue = httpRequest["txtcstValue"],
                     loadVesselAcNm = httpRequest["txtloadVesselAcNm"],
                     address1Street = httpRequest["txtaddress1Street"],
                     address2Street = httpRequest["txtaddress2Street"],
                     address3CityNm = httpRequest["txtaddress3CityNm"],
                     addressOfImp = httpRequest["txtaddressOfImp"],
-                    arrDate = httpRequest["txtarrDate"],
+                    arrDate = httpRequest["txtarrDate"] == null ? "" : httpRequest["txtarrDate"],
                     bankPayCd = httpRequest["hdfbankPayCd"],
                     bankPayIssYear = httpRequest["txtbankPayIssYear"],
                     bankPayNo = httpRequest["txtbankPayNo"],
@@ -204,14 +199,14 @@ namespace Hafintech.API.Controllers
                     compDclNo = httpRequest["txtcompDclNo"],
                     consignorCd = httpRequest["txtconsignorCd"],
                     consignorNm = httpRequest["txtconsignorNm"],
-                    countryCd = httpRequest["hdfcountryCd"],
+                    countryCd = httpRequest["hdfcountryCd"].ToUpper(),
                     countryNm = httpRequest["txtcountryNmAddress"],
                     cstOffice = httpRequest["hdfcstOffice"],
                     cstOfficeNm = httpRequest["txtcstOffice_text"],
                     clsOrg = httpRequest["slclsOrg"],
                     invClsCd = httpRequest["slinvClsCd"],
                     cstSubSection = httpRequest["slcstSubSection"],
-                    cstWrhCd = httpRequest["hdfcstWrhCd"],
+                    cstWrhCd = httpRequest["hdfcstWrhCd"].ToUpper(),
                     cstClrWrhNm = httpRequest["txtcstWrhCd_text"],
                     invCurCd = httpRequest["slinvCurCd"],
                     eleInvRecNo = httpRequest["txteleInvRecNo"],
@@ -227,7 +222,7 @@ namespace Hafintech.API.Controllers
                     firstDclNo = httpRequest["txtfirstDclNo"],
                     dclKindCd = httpRequest["hdfdclKindCd"],
                     dclNo = httpRequest["txtdclNo"],
-                    dclPlannedDate = httpRequest["txtdclPlannedDate"],
+                    dclPlannedDate = httpRequest["txtdclPlannedDate"] == null ? "" : httpRequest["txtdclPlannedDate"],
                     tentativeDclNo = httpRequest["txttentativeDclNo"],
                     permitWrhDate = httpRequest["txtpermitWrhDate"],
                     strDateTrs = httpRequest["txtstrDateTrs"],
@@ -265,8 +260,8 @@ namespace Hafintech.API.Controllers
                     secSupplBankCd = httpRequest["hdfsecSupplBankCd"],
                     postcodeIdt = httpRequest["txtpostcode"],
                     arrDateOfTrs = httpRequest["txtArrDateOfTrs"],
-
-                    notes = httpRequest["txtnotes"],
+                    clsAttachment = lstAttachment,
+                    notes = noteStr,
 
                     lsPermit = permitType,
                     lsOtherLawCode = otherLawCd,
@@ -281,7 +276,7 @@ namespace Hafintech.API.Controllers
                     secNo = httpRequest["txtsecNo"],
                     taxPayer = httpRequest["txttaxPayer"],
                     lsTransInfo = lsTransInfo,
-                    placeOriginCd = httpRequest["placeOriginCd"],
+                    placeOriginCd = httpRequest["placeOriginCd"].ToUpper(),
                     houseAwbNo = httpRequest["txthouseAwbNo"],
                     masterAwbNo = httpRequest["txtmasterAwbNo"],
                     flightNo = httpRequest["txtflightNo"],
@@ -336,6 +331,7 @@ namespace Hafintech.API.Controllers
                 accountId = (int)AccountSession.AccountID,
                 itemName = httpRequest["txtitemName"],
                 placeOriginCd = httpRequest["slplaceOriginCd"],
+                oriPlaceNm = httpRequest["txtcountryNmOrigin"],
                 importTaxClfCd = httpRequest["slimportTaxClfCd"],
                 tariffQuotaClf = httpRequest["txttariffQuotaClf"],
                 perUnitTaxCd = httpRequest["slperUnitTaxCd"],
@@ -553,6 +549,46 @@ namespace Hafintech.API.Controllers
         }
 
         [HttpGet]
+        [Route("SearchDeclaration2")]
+        public async Task<IHttpActionResult> SearchDeclaration2(long? accountId = null, int type = 0, int? dclId = null,
+            string cstOffice = "", string dclNo = "", string startCreatedDate = "", string endCreatedDate = "",
+            string dclKindCd = "", string insClsCd = "", int? clearanStatus = 0, int? status = 0, int page = 1, int count = 10)
+        {
+            try
+            {
+                var url = ConfigurationManager.AppSettings["APIURL"] + "declaration/search";
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new
+                {
+                    accountId = accountId,
+                    type = type,
+                    endCreatedDate = endCreatedDate,
+                    dclId = dclId,
+                    cstOffice = cstOffice,
+                    dclNo = dclNo,
+                    startCreatedDate = startCreatedDate,
+                    dclKindCd = dclKindCd,
+                    insClsCd = insClsCd,
+                    clearanStatus = clearanStatus,
+                    status = status,
+                    page = page,
+                    count = count,
+                });
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message));
+                return Ok(new Response(new
+                {
+                    Total = res.results.Total,
+                    ListDeclarations = res.results.ListDeclarations
+                }));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        [HttpGet]
         [Route("SearchByAccountID")]
         public async Task<IHttpActionResult> SearchByAccountID(int accountID, int type = 0, int? dclId = null, string cstOffice = "",
             string dclNo = "", string startCreatedDate = "", string endCreatedDate = "",
@@ -691,6 +727,17 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(unloadPortCd))
+                {
+                    unloadPortCd = unloadPortCd.TrimStart();
+                    unloadPortCd = unloadPortCd.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(unloadPortNm))
+                {
+                    unloadPortNm = unloadPortNm.TrimStart();
+                    unloadPortNm = unloadPortNm.TrimEnd();
+                }
+
                 var url = ConfigurationManager.AppSettings["APIURL"] + "unloadingPorts/getList?unloadPortCd=" + unloadPortCd + "&unloadPortNm=" + unloadPortNm;
                 var res = await DataService.GetAsync<Rootobject<List<dynamic>>>(url);
                 if (res.code < 0)
@@ -992,6 +1039,17 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(bankCode))
+                {
+                    bankCode = bankCode.TrimStart();
+                    bankCode = bankCode.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(bankName))
+                {
+                    bankName = bankName.TrimStart();
+                    bankName = bankName.TrimEnd();
+                }
+
                 var url = ConfigurationManager.AppSettings["APIURL"] + "banks/getList?bankId=" + bankId + "&bankCode=" + bankCode + "&bankName=" + bankName;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
@@ -1011,7 +1069,18 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                var url = ConfigurationManager.AppSettings["APIURL"] + "countrys/getList?countryCode=" + countryCode + "&name=" + name;
+                if (!string.IsNullOrWhiteSpace(countryCode))
+                {
+                    countryCode = countryCode.TrimStart();
+                    countryCode = countryCode.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    name = name.TrimStart();
+                    name = name.TrimEnd();
+                }
+
+                var url = ConfigurationManager.AppSettings["APIURL"] + "countrys/getList?countryCode=" + countryCode + "&countryName=" + name;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message));
@@ -1068,6 +1137,16 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(docummentCode))
+                {
+                    docummentCode = docummentCode.TrimStart();
+                    docummentCode = docummentCode.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(docummentName))
+                {
+                    docummentName = docummentName.TrimStart();
+                    docummentName = docummentName.TrimEnd();
+                }
                 var url = ConfigurationManager.AppSettings["APIURL"] + "documments/getList?docummentId=" + docummentId + "&docummentCode=" + docummentCode + "&docummentName=" + docummentName + "&docummentDate=" + docummentDate + "&content=" + content;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
@@ -1144,6 +1223,17 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(weigUnitCd))
+                {
+                    weigUnitCd = weigUnitCd.TrimStart();
+                    weigUnitCd = weigUnitCd.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(weigUnitNm))
+                {
+                    weigUnitNm = weigUnitNm.TrimStart();
+                    weigUnitNm = weigUnitNm.TrimEnd();
+                }
+
                 var url = ConfigurationManager.AppSettings["APIURL"] + "weightUnits/getList?weigUnitCd=" + weigUnitCd + "&weigUnitNm=" + weigUnitNm;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
@@ -1486,6 +1576,17 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(dclKindCd))
+                {
+                    dclKindCd = dclKindCd.TrimStart();
+                    dclKindCd = dclKindCd.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(dclKindNm))
+                {
+                    dclKindNm = dclKindNm.TrimStart();
+                    dclKindNm = dclKindNm.TrimEnd();
+                }
+
                 var url = ConfigurationManager.AppSettings["APIURL"] + "declarationKinds/getList?dclKindCd=" + dclKindCd + "&dclKindNm=" + dclKindNm;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
@@ -1539,11 +1640,35 @@ namespace Hafintech.API.Controllers
 
         [HttpGet]
         [Route("GetCustomsOffice")]
-        public async Task<IHttpActionResult> GetCustomsOffices(string cstOfficeCd = "", string cstOfficeNm = "")
+        public async Task<IHttpActionResult> GetCustomsOffices(string cstOfficeCd = "", string cstOfficeNm = "", string cstDepartment = "")
         {
             try
             {
-                var url = ConfigurationManager.AppSettings["APIURL"] + "customsOffices/getList?cstOfficeCd=" + cstOfficeCd + "&cstOfficeNm=" + cstOfficeNm;
+                if (!string.IsNullOrWhiteSpace(cstOfficeCd))
+                {
+                    cstOfficeCd = cstOfficeCd.TrimEnd();
+                    cstOfficeCd = cstOfficeCd.TrimStart();
+                }
+                if (!string.IsNullOrWhiteSpace(cstOfficeNm))
+                {
+                    cstOfficeNm = cstOfficeNm.TrimEnd();
+                    cstOfficeNm = cstOfficeNm.TrimStart();
+                }
+                if (!string.IsNullOrWhiteSpace(cstDepartment))
+                {
+                    cstDepartment = cstDepartment.TrimEnd();
+                    cstDepartment = cstDepartment.TrimStart();
+                } 
+                var url = ConfigurationManager.AppSettings["APIURL"] + "customsOffices/getList";
+
+                var uriBuilder = new UriBuilder(url);
+                var query = HttpUtility.ParseQueryString(uriBuilder.Query); 
+                if (!String.IsNullOrEmpty(cstOfficeCd)) query["cstOfficeCd"] = cstOfficeCd;
+                if (!String.IsNullOrEmpty(cstOfficeNm)) query["cstOfficeNm"] = cstOfficeNm;
+                if (!String.IsNullOrEmpty(cstDepartment)) query["cstDepartment"] = cstDepartment;
+                uriBuilder.Query = query.ToString();
+                url = uriBuilder.ToString();
+                 
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message));
@@ -1619,6 +1744,17 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(cstWrhCd))
+                {
+                    cstWrhCd = cstWrhCd.TrimStart();
+                    cstWrhCd = cstWrhCd.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(cstWrhNm))
+                {
+                    cstWrhNm = cstWrhNm.TrimStart();
+                    cstWrhNm = cstWrhNm.TrimEnd();
+                }
+
                 var url = ConfigurationManager.AppSettings["APIURL"] + "customsWarehouses/getList?cstWrhCd=" + cstWrhCd + "&cstWrhNm=" + cstWrhNm;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
@@ -1676,6 +1812,16 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(loadVesselCd))
+                {
+                    loadVesselCd = loadVesselCd.TrimStart();
+                    loadVesselCd = loadVesselCd.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(loadVesselNm))
+                {
+                    loadVesselNm = loadVesselNm.TrimStart();
+                    loadVesselNm = loadVesselNm.TrimEnd();
+                }
                 var url = ConfigurationManager.AppSettings["APIURL"] + "loadingVessels/getList?loadVesselCd=" + loadVesselCd + "&loadVesselNm=" + loadVesselNm;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
@@ -1695,6 +1841,16 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if(!string.IsNullOrWhiteSpace(loadLocCd))
+                {
+                    loadLocCd = loadLocCd.TrimStart();
+                    loadLocCd = loadLocCd.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(loadLocNm))
+                {
+                    loadLocNm = loadLocNm.TrimStart();
+                    loadLocNm = loadLocNm.TrimEnd();
+                }
                 var url = ConfigurationManager.AppSettings["APIURL"] + "loadingLocations/getList?loadLocCd=" + loadLocCd + "&loadLocNm=" + loadLocNm + "&countryCd=" + countryCd;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
@@ -1923,6 +2079,17 @@ namespace Hafintech.API.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(quanUnitCd))
+                {
+                    quanUnitCd = quanUnitCd.TrimStart();
+                    quanUnitCd = quanUnitCd.TrimEnd();
+                }
+                if (!string.IsNullOrWhiteSpace(quanUnitNm))
+                {
+                    quanUnitNm = quanUnitNm.TrimStart();
+                    quanUnitNm = quanUnitNm.TrimEnd();
+                }
+
                 var url = ConfigurationManager.AppSettings["APIURL"] + "quantityUnits/getList?quanUnitCd=" + quanUnitCd + "&quanUnitNm=" + quanUnitNm;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
@@ -2075,9 +2242,31 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                var attachmentNo = data.attachmentNo;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "attachment/view";
-                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { attachmentNo = attachmentNo });
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new {
+                    id = data.id,
+                    attachmentNo = data.attachmentNo
+                });
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message, res.results.error));
+                return Ok(new Response(res.results.Attachment));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        [HttpPost]
+        [Route("GetDetailHYS")]
+        public async Task<IHttpActionResult> GetDetailHYS(Submit data)
+        {
+            try
+            {
+                var id = data.id;
+                var url = ConfigurationManager.AppSettings["APIURL"] + "attachment/view";
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { id = id });
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message, res.results.error));
                 return Ok(new Response(res.results.Attachment));
@@ -2091,7 +2280,7 @@ namespace Hafintech.API.Controllers
 
         [HttpGet]
         [Route("SearchAttachment")]
-        public async Task<IHttpActionResult> SearchAttachment(string cstOffice = "", string appProType = "", string startDate = "", string endDate = "")
+        public async Task<IHttpActionResult> SearchAttachment(string cstOffice = "", string appProType = "", string startDate = "", string endDate = "", int page = 0, int count = 100)
         {
             try
             {
@@ -2102,11 +2291,18 @@ namespace Hafintech.API.Controllers
                     cstOffice = cstOffice,
                     appProType = appProType,
                     startCreatedDate = startDate,
-                    endCreatedDate = endDate
+                    endCreatedDate = endDate,
+
+                    page = page,
+                    count = count
                 });
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message, res.results.error));
-                return Ok(new Response(res.results.ListAttachment));
+                return Ok(new Response(new
+                {
+                    ListAttachment = res.results.ListAttachment,
+                    Total = res.results.Total
+                }));
             }
             catch (Exception ex)
             {
@@ -2153,6 +2349,24 @@ namespace Hafintech.API.Controllers
             return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
         }
 
+        [HttpGet]
+        [Route("GetExportKind")]
+        public async Task<IHttpActionResult> GetExportKind(string code = "", string name = "Xuất")
+        {
+            try
+            {
+                var url = ConfigurationManager.AppSettings["APIURL"] + "exportKind/getList?Code=" + code + "&Name=Xuất";
+                var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message, res.results.error));
+                return Ok(new Response(res.results.ExportKind));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
         #endregion List
 
         #region VNACCS
@@ -2223,7 +2437,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                long declarationId = data.declarationId;
+                long declarationId = (long)data.declarationId;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "vnaccs/submitIDE";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = declarationId });
                 if (res.code < 0)
@@ -2243,7 +2457,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                long declarationId = data.declarationId;
+                long declarationId = (long)data.declarationId;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "vnaccs/submitMIC";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = declarationId });
                 if (res.code < 0)
@@ -2283,7 +2497,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                long declarationId = data.declarationId;
+                long declarationId = (long)data.declarationId;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "vnaccs/submitMIE";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = declarationId });
                 if (res.code < 0)
@@ -2303,7 +2517,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                long declarationId = data.declarationId;
+                long declarationId = (long)data.declarationId;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "vnaccs/submitIDC";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = declarationId });
                 if (res.code < 0)
@@ -2327,7 +2541,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                long declarationId = data.declarationId;
+                long declarationId = (long)data.declarationId;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "vnaccs/submitIDA";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = declarationId });
                 if (res.code < 0)
@@ -2351,7 +2565,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                long declarationId = data.declarationId;
+                long declarationId = (long)data.declarationId;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "vnaccs/submitIDA01";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = declarationId });
                 if (res.code < 0)
@@ -2375,12 +2589,52 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                long declarationId = data.declarationId;
+                long declarationId = (long)data.declarationId;
                 var url = ConfigurationManager.AppSettings["APIURL"] + "declaration/clone";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = declarationId });
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message, res.results.error));
                 return Ok(new Response(res.results.Declarations));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        [HttpPost]
+        [Route("CloneExportDeclaration")]
+        public async Task<IHttpActionResult> CloneExportDeclaration(Submit data)
+        {
+            try
+            {
+                long declarationId = (long)data.declarationId;
+                var url = ConfigurationManager.AppSettings["APIURL"] + "exDeclaration/clone";
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { dclId = declarationId });
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message, res.results.error));
+                return Ok(new Response(res.results.ExportDeclaration));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        [HttpPost]
+        [Route("CloneAMA")]
+        public async Task<IHttpActionResult> CloneAMA(Submit data)
+        {
+            try
+            {
+                long declarationId = (long)data.declarationId;
+                var url = ConfigurationManager.AppSettings["APIURL"] + "amendedTaxInfomation/clone";
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new { id = declarationId });
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message, res.results.error));
+                return Ok(new Response(res.results.AmendedTaxInfomation));
             }
             catch (Exception ex)
             {
@@ -2396,7 +2650,7 @@ namespace Hafintech.API.Controllers
             try
             {
                 var dclNo = data.dclNo;
-                var url = ConfigurationManager.AppSettings["URL"] + "MediationCustomsMessage/messages/search";
+                var url = ConfigurationManager.AppSettings["URL"] + "MediationCustomsMessage/api/messages/search";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new
                 {
                     dclNo = dclNo,
@@ -2428,7 +2682,7 @@ namespace Hafintech.API.Controllers
         {
             try
             {
-                var url = ConfigurationManager.AppSettings["URL"] + "MediationCustomsMessage/messageId=" + messageId;
+                var url = ConfigurationManager.AppSettings["URL"] + "MediationCustomsMessage/api/messageId=" + messageId;
                 var res = await DataService.GetAsync<Rootobject<dynamic>>(url);
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message));
@@ -2448,13 +2702,13 @@ namespace Hafintech.API.Controllers
             try
             {
                 var attachmentNo = data.attachmentNo;
-                var url = ConfigurationManager.AppSettings["URL"] + "MediationCustomsMessage/messages/search";
+                var url = ConfigurationManager.AppSettings["URL"] + "MediationCustomsMessage/api/messages/search";
                 var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new
                 {
-                    attachmentNo = attachmentNo,
-                    dclNo = data.dclNo,
-                    startRecvDate = data.startRecvDate,
-                    endRecvDate = data.endRecvDate,
+                    //attachmentNo = attachmentNo,
+                    dclId = data.dclId,
+                    //startRecvDate = data.startRecvDate,
+                    //endRecvDate = data.endRecvDate,
                     count = data.count,
                     page = data.page
                 });
@@ -2534,6 +2788,52 @@ namespace Hafintech.API.Controllers
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message, res.results.error));
                 return Ok(new Response(res.results.OutputCommonSegment));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        [HttpPost]
+        [Route("CreateHYS")]
+        public async Task<IHttpActionResult> CreateHYS()
+        {
+            try
+            {
+                var httpRequest = System.Web.HttpContext.Current.Request;
+                var jsonData = JsonConvert.DeserializeObject<HYS>(httpRequest["jsonData"]);
+                jsonData.accountId = (int)AccountSession.AccountID;
+                //var file = httpRequest.Files[0];
+                var url = ConfigurationManager.AppSettings["APIURL"] + "attachment/create";
+                var res = await DataService.PostAsyncWithFile<Rootobject<dynamic>>(url, JsonConvert.SerializeObject(jsonData), httpRequest.Files, true);
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message, res.results.error));
+                return Ok(new Response(res.results.Attachment));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        [HttpPost]
+        [Route("CreateHYSAgency")]
+        public async Task<IHttpActionResult> CreateHYSAgency()
+        {
+            try
+            {
+                var httpRequest = System.Web.HttpContext.Current.Request;
+                var jsonData = JsonConvert.DeserializeObject<HYS>(httpRequest["jsonData"]);
+                //jsonData.accountId = (int)AccountSession.AccountID;
+                //var file = httpRequest.Files[0];
+                var url = ConfigurationManager.AppSettings["APIURL"] + "attachment/create";
+                var res = await DataService.PostAsyncWithFile<Rootobject<dynamic>>(url, JsonConvert.SerializeObject(jsonData), httpRequest.Files, true);
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message, res.results.error));
+                return Ok(new Response(res.results.Attachment));
             }
             catch (Exception ex)
             {
@@ -2754,6 +3054,50 @@ namespace Hafintech.API.Controllers
             }
             return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
         }
+        [Route("CreateAMANew")]
+        public async Task<IHttpActionResult> CreateAMA(AMA data)
+        {
+            try
+            {
+                data.dateOfPermit = data.dateOfPermit != null ? DateTime.Parse(data.dateOfPermit).ToString("ddMMyyyy") : "";
+                data.ieDclDate = data.ieDclDate != null ? DateTime.Parse(data.ieDclDate.ToString()).ToString("ddMMyyyy") : "";
+                data.timeLimReIE = data.timeLimReIE != null ? DateTime.Parse(data.timeLimReIE).ToString("ddMMyyyy") : "";
+                //data.accountId = (int)AccountSession.AccountID;
+                var url = ConfigurationManager.AppSettings["APIURL"] + "amendedTaxInfomation/create";
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, data);
+                if (res == null || res.code < 0)
+                    return Ok(new Response(res.code, res.message, res.results.error));
+                return Ok(new Response(res.results.AmendedTaxInfomation));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra khi thêm tờ khai, mời bạn thử lại"));
+        }
+
+        [HttpPost]
+        [Route("UpdateAMANew")]
+        public async Task<IHttpActionResult> UpdateAMA(AMA data)
+        {
+            try
+            {
+                data.dateOfPermit = data.dateOfPermit != null && data.dateOfPermit != "" ? DateTime.Parse(data.dateOfPermit).ToString("ddMMyyyy") : "";
+                data.ieDclDate = data.ieDclDate != null && data.ieDclDate != "" ? DateTime.Parse(data.ieDclDate.ToString()).ToString("ddMMyyyy") : "";
+                data.timeLimReIE = data.timeLimReIE != null && data.timeLimReIE != "" ? DateTime.Parse(data.timeLimReIE).ToString("ddMMyyyy") : "";
+                data.accountId = (int)AccountSession.AccountID;
+                var url = ConfigurationManager.AppSettings["APIURL"] + "amendedTaxInfomation/update";
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, data);
+                if (res == null || res.code < 0)
+                    return Ok(new Response(res.code, res.message, res.results.error));
+                return Ok(new Response(res.results.AmendedTaxInfomation));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra khi thêm tờ khai, mời bạn thử lại"));
+        }
 
         [HttpPost]
         [Route("SubmitAMA")]
@@ -2788,7 +3132,9 @@ namespace Hafintech.API.Controllers
                     startCreatedDate = data.startCreatedDate,
                     endCreatedDate = data.endCreatedDate,
                     cstOffice = data.cstOffice,
-                    amendDclNo = data.amendDclNo
+                    amendDclNo = data.amendDclNo,
+                    page = data.page,
+                    count = data.count,
                 }, true);
                 if (res.code < 0)
                     return Ok(new Response(res.code, res.message, res.results.error));
@@ -2885,5 +3231,35 @@ namespace Hafintech.API.Controllers
         }
 
         #endregion VNACCS
+
+        #region Customs
+
+        [HttpGet]
+        [Route("SearchCustomsDeclaration")]
+        public async Task<IHttpActionResult> SearchCustomsDeclaration()
+        {
+            try
+            {
+                var url = ConfigurationManager.AppSettings["URL"] + "MediationCustoms/declaration/search";
+                var dic = new Dictionary<string, string>();
+                dic.Add("accessToken", AccountSession.Info);
+                var res = await DataService.PostAsync<Rootobject<dynamic>>(url, new
+                {
+                    page = 0,
+                    count = 10,
+                    cstOffice = ""
+                }, dic);
+                if (res.code < 0)
+                    return Ok(new Response(res.code, res.message));
+                return Ok(new Response(res.results.ListDeclarations));
+            }
+            catch (Exception ex)
+            {
+                NLogManager.PublishException(ex);
+            }
+            return Ok(new Response("Có lỗi xảy ra, mời bạn thử lại"));
+        }
+
+        #endregion Customs
     }
 }

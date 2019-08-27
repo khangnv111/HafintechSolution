@@ -1,111 +1,139 @@
 ﻿
 @{
-    ViewBag.Title = "ListProduct";
-    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+	ViewBag.Title = "ListProduct";
+	Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
 }
 
 <div class="row-fluid" id="ida-list-product">
-    <div class="span12">
-        <div class="row-fluid">
-            <div class="span12" id="divBtn">
-                <h4><a href="#">Danh sách Tờ khai</a> >> Đăng ký mới Tờ Khai</h4>
-                <a href="@Url.Action("HightValueDeInsert", "Declaration")?IdDec=@ViewBag.IdDec&ishight=2&tab=1" class="btn btn-success">Chi tiết tờ khai</a>
-                <a class="btn btn-warning">Danh sách hàng</a>
-                <a class="btn btn-success">Chỉ thị của hải quan</a>
-                <a onclick="hq2.linkToCustomsMessage(2)" class="btn btn-success">Kết quả xử lý tờ khai</a>
-                <a onclick="hq2.linkToCustomsMessage(2)" class="btn btn-success">Quản lý tờ khai</a>
+	<div class="span12">
+		<div class="row-fluid">
+			<div class="span12" id="divBtn">
+				<h4>Danh sách hàng hóa</h4>
+				<a v-on:click="ViewDeclaration(@ViewBag.tab)" class="btn btn-success">Tờ khai</a>
+				<a class="btn btn-warning">Danh sách hàng</a>
+				<a class="btn btn-success">Chỉ thị của hải quan</a>
+				<a v-on:click="ViewResult(@ViewBag.IdDec, @ViewBag.dclNo, @ViewBag.tab)" class="btn btn-success">Kết quả xử lý tờ khai</a>
+				<a class="btn btn-success">Quản lý tờ khai</a>
 
-            </div>
-        </div>
-        <input type="hidden" class="span5" id="dclId" name="dclId" value="@ViewBag.IdDec" />
-        <a onclick="Decla.ShowPopAddProduct(@ViewBag.IdDec)" class="btn btn-success" style="float:right; margin: 2px 5px;"><i class="icon icon-book"></i> Thêm hàng</a>
+			</div>
+		</div>
 
-        <div class="widget-box">
-            <div style="clear:both"></div>
-            <div class="widget-title">
-                <span class="icon"><i class="icon-align-justify"></i></span>
-                <h5>Chi tiết danh sách hàng</h5>
-            </div>
-            <div style="overflow-x:auto; overflow-y: scroll;">
-                <table id="listContainerProduct" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
-                    <thead>
-                        <tr>
-                            <th style="min-width:50px">STT</th>
-                            <th>Mã số hàng hóa</th>
-                            <th style="min-width:100px">Tên hàng(Mô tả chi tiết)</th>
-                            <th>Xuất xứ</th>
-                            <th>Số lượng</th>
-                            <th>Đợn vị tính(SL)</th>
-                            <th style="min-width:100px">Số lương thực tế</th>
-                            <th style="min-width:100px">Đơn giá hóa đơn</th>
-                            <th style="min-width:100px">Trị giá hóa đơn</th>
-                            <th style="min-width:100px">Trị giá tính thuế</th>
-                            <th style="min-width:100px">Mã biểu thuế NK</th>
+		<div class="row-fluid">
+			<input type="hidden" id="dclId" name="dclId" value="@ViewBag.IdDec" />
+			<a v-show="status == 0 || status == 1 || status == 3 || status == 6 || status == 21" onclick="Decla.ShowPopAddProduct(@ViewBag.IdDec)" class="btn btn-success" style="float:right; margin: 2px 5px;">
+				<i class="fa fa-plus-circle"></i> Thêm hàng
+			</a>
+		</div> 
 
-                            <th style="min-width:150px">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in lstProduct">
-                            <td>{{index+1}}</td>
-                            <td>
-                                <a href="javascript:;" v-on:click="viewDetailProduct(item.productId)">{{item.hSCd}}</a>
-                            </td>
-                            <td>{{item.itemName}}</td>
-                            <td>{{item.placeOriginCd}}</td>
-                            <td>{{item.qtt1}}</td>
-                            <td>{{item.qttUnitCd1}}</td>
-                            <td>{{item.qtt2}}</td>
-                            <td>{{item.invUnitPrice}}</td>
-                            <td>{{item.invValue}}</td>
-                            <td>{{item.cstValue}}</td>
-                            <td>{{item.cstValueCurCd}}</td>
-                            <td>
-                                <a href="javascript:;" v-on:click="viewEditProduct(item.productId)" class="btn btn-warning">Sửa</a>
-                                <a href="javascript:;" v-on:click="delProduct(item.productId)" class="btn btn-danger">Xóa</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+		<div>
+			<div style="clear:both"></div>
+			<div class="widget-title">
+				<span class="icon"><i class="icon-align-justify"></i></span>
+				<h5>Chi tiết danh sách hàng</h5>
+			</div>
+
+			<div style="overflow-x:auto; overflow-y: auto;">
+				<table id="listContainerProduct" class="table table-bordered data-table table-striped with-check" role="grid" aria-describedby="example1_info">
+					<thead>
+						<tr>
+							<th style="min-width:50px">STT</th>
+							<th>Mã số hàng hóa</th>
+							<th style="min-width:100px">Tên hàng(Mô tả chi tiết)</th>
+							<th>Xuất xứ</th>
+							<th>Số lượng</th>
+							<th>Đợn vị tính(SL)</th>
+							<th style="min-width:100px">Số lương thực tế</th>
+							<th style="min-width:100px">Đơn giá hóa đơn</th>
+							<th style="min-width:100px">Trị giá hóa đơn</th>
+							<th style="min-width:100px">Trị giá tính thuế</th>
+							<th style="min-width:100px">Mã biểu thuế NK</th>
+
+							<th style="min-width:150px" v-show="status == 0 || status == 3 || status == 21 || status == 1|| status == 6">Thao tác</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(item, index) in lstProduct">
+							<td>{{index+1}}</td>
+							<td>
+								<a href="javascript:;" v-on:click="viewDetailProduct(item.productId)">{{item.hSCd}}</a>
+							</td>
+							<td>{{item.itemName}}</td>
+							<td>{{item.placeOriginCd}}</td>
+							<td>{{item.qtt1}}</td>
+							<td>{{item.qttUnitCd1}}</td>
+							<td>{{item.qtt2}}</td>
+							<td>{{item.invUnitPrice}}</td>
+							<td>{{item.invValue}}</td>
+							<td>{{item.cstValSystem}}</td>
+							<td>{{item.importTaxClfCd}}</td>
+							<td v-show="status == 0 || status == 3|| status == 21 || status == 1|| status == 6">
+								<a href="javascript:;" v-on:click="viewDetailProduct(item.productId)" class="btn btn-warning">Sửa</a>
+								<a href="javascript:;" v-on:click="delProduct(item.productId)" class="btn btn-danger">Xóa</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script type="text/javascript">
     var app = new Vue({
         el: '#ida-list-product',
         data: {
-            data: {},
-            lstProduct: []
-
+			data: {},
+			status: 0,
+			lstProduct: [],
+			dclId: '@ViewBag.IdDec',
         },
-        methods: {
-            getList: async function () {
+		methods: {
+			loadInfo: async function () {
+				try {
+					var token = $('#hdfToken').val();
+					var dclId = this.dclId;
+					if (!dclId || dclId <= 0) { 
+						return;
+					}
+					const response = await axios.get(Config.API_Login + "import/GetDeclarationDetail?dclId=" + dclId,
+						{
+							headers: { "Authorization": "Bearer " + token }
+						});
+					var res = response.data;
+					if (res.ResponseCode >= 0) {
+						this.status = res.Data.status;
+					} 
+				} catch (error) {
+					console.error(error);
+				}
+			},
+            getList: async function (id) {
                 try {
-
                     var token = $('#hdfToken').val();
-                    var id = $("#dclId").val();
-                    const response = await axios.get(Config.API_Login + "tax/SearchHighProduct?declarationID=" + @ViewBag.IdDec,
+                    const response = await axios.get(Config.API_Login + "tax/SearchHighProduct?declarationID=" + id,
                         {
                             headers: { "Authorization": "Bearer " + token }
                         });
                     var res = response.data;
                     if (res.ResponseCode >= 0)
                         this.lstProduct = response.data.Data;
-                    else return null;
                 } catch (error) {
                     console.log(error);
                 }
-            },
-            viewDetailProduct: function (idPro) {
+			}, 
+			viewDetailProduct: function (idPro) {
+
+				var urlData = Config.Url_Root + "Declaration/PopInsertHangHoa";
+				if (this.status != 0 && this.status != 3 && this.status != 21 && this.status != 1 && this.status != 6)
+					urlData = Config.Url_Root + "Declaration/ViewProductIID"
+
                 utils.Loading();
                 $.ajax({
-                    type: 'GET',
-                    url: Config.Url_Root + "Declaration/PopInsertHangHoa",
-                    data: {
-                        IdDec: $("#dclId").val(),
-                        proId: idPro
+					type: 'GET',
+					url: urlData,
+					data: {
+						IdDec: this.dclId,
+						proId: idPro,
                     },
                     contentType: "application/json; charset=utf-8",
                     dataType: "html",
@@ -115,8 +143,9 @@
                     cache: false,
                     success: function (data) {
                         utils.unLoading();
-                        utils.ShowOverLay();
-                        $("BODY").append('<div id="popupwrap" style="z-index: 111;left: 50%;margin-left: -508.5px;"></div>');
+						utils.ShowOverLay();
+
+						$("BODY").append('<div id="popupwrap" style="z-index: 111;left: 50%;top: 50%; position: fixed; transform: translate(-50%, -50%); max-height: 730px; width: 75%;overflow: auto;"></div>');
                         $("#popupwrap").html(data);
 
                     },
@@ -126,10 +155,70 @@
 
                     }
                 })
-            }
+			}, 
+            delProduct: function(id){
+				var self = this;
+                bootbox.confirm("Bạn có chắc muốn xóa hàng hóa này", function(res){
+                    if(res){
+                        utils.Loading();
+                        var token = $('#hdfToken').val();
+                        $.ajax({
+                            type: 'GET',
+                            url: Config.API_Login + "tax/DeleteProduct",
+                            data: {
+                                productId: id
+                            },
+                            headers: {
+                                "Authorization": "Bearer " + token
+                            },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                //console.log(data);
+                                utils.unLoading();
+                                if (data) {
+                                    if (data.ResponseCode > 0) {
+										bootbox.alert("Xóa hàng hóa thành công");
+										app.getList(self.dclId);
+                                    }
+                                    else {
+                                        bootbox.alert(data.Description);
+                                    }
+                                }
+                                else {
+                                    bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                                }
+                            },
+                            error: function (data) {
+                                bootbox.alert("Hệ thống bận, vui lòng quay lại sau!");
+                                return;
+                            }
+                        });
+                    }
+                });
+            },
+			ViewResult: function (id, dclNo, tab) {
+				var url_string = window.location.href
+				var url = new URL(url_string);
+				var ishight = url.searchParams.get("ishight");
+
+				window.location.href = Config.Url_Root + "Declaration/IDA_Result?IdDec=" + id + "&tab=" + tab + "&dclNo=" + dclNo + "&ishight=" + ishight;
+			},
+			ViewDeclaration: function (tab) { 
+				var url_string = window.location.href
+				var url = new URL(url_string);
+				var ishight = url.searchParams.get("ishight");
+
+				window.location.href = Config.Url_Root + "Declaration/HightValueDeInsert?IdDec=" + this.dclId + "&tab=" + tab + "&ishight=" + ishight;
+			},
         },
         mounted() {
-            this.getList();
+            //debugger;
+            var id = '@ViewBag.IdDec';
+            if(id && id > 0){
+                this.getList(id);
+			}
+			this.loadInfo();
         },
     });
 </script>

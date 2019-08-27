@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "HYE_Declaration";
+    Layout = "~/Views/Shared/_LayoutDeclaration.cshtml";
+}
+
+<div id="hye-form">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Thay đổi file đính kèm</h4>
+
+            <a class="btn  btn-success" style="padding: 5px 60px"> Tờ khai </a>
+            <a href="@Url.Action("ResultsHYE", "HYS", new { decId = ViewBag.decId, attNo = ViewBag.attNo })&ishight=5&tab=2" class="btn" style="padding: 5px 60px">Kết quả xử lý tờ khai</a> 
+
+            <div class="widget-box"> 
+                <div class="widget-content nopadding">
+                    <div class="form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span12">
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Số tờ khai:<span class="error">(*)</span> </label>
+                                    <div class="controls">
+                                        <input style="margin-left:2px" type="text" class="span6" v-model="data.attachmentNo"/>
+                                    </div>
+                                </div>
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Số điện thoại người khai báo: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span6" v-model="data.appPhoneNo"/>
+                                    </div>
+                                </div>
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Số quản lý trong nội bộ doanh nghiệp: </label>
+                                    <div class="controls">
+                                        <input type="text" class="span11" v-model="data.eiControlNo"/>
+                                    </div>
+                                </div>
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Ghi chú: </label>
+                                    <div class="controls"> 
+                                        <textarea class="span9" rows="5" v-model="data.remarks"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="control-group span12">
+                                    <label class="control-label">Tải file đính kèm: </label>
+                                    <div class="controls">
+                                        <input type="file" id="fileattachmentnew" name="fileattachmentnew" class="span6" />
+                                    </div>
+                                    <div class="controls">
+                                        {{data.fileName}}
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="form-actions" style="text-align: center;"> 
+                <button style="padding: 5px 50px; color: #ff6a00" ><i class="fa fa-edit"></i> LƯU</button>
+            </div>
+        </div>
+    </div>
+</div> 
+<input type="hidden" value="@ViewBag.attNo" id="attNo" />
+<input type="hidden" value="@ViewBag.decId" id="decId" />
+<script src="~/Content/js/hys-decla/hye-decla.js"></script>
